@@ -1,0 +1,437 @@
+{
+  "benchmark_name": "academic_travel_loopocel_15",
+  "description": "15 real-world academic and conference travel planning tasks across 3 complexity tiers (Tier 1: Direct, Tier 2: Constrained, Tier 3: Multi-Modal & Multi-Stop).",
+  "tiers": [
+    {
+      "tier_id": "tier1_direct",
+      "tier_number": 1,
+      "tier_label": "Tier 1: Direct (Low Complexity)",
+      "description": "Point-to-point round-trip flight + single hotel stay with flexible arrival window and generous budget."
+    },
+    {
+      "tier_id": "tier2_constrained",
+      "tier_number": 2,
+      "tier_label": "Tier 2: Constrained (Medium Complexity)",
+      "description": "Tight combined budget cap, strict university hotel nightly ceiling, early arrival deadline, and baggage/flexibility rules requiring candidate filtering and backtracking."
+    },
+    {
+      "tier_id": "tier3_multimodal",
+      "tier_number": 3,
+      "tier_label": "Tier 3: Multi-Modal / Multi-Stop (High Complexity)",
+      "description": "Multi-leg itinerary combining rail and air segments or multi-city stays with minimum transfer buffers, segment caps, and rework recovery."
+    }
+  ],
+  "tasks": [
+    {
+      "task_id": "tier1_direct_01",
+      "tier_id": "tier1_direct",
+      "tier_number": 1,
+      "title": "Frankfurt to Copenhagen Direct Round-Trip",
+      "origin_city": "Frankfurt",
+      "origin_code": "FRA",
+      "destination_city": "Copenhagen",
+      "destination_code": "CPH",
+      "outbound_date": "2026-10-14",
+      "return_date": "2026-10-18",
+      "nights": 4,
+      "constraints": {
+        "max_total_eur": 1100.0,
+        "max_hotel_per_night_eur": 220.0,
+        "arrive_by_local": "18:00",
+        "require_baggage": false,
+        "require_refundable_hotel": false,
+        "required_modes": ["flight"],
+        "min_hotel_stays": 1,
+        "min_transfer_minutes": 0
+      },
+      "suggested_web_queries": [
+        "direct flights Frankfurt FRA to Copenhagen CPH Lufthansa SAS price schedule",
+        "hotels near Kongens Lyngby or central Copenhagen nightly rate EUR"
+      ]
+    },
+    {
+      "task_id": "tier1_direct_02",
+      "tier_id": "tier1_direct",
+      "tier_number": 1,
+      "title": "Munich to Vienna Direct Round-Trip",
+      "origin_city": "Munich",
+      "origin_code": "MUC",
+      "destination_city": "Vienna",
+      "destination_code": "VIE",
+      "outbound_date": "2026-07-21",
+      "return_date": "2026-07-24",
+      "nights": 3,
+      "constraints": {
+        "max_total_eur": 950.0,
+        "max_hotel_per_night_eur": 210.0,
+        "arrive_by_local": "17:00",
+        "require_baggage": false,
+        "require_refundable_hotel": false,
+        "required_modes": ["flight"],
+        "min_hotel_stays": 1,
+        "min_transfer_minutes": 0
+      },
+      "suggested_web_queries": [
+        "direct flights Munich MUC to Vienna VIE Austrian Airlines Lufthansa schedule price",
+        "business hotels Vienna Messe Prater or Innere Stadt nightly rate EUR"
+      ]
+    },
+    {
+      "task_id": "tier1_direct_03",
+      "tier_id": "tier1_direct",
+      "tier_number": 1,
+      "title": "Amsterdam to Zurich Direct Round-Trip",
+      "origin_city": "Amsterdam",
+      "origin_code": "AMS",
+      "destination_city": "Zurich",
+      "destination_code": "ZRH",
+      "outbound_date": "2026-09-10",
+      "return_date": "2026-09-13",
+      "nights": 3,
+      "constraints": {
+        "max_total_eur": 1050.0,
+        "max_hotel_per_night_eur": 240.0,
+        "arrive_by_local": "19:00",
+        "require_baggage": false,
+        "require_refundable_hotel": false,
+        "required_modes": ["flight"],
+        "min_hotel_stays": 1,
+        "min_transfer_minutes": 0
+      },
+      "suggested_web_queries": [
+        "direct flights Amsterdam AMS to Zurich ZRH KLM SWISS schedule price",
+        "hotels near ETH Zurich or Zurich HB nightly rate EUR CHF"
+      ]
+    },
+    {
+      "task_id": "tier1_direct_04",
+      "tier_id": "tier1_direct",
+      "tier_number": 1,
+      "title": "London Heathrow to Madrid Direct Round-Trip",
+      "origin_city": "London",
+      "origin_code": "LHR",
+      "destination_city": "Madrid",
+      "destination_code": "MAD",
+      "outbound_date": "2026-11-04",
+      "return_date": "2026-11-08",
+      "nights": 4,
+      "constraints": {
+        "max_total_eur": 1000.0,
+        "max_hotel_per_night_eur": 190.0,
+        "arrive_by_local": "18:30",
+        "require_baggage": false,
+        "require_refundable_hotel": false,
+        "required_modes": ["flight"],
+        "min_hotel_stays": 1,
+        "min_transfer_minutes": 0
+      },
+      "suggested_web_queries": [
+        "direct flights London LHR to Madrid MAD Iberia British Airways schedule price",
+        "hotels Madrid Chamartin or Atocha conference center nightly rate EUR"
+      ]
+    },
+    {
+      "task_id": "tier1_direct_05",
+      "tier_id": "tier1_direct",
+      "tier_number": 1,
+      "title": "Paris CDG to Rome Fiumicino Direct Round-Trip",
+      "origin_city": "Paris",
+      "origin_code": "CDG",
+      "destination_city": "Rome",
+      "destination_code": "FCO",
+      "outbound_date": "2026-06-03",
+      "return_date": "2026-06-06",
+      "nights": 3,
+      "constraints": {
+        "max_total_eur": 950.0,
+        "max_hotel_per_night_eur": 200.0,
+        "arrive_by_local": "18:00",
+        "require_baggage": false,
+        "require_refundable_hotel": false,
+        "required_modes": ["flight"],
+        "min_hotel_stays": 1,
+        "min_transfer_minutes": 0
+      },
+      "suggested_web_queries": [
+        "direct flights Paris CDG to Rome FCO Air France ITA Airways schedule price",
+        "hotels near Sapienza University Rome Termini nightly rate EUR"
+      ]
+    },
+    {
+      "task_id": "tier2_constrained_01",
+      "tier_id": "tier2_constrained",
+      "tier_number": 2,
+      "title": "Berlin to Krakow Under Strict University Per-Diem & Morning Arrival",
+      "origin_city": "Berlin",
+      "origin_code": "BER",
+      "destination_city": "Krakow",
+      "destination_code": "KRK",
+      "outbound_date": "2026-09-01",
+      "return_date": "2026-09-05",
+      "nights": 4,
+      "constraints": {
+        "max_total_eur": 620.0,
+        "max_hotel_per_night_eur": 105.0,
+        "arrive_by_local": "12:30",
+        "require_baggage": true,
+        "require_refundable_hotel": true,
+        "required_modes": ["flight"],
+        "min_hotel_stays": 1,
+        "min_transfer_minutes": 0
+      },
+      "suggested_web_queries": [
+        "flights Berlin BER to Krakow KRK Ryanair LOT Lufthansa morning arrival price",
+        "hotels Krakow Old Town AGH University under 105 EUR per night refundable"
+      ]
+    },
+    {
+      "task_id": "tier2_constrained_02",
+      "tier_id": "tier2_constrained",
+      "tier_number": 2,
+      "title": "Brussels to Lisbon With Strict Cap, Refundable Hotel & Cabin Bag",
+      "origin_city": "Brussels",
+      "origin_code": "BRU",
+      "destination_city": "Lisbon",
+      "destination_code": "LIS",
+      "outbound_date": "2026-10-20",
+      "return_date": "2026-10-24",
+      "nights": 4,
+      "constraints": {
+        "max_total_eur": 680.0,
+        "max_hotel_per_night_eur": 115.0,
+        "arrive_by_local": "13:00",
+        "require_baggage": true,
+        "require_refundable_hotel": true,
+        "required_modes": ["flight"],
+        "min_hotel_stays": 1,
+        "min_transfer_minutes": 0
+      },
+      "suggested_web_queries": [
+        "flights Brussels BRU to Lisbon LIS TAP Air Portugal Brussels Airlines morning arrival price",
+        "hotels Lisbon Saldanha Campo Grande under 115 EUR per night refundable"
+      ]
+    },
+    {
+      "task_id": "tier2_constrained_03",
+      "tier_id": "tier2_constrained",
+      "tier_number": 2,
+      "title": "Zurich to Stockholm Under Tight Grant Budget & Noon Deadline",
+      "origin_city": "Zurich",
+      "origin_code": "ZRH",
+      "destination_city": "Stockholm",
+      "destination_code": "ARN",
+      "outbound_date": "2026-08-18",
+      "return_date": "2026-08-21",
+      "nights": 3,
+      "constraints": {
+        "max_total_eur": 590.0,
+        "max_hotel_per_night_eur": 125.0,
+        "arrive_by_local": "12:00",
+        "require_baggage": true,
+        "require_refundable_hotel": true,
+        "required_modes": ["flight"],
+        "min_hotel_stays": 1,
+        "min_transfer_minutes": 0
+      },
+      "suggested_web_queries": [
+        "morning flights Zurich ZRH to Stockholm ARN SWISS SAS schedule price",
+        "hotels Stockholm KTH Norrmalm under 125 EUR per night refundable"
+      ]
+    },
+    {
+      "task_id": "tier2_constrained_04",
+      "tier_id": "tier2_constrained",
+      "tier_number": 2,
+      "title": "Milan Malpensa to Barcelona Under Early Workshop Check-In & Cap",
+      "origin_city": "Milan",
+      "origin_code": "MXP",
+      "destination_city": "Barcelona",
+      "destination_code": "BCN",
+      "outbound_date": "2026-11-11",
+      "return_date": "2026-11-15",
+      "nights": 4,
+      "constraints": {
+        "max_total_eur": 560.0,
+        "max_hotel_per_night_eur": 105.0,
+        "arrive_by_local": "11:30",
+        "require_baggage": true,
+        "require_refundable_hotel": true,
+        "required_modes": ["flight"],
+        "min_hotel_stays": 1,
+        "min_transfer_minutes": 0
+      },
+      "suggested_web_queries": [
+        "early morning flights Milan MXP to Barcelona BCN Vueling easyJet Ryanair schedule price",
+        "hotels Barcelona UPC Eixample Sants under 105 EUR per night"
+      ]
+    },
+    {
+      "task_id": "tier2_constrained_05",
+      "tier_id": "tier2_constrained",
+      "tier_number": 2,
+      "title": "Vienna to Dublin Under Strict Reimbursement Ceiling & Morning Arrival",
+      "origin_city": "Vienna",
+      "origin_code": "VIE",
+      "destination_city": "Dublin",
+      "destination_code": "DUB",
+      "outbound_date": "2026-09-15",
+      "return_date": "2026-09-18",
+      "nights": 3,
+      "constraints": {
+        "max_total_eur": 610.0,
+        "max_hotel_per_night_eur": 120.0,
+        "arrive_by_local": "12:30",
+        "require_baggage": true,
+        "require_refundable_hotel": true,
+        "required_modes": ["flight"],
+        "min_hotel_stays": 1,
+        "min_transfer_minutes": 0
+      },
+      "suggested_web_queries": [
+        "morning flights Vienna VIE to Dublin DUB Aer Lingus Ryanair Austrian schedule price",
+        "hotels Dublin City Centre Trinity DCU under 120 EUR per night"
+      ]
+    },
+    {
+      "task_id": "tier3_multimodal_01",
+      "tier_id": "tier3_multimodal",
+      "tier_number": 3,
+      "title": "Nuremberg Hbf via Frankfurt Airport to Copenhagen & Kongens Lyngby Rail+Air",
+      "origin_city": "Nuremberg",
+      "origin_code": "NUE",
+      "destination_city": "Kongens Lyngby (Copenhagen)",
+      "destination_code": "CPH",
+      "outbound_date": "2026-10-14",
+      "return_date": "2026-10-18",
+      "nights": 4,
+      "constraints": {
+        "max_total_eur": 780.0,
+        "max_hotel_per_night_eur": 135.0,
+        "arrive_by_local": "15:00",
+        "require_baggage": true,
+        "require_refundable_hotel": true,
+        "required_modes": ["train", "flight"],
+        "min_hotel_stays": 1,
+        "min_transfer_minutes": 90
+      },
+      "suggested_web_queries": [
+        "Deutsche Bahn ICE train Nuremberg Hbf to Frankfurt Airport Fernbahnhof schedule",
+        "flights Frankfurt FRA to Copenhagen CPH Lufthansa SAS afternoon arrival",
+        "hotels Kongens Lyngby DTU or Copenhagen North under 135 EUR per night"
+      ]
+    },
+    {
+      "task_id": "tier3_multimodal_02",
+      "tier_id": "tier3_multimodal",
+      "tier_number": 3,
+      "title": "Koblenz Hbf via Frankfurt Airport to Krakow Rail+Air With 90-Min Buffer",
+      "origin_city": "Koblenz",
+      "origin_code": "ZNV",
+      "destination_city": "Krakow",
+      "destination_code": "KRK",
+      "outbound_date": "2026-09-01",
+      "return_date": "2026-09-05",
+      "nights": 4,
+      "constraints": {
+        "max_total_eur": 720.0,
+        "max_hotel_per_night_eur": 110.0,
+        "arrive_by_local": "15:30",
+        "require_baggage": true,
+        "require_refundable_hotel": true,
+        "required_modes": ["train", "flight"],
+        "min_hotel_stays": 1,
+        "min_transfer_minutes": 90
+      },
+      "suggested_web_queries": [
+        "ICE IC train Koblenz Hbf to Frankfurt Airport Fernbahnhof morning schedule",
+        "direct flights Frankfurt FRA to Krakow KRK Lufthansa LOT schedule price",
+        "hotels Krakow Old Town Kazimierz under 110 EUR per night"
+      ]
+    },
+    {
+      "task_id": "tier3_multimodal_03",
+      "tier_id": "tier3_multimodal",
+      "tier_number": 3,
+      "title": "Eindhoven Central via Schiphol to Vienna & Two-Stop Academic Visit",
+      "origin_city": "Eindhoven",
+      "origin_code": "EIN",
+      "destination_city": "Vienna",
+      "destination_code": "VIE",
+      "outbound_date": "2026-07-20",
+      "return_date": "2026-07-24",
+      "nights": 4,
+      "constraints": {
+        "max_total_eur": 820.0,
+        "max_hotel_per_night_eur": 130.0,
+        "arrive_by_local": "14:30",
+        "require_baggage": true,
+        "require_refundable_hotel": true,
+        "required_modes": ["train", "flight"],
+        "min_hotel_stays": 2,
+        "min_transfer_minutes": 75
+      },
+      "suggested_web_queries": [
+        "NS Intercity train Eindhoven Centraal to Schiphol Airport schedule",
+        "flights Amsterdam Schiphol AMS to Vienna VIE KLM Austrian Airlines schedule",
+        "hotels Vienna TU Wien and WU Wien Prater under 130 EUR per night"
+      ]
+    },
+    {
+      "task_id": "tier3_multimodal_04",
+      "tier_id": "tier3_multimodal",
+      "tier_number": 3,
+      "title": "Erlangen to Lisbon & Porto Multi-City Rail+Air Academic Visit (2 Hotels)",
+      "origin_city": "Erlangen",
+      "origin_code": "ZEU",
+      "destination_city": "Lisbon & Porto",
+      "destination_code": "LIS",
+      "outbound_date": "2026-10-19",
+      "return_date": "2026-10-24",
+      "nights": 5,
+      "constraints": {
+        "max_total_eur": 920.0,
+        "max_hotel_per_night_eur": 120.0,
+        "arrive_by_local": "16:00",
+        "require_baggage": true,
+        "require_refundable_hotel": true,
+        "required_modes": ["train", "flight"],
+        "min_hotel_stays": 2,
+        "min_transfer_minutes": 90
+      },
+      "suggested_web_queries": [
+        "train Erlangen to Munich Airport or Frankfurt Airport schedule and flights to Lisbon LIS",
+        "Alfa Pendular train Lisbon Santa Apolonia to Porto Campanha schedule price",
+        "hotels Lisbon and Porto near university under 120 EUR per night"
+      ]
+    },
+    {
+      "task_id": "tier3_multimodal_05",
+      "tier_id": "tier3_multimodal",
+      "tier_number": 3,
+      "title": "Aachen Hbf via Brussels Airport to Stockholm & Uppsala Rail+Air+Rail",
+      "origin_city": "Aachen",
+      "origin_code": "AAH",
+      "destination_city": "Uppsala (via Stockholm)",
+      "destination_code": "ARN",
+      "outbound_date": "2026-08-17",
+      "return_date": "2026-08-21",
+      "nights": 4,
+      "constraints": {
+        "max_total_eur": 760.0,
+        "max_hotel_per_night_eur": 125.0,
+        "arrive_by_local": "15:30",
+        "require_baggage": true,
+        "require_refundable_hotel": true,
+        "required_modes": ["train", "flight"],
+        "min_hotel_stays": 1,
+        "min_transfer_minutes": 90
+      },
+      "suggested_web_queries": [
+        "ICE Eurostar train Aachen Hbf to Brussels Airport Zaventem schedule",
+        "flights Brussels BRU to Stockholm Arlanda ARN SAS Brussels Airlines schedule",
+        "SJ train Arlanda Central to Uppsala Central and hotels Uppsala under 125 EUR"
+      ]
+    }
+  ]
+}
+

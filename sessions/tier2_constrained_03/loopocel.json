@@ -1,0 +1,1827 @@
+{
+  "objectTypes": [
+    {
+      "name": "Turn",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        },
+        {
+          "name": "state",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Prompt",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Response",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Instruction",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "History",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "eventTypes": [
+    {
+      "name": "ProcessObject.Registered",
+      "attributes": []
+    },
+    {
+      "name": "Instruction.Registered",
+      "attributes": []
+    },
+    {
+      "name": "Turn.Started",
+      "attributes": []
+    },
+    {
+      "name": "Prompt.Submitted",
+      "attributes": []
+    },
+    {
+      "name": "Response.Received",
+      "attributes": []
+    },
+    {
+      "name": "Turn.Finished",
+      "attributes": []
+    },
+    {
+      "name": "ActionRequest.Dispatched",
+      "attributes": []
+    },
+    {
+      "name": "Execution.Started",
+      "attributes": []
+    },
+    {
+      "name": "ProcessObject.StateChanged",
+      "attributes": []
+    },
+    {
+      "name": "Execution.Finished",
+      "attributes": []
+    },
+    {
+      "name": "ActionResult.Received",
+      "attributes": []
+    },
+    {
+      "name": "History.Assembled",
+      "attributes": []
+    }
+  ],
+  "objects": [
+    {
+      "id": "trip:tier2_constrained_03",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.405367+00:00",
+          "value": "{\"arrive_by_local\":\"12:00\",\"destination\":\"ARN\",\"max_hotel_per_night_eur\":125.0,\"max_total_eur\":590.0,\"nights\":3,\"origin\":\"ZRH\",\"require_baggage\":true,\"require_refundable_hotel\":true,\"status\":\"requested\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.405367+00:00",
+          "value": "{\"arrive_by_local\":\"12:00\",\"destination\":\"ARN\",\"max_hotel_per_night_eur\":125.0,\"max_total_eur\":590.0,\"nights\":3,\"origin\":\"ZRH\",\"require_baggage\":true,\"require_refundable_hotel\":true,\"status\":\"requested\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.408420+00:00",
+          "value": "{\"flight_id\":\"SK606\",\"hotel_id\":\"hotel-karlaplan-stockholm\",\"status\":\"confirmed\",\"total_cost_eur\":521.0}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "instruction:base",
+      "type": "Instruction",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.405460+00:00",
+          "value": "{\"messages\":[{\"content\":\"Plan trip tier2_constrained_03: ZRH to ARN, 2026-08-18 to 2026-08-21 (3 nights), max 590 EUR total, hotel <= 125 EUR/night refundable, arrive by 12:00, baggage required.\",\"role\":\"user\"}]}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "turn:1",
+      "type": "Turn",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.405581+00:00",
+          "value": "{\"index\":1,\"task_id\":\"Zurich to Stockholm Under Tight Grant Budget & Noon Deadline\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "prompt:1",
+          "qualifier": "hasPrompt"
+        },
+        {
+          "objectId": "response:1",
+          "qualifier": "hasResponse"
+        },
+        {
+          "objectId": "turn:2",
+          "qualifier": "hasNextTurn"
+        }
+      ]
+    },
+    {
+      "id": "prompt:1",
+      "type": "Prompt",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.405581+00:00",
+          "value": "{\"parameters\":{\"model\":\"live-web-agent\"},\"layout\":[\"instruction:base\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "instruction:base",
+          "qualifier": "hasInstruction"
+        }
+      ]
+    },
+    {
+      "id": "response:1",
+      "type": "Response",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.405673+00:00",
+          "value": "{\"provider\":{\"status\":\"completed\",\"turn\":1},\"message\":{\"content\":\"Searched live morning flights ZRH-ARN and hotels near KTH/Norrmalm. Discovered SWISS LX1248, SAS SK606, Best Western Hotel Karlaplan, and Elite Hotel Arcadia.\",\"role\":\"assistant\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:1",
+          "qualifier": "hasActionRequest"
+        },
+        {
+          "objectId": "request:2",
+          "qualifier": "hasActionRequest"
+        }
+      ]
+    },
+    {
+      "id": "flight:LX1248",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.405793+00:00",
+          "value": "{\"id\":\"flight:LX1248\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.405793+00:00",
+          "value": "{\"id\":\"flight:LX1248\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.406086+00:00",
+          "value": "{\"business_id\":\"LX1248\",\"kind\":\"Flight\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "flight:SK606",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.405855+00:00",
+          "value": "{\"id\":\"flight:SK606\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.405855+00:00",
+          "value": "{\"id\":\"flight:SK606\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.406149+00:00",
+          "value": "{\"business_id\":\"SK606\",\"kind\":\"Flight\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.408477+00:00",
+          "value": "{\"baggage_included\":true,\"booking_state\":\"selected\",\"price_eur\":185.0}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "request:1",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.405925+00:00",
+          "value": "{\"name\":\"search_web\",\"arguments\":{\"query\":\"morning flights Zurich ZRH to Stockholm ARN SWISS SAS schedule price\",\"trip_id\":\"tier2_constrained_03\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier2_constrained_03",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "flight:LX1248",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "flight:SK606",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:1",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:1",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.405986+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.406212+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier2_constrained_03",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "flight:LX1248",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "flight:SK606",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:1",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:1",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.406285+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"search_web\\\",\\\"request_id\\\":\\\"request:1\\\",\\\"result\\\":{\\\"flights\\\":[{\\\"airline\\\":\\\"SWISS\\\",\\\"arr\\\":\\\"12:35\\\",\\\"baggage_included\\\":false,\\\"dep\\\":\\\"09:50\\\",\\\"flight_id\\\":\\\"LX1248\\\",\\\"price_eur\\\":130.0},{\\\"airline\\\":\\\"SAS\\\",\\\"arr\\\":\\\"11:15\\\",\\\"baggage_included\\\":true,\\\"dep\\\":\\\"08:25\\\",\\\"flight_id\\\":\\\"SK606\\\",\\\"price_eur\\\":185.0}]}}}\",\"role\":\"user\"},\"data\":{\"flights\":[{\"airline\":\"SWISS\",\"arr\":\"12:35\",\"baggage_included\":false,\"dep\":\"09:50\",\"flight_id\":\"LX1248\",\"price_eur\":130.0},{\"airline\":\"SAS\",\"arr\":\"11:15\",\"baggage_included\":true,\"dep\":\"08:25\",\"flight_id\":\"SK606\",\"price_eur\":185.0}]}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:1",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "flight:LX1248",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "flight:SK606",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "trip:tier2_constrained_03",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "hotel:hotel-karlaplan-stockholm",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.406374+00:00",
+          "value": "{\"id\":\"hotel:hotel-karlaplan-stockholm\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.406374+00:00",
+          "value": "{\"id\":\"hotel:hotel-karlaplan-stockholm\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.406732+00:00",
+          "value": "{\"business_id\":\"hotel-karlaplan-stockholm\",\"kind\":\"Hotel\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.408530+00:00",
+          "value": "{\"booking_state\":\"selected\",\"nights\":3,\"rate_per_night_eur\":112.0,\"refundable\":true}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "hotel:elite-hotel-arcadia",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.406441+00:00",
+          "value": "{\"id\":\"hotel:elite-hotel-arcadia\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.406441+00:00",
+          "value": "{\"id\":\"hotel:elite-hotel-arcadia\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.406672+00:00",
+          "value": "{\"business_id\":\"elite-hotel-arcadia\",\"kind\":\"Hotel\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "request:2",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.406501+00:00",
+          "value": "{\"name\":\"search_web\",\"arguments\":{\"query\":\"hotels Stockholm KTH Norrmalm under 125 EUR per night refundable\",\"trip_id\":\"tier2_constrained_03\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "hotel:hotel-karlaplan-stockholm",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "hotel:elite-hotel-arcadia",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "trip:tier2_constrained_03",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:2",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:2",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.406587+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.406795+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier2_constrained_03",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "hotel:elite-hotel-arcadia",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "hotel:hotel-karlaplan-stockholm",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:2",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:2",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.406860+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"search_web\\\",\\\"request_id\\\":\\\"request:2\\\",\\\"result\\\":{\\\"hotels\\\":[{\\\"hotel_id\\\":\\\"hotel-karlaplan-stockholm\\\",\\\"name\\\":\\\"Best Western Hotel Karlaplan\\\",\\\"rate_per_night_eur\\\":112.0,\\\"refundable\\\":true},{\\\"hotel_id\\\":\\\"elite-hotel-arcadia\\\",\\\"name\\\":\\\"Elite Hotel Arcadia Stockholm\\\",\\\"rate_per_night_eur\\\":140.0,\\\"refundable\\\":true}]}}}\",\"role\":\"user\"},\"data\":{\"hotels\":[{\"hotel_id\":\"hotel-karlaplan-stockholm\",\"name\":\"Best Western Hotel Karlaplan\",\"rate_per_night_eur\":112.0,\"refundable\":true},{\"hotel_id\":\"elite-hotel-arcadia\",\"name\":\"Elite Hotel Arcadia Stockholm\",\"rate_per_night_eur\":140.0,\"refundable\":true}]}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:2",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "hotel:elite-hotel-arcadia",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "hotel:hotel-karlaplan-stockholm",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "turn:2",
+      "type": "Turn",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.406936+00:00",
+          "value": "{\"index\":2,\"task_id\":\"Zurich to Stockholm Under Tight Grant Budget & Noon Deadline\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "prompt:2",
+          "qualifier": "hasPrompt"
+        },
+        {
+          "objectId": "response:2",
+          "qualifier": "hasResponse"
+        },
+        {
+          "objectId": "turn:3",
+          "qualifier": "hasNextTurn"
+        }
+      ]
+    },
+    {
+      "id": "prompt:2",
+      "type": "Prompt",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.406936+00:00",
+          "value": "{\"parameters\":{\"model\":\"live-web-agent\"},\"layout\":[\"instruction:base\",\"history:2\",\"result:1\",\"result:2\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "instruction:base",
+          "qualifier": "hasInstruction"
+        },
+        {
+          "objectId": "history:2",
+          "qualifier": "hasHistory"
+        },
+        {
+          "objectId": "result:1",
+          "qualifier": "hasActionResult"
+        },
+        {
+          "objectId": "result:2",
+          "qualifier": "hasActionResult"
+        }
+      ]
+    },
+    {
+      "id": "history:2",
+      "type": "History",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.406936+00:00",
+          "value": "{\"sources\":[\"response:1\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "response:1",
+          "qualifier": "hasSourceResponse"
+        }
+      ]
+    },
+    {
+      "id": "response:2",
+      "type": "Response",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.407074+00:00",
+          "value": "{\"provider\":{\"status\":\"completed\",\"turn\":2},\"message\":{\"content\":\"Attempted candidate combination: SWISS LX1248 (130 EUR basic) + Elite Hotel Arcadia (140 EUR/night). Validation failed: flight arrival 12:35 is later than 12:00 deadline, basic fare lacks baggage, and hotel rate exceeds 125 EUR ceiling.\",\"role\":\"assistant\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:3",
+          "qualifier": "hasActionRequest"
+        }
+      ]
+    },
+    {
+      "id": "request:3",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.407183+00:00",
+          "value": "{\"name\":\"verify_constraints\",\"arguments\":{\"arrival_time\":\"12:35\",\"baggage_included\":false,\"flight_id\":\"LX1248\",\"hotel_id\":\"elite-hotel-arcadia\",\"rate_per_night_eur\":140.0,\"total_cost_eur\":550.0,\"trip_id\":\"tier2_constrained_03\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier2_constrained_03",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "flight:LX1248",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "hotel:elite-hotel-arcadia",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:3",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:3",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.407242+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.407320+00:00",
+          "value": "{\"outcome\":\"failure\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "flight:LX1248",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "hotel:elite-hotel-arcadia",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "trip:tier2_constrained_03",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:3",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:3",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.407391+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"verify_constraints\\\",\\\"request_id\\\":\\\"request:3\\\",\\\"result\\\":{\\\"errors\\\":[\\\"Outbound arrival time 12:35 exceeds noon deadline 12:00.\\\",\\\"Hotel rate 140.00 EUR exceeds maximum 125.00 EUR.\\\",\\\"Flight ticket lacks required cabin baggage.\\\"],\\\"valid\\\":false}}}\",\"role\":\"user\"},\"data\":{\"errors\":[\"Outbound arrival time 12:35 exceeds noon deadline 12:00.\",\"Hotel rate 140.00 EUR exceeds maximum 125.00 EUR.\",\"Flight ticket lacks required cabin baggage.\"],\"valid\":false}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:3",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "trip:tier2_constrained_03",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "flight:LX1248",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "hotel:elite-hotel-arcadia",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "turn:3",
+      "type": "Turn",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.407465+00:00",
+          "value": "{\"index\":3,\"task_id\":\"Zurich to Stockholm Under Tight Grant Budget & Noon Deadline\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "prompt:3",
+          "qualifier": "hasPrompt"
+        },
+        {
+          "objectId": "response:3",
+          "qualifier": "hasResponse"
+        }
+      ]
+    },
+    {
+      "id": "prompt:3",
+      "type": "Prompt",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.407465+00:00",
+          "value": "{\"parameters\":{\"model\":\"live-web-agent\"},\"layout\":[\"instruction:base\",\"history:3\",\"result:3\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "instruction:base",
+          "qualifier": "hasInstruction"
+        },
+        {
+          "objectId": "history:3",
+          "qualifier": "hasHistory"
+        },
+        {
+          "objectId": "result:3",
+          "qualifier": "hasActionResult"
+        }
+      ]
+    },
+    {
+      "id": "history:3",
+      "type": "History",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.407465+00:00",
+          "value": "{\"sources\":[\"response:1\",\"result:1\",\"result:2\",\"response:2\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "response:1",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:1",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:2",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:2",
+          "qualifier": "hasSourceResponse"
+        }
+      ]
+    },
+    {
+      "id": "response:3",
+      "type": "Response",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.407741+00:00",
+          "value": "{\"provider\":{\"status\":\"completed\",\"turn\":3},\"message\":{\"content\":\"Reworked plan: switched to early SAS SK606 with baggage (185 EUR, arrival 11:15) and Best Western Hotel Karlaplan (3 nights at 112 EUR/night refundable = 336 EUR). Total cost 521 EUR is within the 590 EUR budget.\",\"role\":\"assistant\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:4",
+          "qualifier": "hasActionRequest"
+        },
+        {
+          "objectId": "request:5",
+          "qualifier": "hasActionRequest"
+        }
+      ]
+    },
+    {
+      "id": "request:4",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.407943+00:00",
+          "value": "{\"name\":\"verify_constraints\",\"arguments\":{\"arrival_time\":\"11:15\",\"baggage_included\":true,\"flight_id\":\"SK606\",\"hotel_id\":\"hotel-karlaplan-stockholm\",\"rate_per_night_eur\":112.0,\"refundable\":true,\"total_cost_eur\":521.0,\"trip_id\":\"tier2_constrained_03\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier2_constrained_03",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "flight:SK606",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "hotel:hotel-karlaplan-stockholm",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:4",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:4",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.408012+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.408086+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "flight:SK606",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "hotel:hotel-karlaplan-stockholm",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "trip:tier2_constrained_03",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:4",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:4",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.408151+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"verify_constraints\\\",\\\"request_id\\\":\\\"request:4\\\",\\\"result\\\":{\\\"arrival_ok\\\":true,\\\"budget_ok\\\":true,\\\"hotel_cap_ok\\\":true,\\\"valid\\\":true}}}\",\"role\":\"user\"},\"data\":{\"arrival_ok\":true,\"budget_ok\":true,\"hotel_cap_ok\":true,\"valid\":true}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:4",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "trip:tier2_constrained_03",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "flight:SK606",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "hotel:hotel-karlaplan-stockholm",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "request:5",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.408230+00:00",
+          "value": "{\"name\":\"commit_itinerary\",\"arguments\":{\"selected_flight\":\"SK606\",\"selected_hotel\":\"hotel-karlaplan-stockholm\",\"total_cost_eur\":521.0,\"trip_id\":\"tier2_constrained_03\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier2_constrained_03",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "flight:SK606",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "hotel:hotel-karlaplan-stockholm",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:5",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:5",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.408289+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.408588+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier2_constrained_03",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "itin:tier2_constrained_03",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "flight:SK606",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "hotel:hotel-karlaplan-stockholm",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:5",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "itin:tier2_constrained_03",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.408358+00:00",
+          "value": "{\"business_id\":\"itin:tier2_constrained_03\",\"kind\":\"Itinerary\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.408358+00:00",
+          "value": "{\"business_id\":\"itin:tier2_constrained_03\",\"kind\":\"Itinerary\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "result:5",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.408648+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"commit_itinerary\\\",\\\"request_id\\\":\\\"request:5\\\",\\\"result\\\":{\\\"itinerary_id\\\":\\\"itin:tier2_constrained_03\\\",\\\"status\\\":\\\"confirmed\\\"}}}\",\"role\":\"user\"},\"data\":{\"itinerary_id\":\"itin:tier2_constrained_03\",\"status\":\"confirmed\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:5",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "itin:tier2_constrained_03",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "trip:tier2_constrained_03",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "flight:SK606",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "hotel:hotel-karlaplan-stockholm",
+          "qualifier": "describesObject"
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "event:1",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T14:13:38.405367+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "trip:tier2_constrained_03",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:2",
+      "type": "Instruction.Registered",
+      "time": "2026-11-09T14:13:38.405460+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "instruction:base",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:3",
+      "type": "Turn.Started",
+      "time": "2026-11-09T14:13:38.405581+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:1",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:4",
+      "type": "Prompt.Submitted",
+      "time": "2026-11-09T14:13:38.405581+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "prompt:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:1",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:5",
+      "type": "Response.Received",
+      "time": "2026-11-09T14:13:38.405673+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "response:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:1",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:6",
+      "type": "Turn.Finished",
+      "time": "2026-11-09T14:13:38.405673+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "response:1",
+          "qualifier": "response"
+        }
+      ]
+    },
+    {
+      "id": "event:7",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T14:13:38.405820+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:LX1248",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:8",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T14:13:38.405888+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:SK606",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:9",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-09T14:13:38.405925+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:1",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:10",
+      "type": "Execution.Started",
+      "time": "2026-11-09T14:13:38.405986+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:1",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:11",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T14:13:38.406086+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:LX1248",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:1",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:12",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T14:13:38.406149+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:SK606",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:1",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:13",
+      "type": "Execution.Finished",
+      "time": "2026-11-09T14:13:38.406212+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:1",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "trip:tier2_constrained_03",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "flight:LX1248",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "flight:SK606",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:14",
+      "type": "ActionResult.Received",
+      "time": "2026-11-09T14:13:38.406285+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:1",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:1",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:15",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T14:13:38.406407+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:hotel-karlaplan-stockholm",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:16",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T14:13:38.406473+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:elite-hotel-arcadia",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:17",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-09T14:13:38.406501+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:1",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:18",
+      "type": "Execution.Started",
+      "time": "2026-11-09T14:13:38.406587+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:2",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:19",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T14:13:38.406672+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:elite-hotel-arcadia",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:2",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:20",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T14:13:38.406732+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:hotel-karlaplan-stockholm",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:2",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:21",
+      "type": "Execution.Finished",
+      "time": "2026-11-09T14:13:38.406795+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:2",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "trip:tier2_constrained_03",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "hotel:elite-hotel-arcadia",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "hotel:hotel-karlaplan-stockholm",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:22",
+      "type": "ActionResult.Received",
+      "time": "2026-11-09T14:13:38.406860+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:2",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:2",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:23",
+      "type": "History.Assembled",
+      "time": "2026-11-09T14:13:38.406936+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "history:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:2",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:24",
+      "type": "Turn.Started",
+      "time": "2026-11-09T14:13:38.406936+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:2",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:25",
+      "type": "Prompt.Submitted",
+      "time": "2026-11-09T14:13:38.406936+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "prompt:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:2",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:26",
+      "type": "Response.Received",
+      "time": "2026-11-09T14:13:38.407074+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "response:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:2",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:27",
+      "type": "Turn.Finished",
+      "time": "2026-11-09T14:13:38.407074+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "response:2",
+          "qualifier": "response"
+        }
+      ]
+    },
+    {
+      "id": "event:28",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-09T14:13:38.407183+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:2",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:29",
+      "type": "Execution.Started",
+      "time": "2026-11-09T14:13:38.407242+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:3",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:30",
+      "type": "Execution.Finished",
+      "time": "2026-11-09T14:13:38.407320+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:3",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "flight:LX1248",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "hotel:elite-hotel-arcadia",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "trip:tier2_constrained_03",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:31",
+      "type": "ActionResult.Received",
+      "time": "2026-11-09T14:13:38.407391+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:3",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:3",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:32",
+      "type": "History.Assembled",
+      "time": "2026-11-09T14:13:38.407465+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "history:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:3",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:33",
+      "type": "Turn.Started",
+      "time": "2026-11-09T14:13:38.407465+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:3",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:34",
+      "type": "Prompt.Submitted",
+      "time": "2026-11-09T14:13:38.407465+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "prompt:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:3",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:35",
+      "type": "Response.Received",
+      "time": "2026-11-09T14:13:38.407741+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "response:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:3",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:36",
+      "type": "Turn.Finished",
+      "time": "2026-11-09T14:13:38.407741+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "response:3",
+          "qualifier": "response"
+        }
+      ]
+    },
+    {
+      "id": "event:37",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-09T14:13:38.407943+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:4",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:3",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:38",
+      "type": "Execution.Started",
+      "time": "2026-11-09T14:13:38.408012+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:4",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:4",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:39",
+      "type": "Execution.Finished",
+      "time": "2026-11-09T14:13:38.408086+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:4",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:4",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "flight:SK606",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "hotel:hotel-karlaplan-stockholm",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "trip:tier2_constrained_03",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:40",
+      "type": "ActionResult.Received",
+      "time": "2026-11-09T14:13:38.408151+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:4",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:4",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:4",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:41",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-09T14:13:38.408230+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:5",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:3",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:42",
+      "type": "Execution.Started",
+      "time": "2026-11-09T14:13:38.408289+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:5",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:5",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:43",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T14:13:38.408388+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "itin:tier2_constrained_03",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:44",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T14:13:38.408420+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "trip:tier2_constrained_03",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:5",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:45",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T14:13:38.408477+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:SK606",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:5",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:46",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T14:13:38.408530+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:hotel-karlaplan-stockholm",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:5",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:47",
+      "type": "Execution.Finished",
+      "time": "2026-11-09T14:13:38.408588+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:5",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:5",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "trip:tier2_constrained_03",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "itin:tier2_constrained_03",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "flight:SK606",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "hotel:hotel-karlaplan-stockholm",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:48",
+      "type": "ActionResult.Received",
+      "time": "2026-11-09T14:13:38.408648+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:5",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:5",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:5",
+          "qualifier": "request"
+        }
+      ]
+    }
+  ]
+}

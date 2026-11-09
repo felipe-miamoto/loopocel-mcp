@@ -1,0 +1,101 @@
+{
+  "total_objects": 33,
+  "total_events": 48,
+  "total_o2o": 87,
+  "total_e2o": 110,
+  "classes": {
+    "Turn": 3,
+    "ProcessObject": 6,
+    "Prompt": 3,
+    "Response": 3,
+    "Instruction": 1,
+    "History": 2,
+    "ActionRequest": 5,
+    "Execution": 5,
+    "ActionResult": 5
+  },
+  "relations": {
+    "hasPrompt": 3,
+    "hasResponse": 3,
+    "hasNextTurn": 2,
+    "hasInstruction": 3,
+    "hasHistory": 2,
+    "hasActionResult": 3,
+    "hasActionRequest": 5,
+    "hasExecution": 5,
+    "targetsObject": 15,
+    "actOn": 16,
+    "producesResult": 5,
+    "resultOf": 5,
+    "describesObject": 15,
+    "hasSourcePrompt": 0,
+    "hasSourceResponse": 3,
+    "hasSourceActionResult": 2
+  },
+  "events": {
+    "ActionRequest.Dispatched": 5,
+    "ActionResult.Received": 5,
+    "Execution.Finished": 5,
+    "Execution.Started": 5,
+    "History.Assembled": 2,
+    "Instruction.Registered": 1,
+    "ProcessObject.Registered": 6,
+    "ProcessObject.StateChanged": 7,
+    "Prompt.Submitted": 3,
+    "Response.Received": 3,
+    "Turn.Finished": 3,
+    "Turn.Started": 3
+  },
+  "baseline_events": {
+    "Turn.Started": 3,
+    "Turn.Finished": 3,
+    "Turn.Failed": 0,
+    "ProcessObject.Created": 0,
+    "ProcessObject.StateChanged": 7,
+    "Prompt.Submitted": 3,
+    "Response.Received": 3,
+    "Instruction.Registered": 1,
+    "History.Assembled": 2,
+    "ActionRequest.Dispatched": 5,
+    "ActionRequest.Rejected": 0,
+    "Execution.Started": 5,
+    "Execution.Finished": 5,
+    "ActionResult.Received": 5
+  },
+  "extension_events": {
+    "ProcessObject.Registered": 6
+  },
+  "e2o_roles": {
+    "execution": 12,
+    "process_object": 16,
+    "prompt": 5,
+    "request": 15,
+    "response": 3,
+    "subject": 48,
+    "turn": 11
+  },
+  "coverage": {
+    "classes_covered": 9,
+    "classes_total": 9,
+    "relations_covered": 15,
+    "relations_total": 16,
+    "baseline_events_covered": 11,
+    "baseline_events_total": 14,
+    "extension_event_types": 1
+  },
+  "capture_completeness": "complete",
+  "partial_prompts": false,
+  "session": {
+    "session_id": "tier2_constrained_03",
+    "task": "Zurich to Stockholm Under Tight Grant Budget & Noon Deadline",
+    "agent": "live-web-agent",
+    "profile": "general",
+    "mode": "mcp",
+    "capture_completeness": "complete",
+    "status": "completed",
+    "started_at": "2026-11-09T14:13:38.405061+00:00",
+    "finished_at": "2026-11-09T14:13:38.412009+00:00",
+    "directory": "sessions/tier2_constrained_03",
+    "validation_passed": true
+  }
+}

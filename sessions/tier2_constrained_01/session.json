@@ -1,0 +1,13 @@
+{
+  "session_id": "tier2_constrained_01",
+  "task": "Berlin to Krakow Under Strict University Per-Diem & Morning Arrival",
+  "agent": "live-web-agent",
+  "profile": "general",
+  "mode": "mcp",
+  "capture_completeness": "complete",
+  "status": "completed",
+  "started_at": "2026-11-09T13:48:43.464402+00:00",
+  "finished_at": "2026-11-09T13:49:49.596877+00:00",
+  "directory": "sessions/tier2_constrained_01",
+  "validation_passed": true
+}

@@ -1,0 +1,1511 @@
+{
+  "objectTypes": [
+    {
+      "name": "Turn",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        },
+        {
+          "name": "state",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Prompt",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Response",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Instruction",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "History",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "eventTypes": [
+    {
+      "name": "ProcessObject.Registered",
+      "attributes": []
+    },
+    {
+      "name": "Instruction.Registered",
+      "attributes": []
+    },
+    {
+      "name": "Turn.Started",
+      "attributes": []
+    },
+    {
+      "name": "Prompt.Submitted",
+      "attributes": []
+    },
+    {
+      "name": "Response.Received",
+      "attributes": []
+    },
+    {
+      "name": "Turn.Finished",
+      "attributes": []
+    },
+    {
+      "name": "ActionRequest.Dispatched",
+      "attributes": []
+    },
+    {
+      "name": "Execution.Started",
+      "attributes": []
+    },
+    {
+      "name": "ProcessObject.StateChanged",
+      "attributes": []
+    },
+    {
+      "name": "Execution.Finished",
+      "attributes": []
+    },
+    {
+      "name": "ActionResult.Received",
+      "attributes": []
+    },
+    {
+      "name": "History.Assembled",
+      "attributes": []
+    }
+  ],
+  "objects": [
+    {
+      "id": "trip:tier1_direct_01",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:47:58.681628+00:00",
+          "value": "{\"destination\":\"CPH\",\"max_total_eur\":1100.0,\"nights\":4,\"origin\":\"FRA\",\"status\":\"requested\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T13:47:58.681628+00:00",
+          "value": "{\"destination\":\"CPH\",\"max_total_eur\":1100.0,\"nights\":4,\"origin\":\"FRA\",\"status\":\"requested\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T13:48:07.856312+00:00",
+          "value": "{\"flight_id\":\"LH824\",\"hotel_id\":\"scandic-eremitage\",\"status\":\"confirmed\",\"total_cost_eur\":780.0}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "instruction:base",
+      "type": "Instruction",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:47:58.681745+00:00",
+          "value": "{\"messages\":[{\"content\":\"Plan trip tier1_direct_01: FRA to CPH, 2026-10-14 to 2026-10-18 (4 nights), max 1100 EUR, arrive by 18:00.\",\"role\":\"user\"}]}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "instruction:f17125704c3d94a8",
+      "type": "Instruction",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:48:02.593014+00:00",
+          "value": "{\"messages\":[{\"content\":\"Plan trip tier1_direct_01: FRA to CPH, 2026-10-14 to 2026-10-18 (4 nights), max 1100 EUR, arrive by 18:00.\",\"role\":\"user\"}]}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "turn:1",
+      "type": "Turn",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:48:02.593246+00:00",
+          "value": "{\"index\":1,\"task_id\":\"Frankfurt to Copenhagen Direct Round-Trip\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "prompt:1",
+          "qualifier": "hasPrompt"
+        },
+        {
+          "objectId": "response:1",
+          "qualifier": "hasResponse"
+        },
+        {
+          "objectId": "turn:2",
+          "qualifier": "hasNextTurn"
+        }
+      ]
+    },
+    {
+      "id": "prompt:1",
+      "type": "Prompt",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:48:02.593246+00:00",
+          "value": "{\"parameters\":{\"model\":\"live-web-agent\"},\"layout\":[\"instruction:base\",\"instruction:f17125704c3d94a8\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "instruction:base",
+          "qualifier": "hasInstruction"
+        },
+        {
+          "objectId": "instruction:f17125704c3d94a8",
+          "qualifier": "hasInstruction"
+        }
+      ]
+    },
+    {
+      "id": "response:1",
+      "type": "Response",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:48:02.593356+00:00",
+          "value": "{\"provider\":{\"status\":\"completed\",\"turn\":1},\"message\":{\"content\":\"Retrieved live direct flight options (LH824, SK676) and hotel candidates (Scandic Eremitage Lyngby, Wakeup Copenhagen).\",\"role\":\"assistant\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:1",
+          "qualifier": "hasActionRequest"
+        },
+        {
+          "objectId": "request:2",
+          "qualifier": "hasActionRequest"
+        }
+      ]
+    },
+    {
+      "id": "flight:LH824",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:48:02.593500+00:00",
+          "value": "{\"id\":\"flight:LH824\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T13:48:02.593500+00:00",
+          "value": "{\"id\":\"flight:LH824\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T13:48:02.593759+00:00",
+          "value": "{\"business_id\":\"LH824\",\"kind\":\"Flight\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T13:48:07.856377+00:00",
+          "value": "{\"booking_state\":\"selected\",\"price_eur\":220.0}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "flight:SK676",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:48:02.593559+00:00",
+          "value": "{\"id\":\"flight:SK676\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T13:48:02.593559+00:00",
+          "value": "{\"id\":\"flight:SK676\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T13:48:02.593812+00:00",
+          "value": "{\"business_id\":\"SK676\",\"kind\":\"Flight\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "request:1",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:48:02.593616+00:00",
+          "value": "{\"name\":\"search_web\",\"arguments\":{\"query\":\"direct flights Frankfurt FRA to Copenhagen CPH Lufthansa SAS price schedule\",\"trip_id\":\"tier1_direct_01\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier1_direct_01",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "flight:LH824",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "flight:SK676",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:1",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:1",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:48:02.593688+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:48:02.593864+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier1_direct_01",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "flight:LH824",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "flight:SK676",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:1",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:1",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:48:02.593924+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"search_web\\\",\\\"request_id\\\":\\\"request:1\\\",\\\"result\\\":{\\\"flights\\\":[{\\\"airline\\\":\\\"Lufthansa\\\",\\\"arr\\\":\\\"10:05\\\",\\\"dep\\\":\\\"08:40\\\",\\\"flight_id\\\":\\\"LH824\\\",\\\"price_eur\\\":220.0},{\\\"airline\\\":\\\"SAS\\\",\\\"arr\\\":\\\"14:30\\\",\\\"dep\\\":\\\"13:05\\\",\\\"flight_id\\\":\\\"SK676\\\",\\\"price_eur\\\":215.0}]}}}\",\"role\":\"user\"},\"data\":{\"flights\":[{\"airline\":\"Lufthansa\",\"arr\":\"10:05\",\"dep\":\"08:40\",\"flight_id\":\"LH824\",\"price_eur\":220.0},{\"airline\":\"SAS\",\"arr\":\"14:30\",\"dep\":\"13:05\",\"flight_id\":\"SK676\",\"price_eur\":215.0}]}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:1",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "flight:LH824",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "flight:SK676",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "trip:tier1_direct_01",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "hotel:scandic-eremitage",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:48:02.593988+00:00",
+          "value": "{\"id\":\"hotel:scandic-eremitage\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T13:48:02.593988+00:00",
+          "value": "{\"id\":\"hotel:scandic-eremitage\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T13:48:02.594216+00:00",
+          "value": "{\"business_id\":\"scandic-eremitage\",\"kind\":\"Hotel\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T13:48:07.856439+00:00",
+          "value": "{\"booking_state\":\"selected\",\"nights\":4,\"rate_per_night_eur\":140.0}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "hotel:wakeup-copenhagen",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:48:02.594039+00:00",
+          "value": "{\"id\":\"hotel:wakeup-copenhagen\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T13:48:02.594039+00:00",
+          "value": "{\"id\":\"hotel:wakeup-copenhagen\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T13:48:02.594270+00:00",
+          "value": "{\"business_id\":\"wakeup-copenhagen\",\"kind\":\"Hotel\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "request:2",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:48:02.594089+00:00",
+          "value": "{\"name\":\"search_web\",\"arguments\":{\"query\":\"hotels near Kongens Lyngby or central Copenhagen nightly rate EUR\",\"trip_id\":\"tier1_direct_01\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "hotel:scandic-eremitage",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "hotel:wakeup-copenhagen",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "trip:tier1_direct_01",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:2",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:2",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:48:02.594150+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:48:02.594324+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier1_direct_01",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "hotel:scandic-eremitage",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "hotel:wakeup-copenhagen",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:2",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:2",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:48:02.594388+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"search_web\\\",\\\"request_id\\\":\\\"request:2\\\",\\\"result\\\":{\\\"hotels\\\":[{\\\"hotel_id\\\":\\\"scandic-eremitage\\\",\\\"name\\\":\\\"Scandic Eremitage Lyngby\\\",\\\"rate_per_night_eur\\\":140.0},{\\\"hotel_id\\\":\\\"wakeup-copenhagen\\\",\\\"name\\\":\\\"Wakeup Copenhagen Borgergade\\\",\\\"rate_per_night_eur\\\":95.0}]}}}\",\"role\":\"user\"},\"data\":{\"hotels\":[{\"hotel_id\":\"scandic-eremitage\",\"name\":\"Scandic Eremitage Lyngby\",\"rate_per_night_eur\":140.0},{\"hotel_id\":\"wakeup-copenhagen\",\"name\":\"Wakeup Copenhagen Borgergade\",\"rate_per_night_eur\":95.0}]}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:2",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "hotel:scandic-eremitage",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "hotel:wakeup-copenhagen",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "turn:2",
+      "type": "Turn",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:48:07.855169+00:00",
+          "value": "{\"index\":2,\"task_id\":\"Frankfurt to Copenhagen Direct Round-Trip\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "prompt:2",
+          "qualifier": "hasPrompt"
+        },
+        {
+          "objectId": "response:2",
+          "qualifier": "hasResponse"
+        }
+      ]
+    },
+    {
+      "id": "prompt:2",
+      "type": "Prompt",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:48:07.855169+00:00",
+          "value": "{\"parameters\":{\"model\":\"live-web-agent\"},\"layout\":[\"instruction:base\",\"instruction:f17125704c3d94a8\",\"history:2\",\"result:1\",\"result:2\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "instruction:base",
+          "qualifier": "hasInstruction"
+        },
+        {
+          "objectId": "instruction:f17125704c3d94a8",
+          "qualifier": "hasInstruction"
+        },
+        {
+          "objectId": "history:2",
+          "qualifier": "hasHistory"
+        },
+        {
+          "objectId": "result:1",
+          "qualifier": "hasActionResult"
+        },
+        {
+          "objectId": "result:2",
+          "qualifier": "hasActionResult"
+        }
+      ]
+    },
+    {
+      "id": "history:2",
+      "type": "History",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:48:07.855169+00:00",
+          "value": "{\"sources\":[\"response:1\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "response:1",
+          "qualifier": "hasSourceResponse"
+        }
+      ]
+    },
+    {
+      "id": "response:2",
+      "type": "Response",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:48:07.855529+00:00",
+          "value": "{\"provider\":{\"status\":\"completed\",\"turn\":2},\"message\":{\"content\":\"Validated itinerary constraints and finalized booking: Lufthansa LH824 (220 EUR RT, arrival 10:05) and Scandic Eremitage Lyngby (4 nights at 140 EUR/night = 560 EUR), total cost 780 EUR.\",\"role\":\"assistant\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:3",
+          "qualifier": "hasActionRequest"
+        },
+        {
+          "objectId": "request:4",
+          "qualifier": "hasActionRequest"
+        }
+      ]
+    },
+    {
+      "id": "request:3",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:48:07.855712+00:00",
+          "value": "{\"name\":\"verify_constraints\",\"arguments\":{\"arrival_time\":\"10:05\",\"flight_id\":\"LH824\",\"hotel_id\":\"scandic-eremitage\",\"total_cost_eur\":780.0,\"trip_id\":\"tier1_direct_01\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier1_direct_01",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "flight:LH824",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "hotel:scandic-eremitage",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:3",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:3",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:48:07.855800+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:48:07.855917+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "flight:LH824",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "hotel:scandic-eremitage",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "trip:tier1_direct_01",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:3",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:3",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:48:07.855998+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"verify_constraints\\\",\\\"request_id\\\":\\\"request:3\\\",\\\"result\\\":{\\\"arrival_ok\\\":true,\\\"budget_ok\\\":true,\\\"hotel_cap_ok\\\":true,\\\"valid\\\":true}}}\",\"role\":\"user\"},\"data\":{\"arrival_ok\":true,\"budget_ok\":true,\"hotel_cap_ok\":true,\"valid\":true}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:3",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "trip:tier1_direct_01",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "flight:LH824",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "hotel:scandic-eremitage",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "request:4",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:48:07.856082+00:00",
+          "value": "{\"name\":\"commit_itinerary\",\"arguments\":{\"selected_flight\":\"LH824\",\"selected_hotel\":\"scandic-eremitage\",\"total_cost_eur\":780.0,\"trip_id\":\"tier1_direct_01\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier1_direct_01",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "flight:LH824",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "hotel:scandic-eremitage",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:4",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:4",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:48:07.856172+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:48:07.856502+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier1_direct_01",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "itin:tier1_direct_01",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "flight:LH824",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "hotel:scandic-eremitage",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:4",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "itin:tier1_direct_01",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:48:07.856257+00:00",
+          "value": "{\"business_id\":\"itin:tier1_direct_01\",\"kind\":\"Itinerary\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T13:48:07.856257+00:00",
+          "value": "{\"business_id\":\"itin:tier1_direct_01\",\"kind\":\"Itinerary\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "result:4",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:48:07.856570+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"commit_itinerary\\\",\\\"request_id\\\":\\\"request:4\\\",\\\"result\\\":{\\\"itinerary_id\\\":\\\"itin:tier1_direct_01\\\",\\\"status\\\":\\\"confirmed\\\"}}}\",\"role\":\"user\"},\"data\":{\"itinerary_id\":\"itin:tier1_direct_01\",\"status\":\"confirmed\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:4",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "itin:tier1_direct_01",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "trip:tier1_direct_01",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "flight:LH824",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "hotel:scandic-eremitage",
+          "qualifier": "describesObject"
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "event:1",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T13:47:58.681628+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "trip:tier1_direct_01",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:2",
+      "type": "Instruction.Registered",
+      "time": "2026-11-09T13:47:58.681745+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "instruction:base",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:3",
+      "type": "Instruction.Registered",
+      "time": "2026-11-09T13:48:02.593014+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "instruction:f17125704c3d94a8",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:4",
+      "type": "Turn.Started",
+      "time": "2026-11-09T13:48:02.593246+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:1",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:5",
+      "type": "Prompt.Submitted",
+      "time": "2026-11-09T13:48:02.593246+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "prompt:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:1",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:6",
+      "type": "Response.Received",
+      "time": "2026-11-09T13:48:02.593356+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "response:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:1",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:7",
+      "type": "Turn.Finished",
+      "time": "2026-11-09T13:48:02.593356+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "response:1",
+          "qualifier": "response"
+        }
+      ]
+    },
+    {
+      "id": "event:8",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T13:48:02.593530+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:LH824",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:9",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T13:48:02.593587+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:SK676",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:10",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-09T13:48:02.593616+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:1",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:11",
+      "type": "Execution.Started",
+      "time": "2026-11-09T13:48:02.593688+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:1",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:12",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T13:48:02.593759+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:LH824",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:1",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:13",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T13:48:02.593812+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:SK676",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:1",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:14",
+      "type": "Execution.Finished",
+      "time": "2026-11-09T13:48:02.593864+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:1",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "trip:tier1_direct_01",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "flight:LH824",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "flight:SK676",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:15",
+      "type": "ActionResult.Received",
+      "time": "2026-11-09T13:48:02.593924+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:1",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:1",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:16",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T13:48:02.594014+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:scandic-eremitage",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:17",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T13:48:02.594064+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:wakeup-copenhagen",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:18",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-09T13:48:02.594089+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:1",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:19",
+      "type": "Execution.Started",
+      "time": "2026-11-09T13:48:02.594150+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:2",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:20",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T13:48:02.594216+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:scandic-eremitage",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:2",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:21",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T13:48:02.594270+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:wakeup-copenhagen",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:2",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:22",
+      "type": "Execution.Finished",
+      "time": "2026-11-09T13:48:02.594324+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:2",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "trip:tier1_direct_01",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "hotel:scandic-eremitage",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "hotel:wakeup-copenhagen",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:23",
+      "type": "ActionResult.Received",
+      "time": "2026-11-09T13:48:02.594388+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:2",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:2",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:24",
+      "type": "History.Assembled",
+      "time": "2026-11-09T13:48:07.855169+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "history:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:2",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:25",
+      "type": "Turn.Started",
+      "time": "2026-11-09T13:48:07.855169+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:2",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:26",
+      "type": "Prompt.Submitted",
+      "time": "2026-11-09T13:48:07.855169+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "prompt:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:2",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:27",
+      "type": "Response.Received",
+      "time": "2026-11-09T13:48:07.855529+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "response:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:2",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:28",
+      "type": "Turn.Finished",
+      "time": "2026-11-09T13:48:07.855529+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "response:2",
+          "qualifier": "response"
+        }
+      ]
+    },
+    {
+      "id": "event:29",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-09T13:48:07.855712+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:2",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:30",
+      "type": "Execution.Started",
+      "time": "2026-11-09T13:48:07.855800+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:3",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:31",
+      "type": "Execution.Finished",
+      "time": "2026-11-09T13:48:07.855917+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:3",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "flight:LH824",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "hotel:scandic-eremitage",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "trip:tier1_direct_01",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:32",
+      "type": "ActionResult.Received",
+      "time": "2026-11-09T13:48:07.855998+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:3",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:3",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:33",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-09T13:48:07.856082+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:4",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:2",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:34",
+      "type": "Execution.Started",
+      "time": "2026-11-09T13:48:07.856172+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:4",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:4",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:35",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T13:48:07.856283+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "itin:tier1_direct_01",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:36",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T13:48:07.856312+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "trip:tier1_direct_01",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:4",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:37",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T13:48:07.856377+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:LH824",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:4",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:38",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T13:48:07.856439+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:scandic-eremitage",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:4",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:39",
+      "type": "Execution.Finished",
+      "time": "2026-11-09T13:48:07.856502+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:4",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:4",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "trip:tier1_direct_01",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "itin:tier1_direct_01",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "flight:LH824",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "hotel:scandic-eremitage",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:40",
+      "type": "ActionResult.Received",
+      "time": "2026-11-09T13:48:07.856570+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:4",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:4",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:4",
+          "qualifier": "request"
+        }
+      ]
+    }
+  ]
+}

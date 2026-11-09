@@ -1,0 +1,101 @@
+{
+  "total_objects": 39,
+  "total_events": 58,
+  "total_o2o": 113,
+  "total_e2o": 134,
+  "classes": {
+    "Turn": 3,
+    "ProcessObject": 8,
+    "Prompt": 3,
+    "Response": 3,
+    "Instruction": 2,
+    "History": 2,
+    "ActionRequest": 6,
+    "Execution": 6,
+    "ActionResult": 6
+  },
+  "relations": {
+    "hasPrompt": 3,
+    "hasResponse": 3,
+    "hasNextTurn": 2,
+    "hasInstruction": 6,
+    "hasHistory": 2,
+    "hasActionResult": 4,
+    "hasActionRequest": 6,
+    "hasExecution": 6,
+    "targetsObject": 21,
+    "actOn": 22,
+    "producesResult": 6,
+    "resultOf": 6,
+    "describesObject": 20,
+    "hasSourcePrompt": 0,
+    "hasSourceResponse": 3,
+    "hasSourceActionResult": 3
+  },
+  "events": {
+    "ActionRequest.Dispatched": 6,
+    "ActionResult.Received": 6,
+    "Execution.Finished": 6,
+    "Execution.Started": 6,
+    "History.Assembled": 2,
+    "Instruction.Registered": 2,
+    "ProcessObject.Registered": 8,
+    "ProcessObject.StateChanged": 10,
+    "Prompt.Submitted": 3,
+    "Response.Received": 3,
+    "Turn.Finished": 3,
+    "Turn.Started": 3
+  },
+  "baseline_events": {
+    "Turn.Started": 3,
+    "Turn.Finished": 3,
+    "Turn.Failed": 0,
+    "ProcessObject.Created": 0,
+    "ProcessObject.StateChanged": 10,
+    "Prompt.Submitted": 3,
+    "Response.Received": 3,
+    "Instruction.Registered": 2,
+    "History.Assembled": 2,
+    "ActionRequest.Dispatched": 6,
+    "ActionRequest.Rejected": 0,
+    "Execution.Started": 6,
+    "Execution.Finished": 6,
+    "ActionResult.Received": 6
+  },
+  "extension_events": {
+    "ProcessObject.Registered": 8
+  },
+  "e2o_roles": {
+    "execution": 16,
+    "process_object": 22,
+    "prompt": 5,
+    "request": 18,
+    "response": 3,
+    "subject": 58,
+    "turn": 12
+  },
+  "coverage": {
+    "classes_covered": 9,
+    "classes_total": 9,
+    "relations_covered": 15,
+    "relations_total": 16,
+    "baseline_events_covered": 11,
+    "baseline_events_total": 14,
+    "extension_event_types": 1
+  },
+  "capture_completeness": "complete",
+  "partial_prompts": false,
+  "session": {
+    "session_id": "tier3_multimodal_01",
+    "task": "Nuremberg Hbf via Frankfurt Airport to Copenhagen & Kongens Lyngby Rail+Air",
+    "agent": "live-web-agent",
+    "profile": "general",
+    "mode": "mcp",
+    "capture_completeness": "complete",
+    "status": "completed",
+    "started_at": "2026-11-09T13:50:36.061699+00:00",
+    "finished_at": "2026-11-09T13:52:12.071209+00:00",
+    "directory": "sessions/tier3_multimodal_01",
+    "validation_passed": true
+  }
+}

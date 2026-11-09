@@ -1,0 +1,2212 @@
+{
+  "objectTypes": [
+    {
+      "name": "Turn",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        },
+        {
+          "name": "state",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Prompt",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Response",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Instruction",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "History",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "eventTypes": [
+    {
+      "name": "ProcessObject.Registered",
+      "attributes": []
+    },
+    {
+      "name": "Instruction.Registered",
+      "attributes": []
+    },
+    {
+      "name": "Turn.Started",
+      "attributes": []
+    },
+    {
+      "name": "Prompt.Submitted",
+      "attributes": []
+    },
+    {
+      "name": "Response.Received",
+      "attributes": []
+    },
+    {
+      "name": "Turn.Finished",
+      "attributes": []
+    },
+    {
+      "name": "ActionRequest.Dispatched",
+      "attributes": []
+    },
+    {
+      "name": "Execution.Started",
+      "attributes": []
+    },
+    {
+      "name": "ProcessObject.StateChanged",
+      "attributes": []
+    },
+    {
+      "name": "Execution.Finished",
+      "attributes": []
+    },
+    {
+      "name": "ActionResult.Received",
+      "attributes": []
+    },
+    {
+      "name": "History.Assembled",
+      "attributes": []
+    }
+  ],
+  "objects": [
+    {
+      "id": "trip:tier3_multimodal_01",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:50:36.062100+00:00",
+          "value": "{\"arrive_by_local\":\"15:00\",\"destination\":\"CPH\",\"max_hotel_per_night_eur\":135.0,\"max_total_eur\":780.0,\"min_transfer_minutes\":90,\"nights\":4,\"origin\":\"NUE\",\"require_baggage\":true,\"require_refundable_hotel\":true,\"status\":\"requested\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T13:50:36.062100+00:00",
+          "value": "{\"arrive_by_local\":\"15:00\",\"destination\":\"CPH\",\"max_hotel_per_night_eur\":135.0,\"max_total_eur\":780.0,\"min_transfer_minutes\":90,\"nights\":4,\"origin\":\"NUE\",\"require_baggage\":true,\"require_refundable_hotel\":true,\"status\":\"requested\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T13:52:06.655191+00:00",
+          "value": "{\"flight_id\":\"LH826\",\"hotel_id\":\"zleep-hotel-lyngby\",\"status\":\"confirmed\",\"total_cost_eur\":715.0,\"train_id\":\"ICE528\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "instruction:base",
+      "type": "Instruction",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:50:36.062216+00:00",
+          "value": "{\"messages\":[{\"content\":\"Plan trip tier3_multimodal_01: Nuremberg Hbf via Frankfurt Airport to Copenhagen & Kongens Lyngby, 2026-10-14 to 2026-10-18 (4 nights), max 780 EUR total, hotel <= 135 EUR/night refundable, arrive by 15:00, train+flight with min 90 min transfer buffer.\",\"role\":\"user\"}]}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "instruction:15dc1ff4ed42c87f",
+      "type": "Instruction",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:51:20.279860+00:00",
+          "value": "{\"messages\":[{\"content\":\"Plan trip tier3_multimodal_01: Nuremberg Hbf via Frankfurt Airport to Copenhagen & Kongens Lyngby, 2026-10-14 to 2026-10-18 (4 nights), max 780 EUR total, hotel <= 135 EUR/night refundable, arrive by 15:00, train+flight with min 90 min transfer buffer.\",\"role\":\"user\"}]}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "turn:1",
+      "type": "Turn",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:51:20.280075+00:00",
+          "value": "{\"index\":1,\"task_id\":\"Nuremberg Hbf via Frankfurt Airport to Copenhagen & Kongens Lyngby Rail+Air\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "prompt:1",
+          "qualifier": "hasPrompt"
+        },
+        {
+          "objectId": "response:1",
+          "qualifier": "hasResponse"
+        },
+        {
+          "objectId": "turn:2",
+          "qualifier": "hasNextTurn"
+        }
+      ]
+    },
+    {
+      "id": "prompt:1",
+      "type": "Prompt",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:51:20.280075+00:00",
+          "value": "{\"parameters\":{\"model\":\"live-web-agent\"},\"layout\":[\"instruction:base\",\"instruction:15dc1ff4ed42c87f\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "instruction:base",
+          "qualifier": "hasInstruction"
+        },
+        {
+          "objectId": "instruction:15dc1ff4ed42c87f",
+          "qualifier": "hasInstruction"
+        }
+      ]
+    },
+    {
+      "id": "response:1",
+      "type": "Response",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:51:20.280173+00:00",
+          "value": "{\"provider\":{\"status\":\"completed\",\"turn\":1},\"message\":{\"content\":\"Searched Deutsche Bahn ICE trains NUE-FRA, Lufthansa/SAS flights FRA-CPH, and hotels in Kongens Lyngby. Discovered candidate trains (ICE 528, ICE 624), flights (LH 826, SK 676), and hotels (Zleep Hotel Lyngby, Four Points Lyngby).\",\"role\":\"assistant\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:1",
+          "qualifier": "hasActionRequest"
+        },
+        {
+          "objectId": "request:2",
+          "qualifier": "hasActionRequest"
+        },
+        {
+          "objectId": "request:3",
+          "qualifier": "hasActionRequest"
+        }
+      ]
+    },
+    {
+      "id": "train:ICE528",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:51:20.280306+00:00",
+          "value": "{\"id\":\"train:ICE528\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T13:51:20.280306+00:00",
+          "value": "{\"id\":\"train:ICE528\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T13:51:20.280589+00:00",
+          "value": "{\"business_id\":\"ICE528\",\"kind\":\"Train\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T13:52:06.655264+00:00",
+          "value": "{\"booking_state\":\"selected\",\"operator\":\"Deutsche Bahn\",\"price_eur\":45.0}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "train:ICE624",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:51:20.280374+00:00",
+          "value": "{\"id\":\"train:ICE624\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T13:51:20.280374+00:00",
+          "value": "{\"id\":\"train:ICE624\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T13:51:20.280647+00:00",
+          "value": "{\"business_id\":\"ICE624\",\"kind\":\"Train\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "request:1",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:51:20.280433+00:00",
+          "value": "{\"name\":\"search_web\",\"arguments\":{\"query\":\"Deutsche Bahn ICE train Nuremberg Hbf to Frankfurt Airport Fernbahnhof schedule\",\"trip_id\":\"tier3_multimodal_01\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier3_multimodal_01",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "train:ICE528",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "train:ICE624",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:1",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:1",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:51:20.280515+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:51:20.280704+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier3_multimodal_01",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "train:ICE528",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "train:ICE624",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:1",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:1",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:51:20.280771+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"search_web\\\",\\\"request_id\\\":\\\"request:1\\\",\\\"result\\\":{\\\"trains\\\":[{\\\"arr\\\":\\\"08:25\\\",\\\"dep\\\":\\\"06:00\\\",\\\"operator\\\":\\\"Deutsche Bahn\\\",\\\"price_eur\\\":45.0,\\\"train_id\\\":\\\"ICE528\\\"},{\\\"arr\\\":\\\"10:45\\\",\\\"dep\\\":\\\"08:00\\\",\\\"operator\\\":\\\"Deutsche Bahn\\\",\\\"price_eur\\\":49.0,\\\"train_id\\\":\\\"ICE624\\\"}]}}}\",\"role\":\"user\"},\"data\":{\"trains\":[{\"arr\":\"08:25\",\"dep\":\"06:00\",\"operator\":\"Deutsche Bahn\",\"price_eur\":45.0,\"train_id\":\"ICE528\"},{\"arr\":\"10:45\",\"dep\":\"08:00\",\"operator\":\"Deutsche Bahn\",\"price_eur\":49.0,\"train_id\":\"ICE624\"}]}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:1",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "train:ICE528",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "train:ICE624",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "trip:tier3_multimodal_01",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "flight:LH826",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:51:20.280841+00:00",
+          "value": "{\"id\":\"flight:LH826\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T13:51:20.280841+00:00",
+          "value": "{\"id\":\"flight:LH826\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T13:51:20.281090+00:00",
+          "value": "{\"business_id\":\"LH826\",\"kind\":\"Flight\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T13:52:06.655333+00:00",
+          "value": "{\"airline\":\"Lufthansa\",\"baggage_included\":true,\"booking_state\":\"selected\",\"price_eur\":210.0}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "flight:SK676",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:51:20.280895+00:00",
+          "value": "{\"id\":\"flight:SK676\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T13:51:20.280895+00:00",
+          "value": "{\"id\":\"flight:SK676\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T13:51:20.281149+00:00",
+          "value": "{\"business_id\":\"SK676\",\"kind\":\"Flight\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "request:2",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:51:20.280963+00:00",
+          "value": "{\"name\":\"search_web\",\"arguments\":{\"query\":\"flights Frankfurt FRA to Copenhagen CPH Lufthansa SAS afternoon arrival\",\"trip_id\":\"tier3_multimodal_01\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "flight:LH826",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "flight:SK676",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "trip:tier3_multimodal_01",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:2",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:2",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:51:20.281022+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:51:20.281208+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier3_multimodal_01",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "flight:LH826",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "flight:SK676",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:2",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:2",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:51:20.281277+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"search_web\\\",\\\"request_id\\\":\\\"request:2\\\",\\\"result\\\":{\\\"flights\\\":[{\\\"airline\\\":\\\"Lufthansa\\\",\\\"arr\\\":\\\"13:30\\\",\\\"baggage_included\\\":true,\\\"dep\\\":\\\"12:05\\\",\\\"flight_id\\\":\\\"LH826\\\",\\\"price_eur\\\":210.0},{\\\"airline\\\":\\\"SAS\\\",\\\"arr\\\":\\\"16:45\\\",\\\"baggage_included\\\":true,\\\"dep\\\":\\\"15:20\\\",\\\"flight_id\\\":\\\"SK676\\\",\\\"price_eur\\\":195.0}]}}}\",\"role\":\"user\"},\"data\":{\"flights\":[{\"airline\":\"Lufthansa\",\"arr\":\"13:30\",\"baggage_included\":true,\"dep\":\"12:05\",\"flight_id\":\"LH826\",\"price_eur\":210.0},{\"airline\":\"SAS\",\"arr\":\"16:45\",\"baggage_included\":true,\"dep\":\"15:20\",\"flight_id\":\"SK676\",\"price_eur\":195.0}]}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:2",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "flight:LH826",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "flight:SK676",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "hotel:zleep-hotel-lyngby",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:51:20.281345+00:00",
+          "value": "{\"id\":\"hotel:zleep-hotel-lyngby\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T13:51:20.281345+00:00",
+          "value": "{\"id\":\"hotel:zleep-hotel-lyngby\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T13:51:20.281690+00:00",
+          "value": "{\"business_id\":\"zleep-hotel-lyngby\",\"kind\":\"Hotel\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T13:52:06.655394+00:00",
+          "value": "{\"booking_state\":\"selected\",\"nights\":4,\"rate_per_night_eur\":115.0,\"refundable\":true}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "hotel:four-points-lyngby",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:51:20.281412+00:00",
+          "value": "{\"id\":\"hotel:four-points-lyngby\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T13:51:20.281412+00:00",
+          "value": "{\"id\":\"hotel:four-points-lyngby\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T13:51:20.281625+00:00",
+          "value": "{\"business_id\":\"four-points-lyngby\",\"kind\":\"Hotel\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "request:3",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:51:20.281476+00:00",
+          "value": "{\"name\":\"search_web\",\"arguments\":{\"query\":\"hotels Kongens Lyngby DTU or Copenhagen North under 135 EUR per night\",\"trip_id\":\"tier3_multimodal_01\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "hotel:zleep-hotel-lyngby",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "hotel:four-points-lyngby",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "trip:tier3_multimodal_01",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:3",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:3",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:51:20.281542+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:51:20.281754+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier3_multimodal_01",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "hotel:four-points-lyngby",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "hotel:zleep-hotel-lyngby",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:3",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:3",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:51:20.281817+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"search_web\\\",\\\"request_id\\\":\\\"request:3\\\",\\\"result\\\":{\\\"hotels\\\":[{\\\"hotel_id\\\":\\\"zleep-hotel-lyngby\\\",\\\"name\\\":\\\"Zleep Hotel Lyngby DTU\\\",\\\"rate_per_night_eur\\\":115.0,\\\"refundable\\\":true},{\\\"hotel_id\\\":\\\"four-points-lyngby\\\",\\\"name\\\":\\\"Four Points Flex by Sheraton Lyngby\\\",\\\"rate_per_night_eur\\\":128.0,\\\"refundable\\\":true}]}}}\",\"role\":\"user\"},\"data\":{\"hotels\":[{\"hotel_id\":\"zleep-hotel-lyngby\",\"name\":\"Zleep Hotel Lyngby DTU\",\"rate_per_night_eur\":115.0,\"refundable\":true},{\"hotel_id\":\"four-points-lyngby\",\"name\":\"Four Points Flex by Sheraton Lyngby\",\"rate_per_night_eur\":128.0,\"refundable\":true}]}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:3",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "hotel:four-points-lyngby",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "hotel:zleep-hotel-lyngby",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "turn:2",
+      "type": "Turn",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:51:36.902555+00:00",
+          "value": "{\"index\":2,\"task_id\":\"Nuremberg Hbf via Frankfurt Airport to Copenhagen & Kongens Lyngby Rail+Air\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "prompt:2",
+          "qualifier": "hasPrompt"
+        },
+        {
+          "objectId": "response:2",
+          "qualifier": "hasResponse"
+        },
+        {
+          "objectId": "turn:3",
+          "qualifier": "hasNextTurn"
+        }
+      ]
+    },
+    {
+      "id": "prompt:2",
+      "type": "Prompt",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:51:36.902555+00:00",
+          "value": "{\"parameters\":{\"model\":\"live-web-agent\"},\"layout\":[\"instruction:base\",\"instruction:15dc1ff4ed42c87f\",\"history:2\",\"result:1\",\"result:2\",\"result:3\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "instruction:base",
+          "qualifier": "hasInstruction"
+        },
+        {
+          "objectId": "instruction:15dc1ff4ed42c87f",
+          "qualifier": "hasInstruction"
+        },
+        {
+          "objectId": "history:2",
+          "qualifier": "hasHistory"
+        },
+        {
+          "objectId": "result:1",
+          "qualifier": "hasActionResult"
+        },
+        {
+          "objectId": "result:2",
+          "qualifier": "hasActionResult"
+        },
+        {
+          "objectId": "result:3",
+          "qualifier": "hasActionResult"
+        }
+      ]
+    },
+    {
+      "id": "history:2",
+      "type": "History",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:51:36.902555+00:00",
+          "value": "{\"sources\":[\"response:1\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "response:1",
+          "qualifier": "hasSourceResponse"
+        }
+      ]
+    },
+    {
+      "id": "response:2",
+      "type": "Response",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:51:36.902824+00:00",
+          "value": "{\"provider\":{\"status\":\"completed\",\"turn\":2},\"message\":{\"content\":\"Evaluated candidate multi-modal combination: ICE 624 (NUE 08:00 -> FRA 10:45) and Lufthansa LH 826 (FRA 12:05 -> CPH 13:30). Validation failed: transfer buffer at Frankfurt Airport is 80 minutes, which violates the required 90-minute minimum buffer for international flight connections.\",\"role\":\"assistant\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:4",
+          "qualifier": "hasActionRequest"
+        }
+      ]
+    },
+    {
+      "id": "request:4",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:51:36.902968+00:00",
+          "value": "{\"name\":\"verify_constraints\",\"arguments\":{\"flight_departure_time\":\"12:05\",\"flight_id\":\"LH826\",\"hotel_id\":\"zleep-hotel-lyngby\",\"rail_arrival_time\":\"10:45\",\"total_cost_eur\":719.0,\"train_id\":\"ICE624\",\"transfer_buffer_minutes\":80,\"trip_id\":\"tier3_multimodal_01\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier3_multimodal_01",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "train:ICE624",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "flight:LH826",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "hotel:zleep-hotel-lyngby",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:4",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:4",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:51:36.903037+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:51:36.903113+00:00",
+          "value": "{\"outcome\":\"failure\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "flight:LH826",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "hotel:zleep-hotel-lyngby",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "train:ICE624",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "trip:tier3_multimodal_01",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:4",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:4",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:51:36.903182+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"verify_constraints\\\",\\\"request_id\\\":\\\"request:4\\\",\\\"result\\\":{\\\"errors\\\":[\\\"Transfer buffer between train ICE 624 (arrival 10:45) and flight LH 826 (departure 12:05) is 80 minutes, which is below the mandatory 90-minute minimum buffer.\\\"],\\\"valid\\\":false}}}\",\"role\":\"user\"},\"data\":{\"errors\":[\"Transfer buffer between train ICE 624 (arrival 10:45) and flight LH 826 (departure 12:05) is 80 minutes, which is below the mandatory 90-minute minimum buffer.\"],\"valid\":false}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:4",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "trip:tier3_multimodal_01",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "train:ICE624",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "flight:LH826",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "hotel:zleep-hotel-lyngby",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "turn:3",
+      "type": "Turn",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:52:06.654223+00:00",
+          "value": "{\"index\":3,\"task_id\":\"Nuremberg Hbf via Frankfurt Airport to Copenhagen & Kongens Lyngby Rail+Air\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "prompt:3",
+          "qualifier": "hasPrompt"
+        },
+        {
+          "objectId": "response:3",
+          "qualifier": "hasResponse"
+        }
+      ]
+    },
+    {
+      "id": "prompt:3",
+      "type": "Prompt",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:52:06.654223+00:00",
+          "value": "{\"parameters\":{\"model\":\"live-web-agent\"},\"layout\":[\"instruction:base\",\"instruction:15dc1ff4ed42c87f\",\"history:3\",\"result:4\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "instruction:base",
+          "qualifier": "hasInstruction"
+        },
+        {
+          "objectId": "instruction:15dc1ff4ed42c87f",
+          "qualifier": "hasInstruction"
+        },
+        {
+          "objectId": "history:3",
+          "qualifier": "hasHistory"
+        },
+        {
+          "objectId": "result:4",
+          "qualifier": "hasActionResult"
+        }
+      ]
+    },
+    {
+      "id": "history:3",
+      "type": "History",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:52:06.654223+00:00",
+          "value": "{\"sources\":[\"response:1\",\"result:1\",\"result:2\",\"result:3\",\"response:2\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "response:1",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:1",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:2",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:3",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:2",
+          "qualifier": "hasSourceResponse"
+        }
+      ]
+    },
+    {
+      "id": "response:3",
+      "type": "Response",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:52:06.654507+00:00",
+          "value": "{\"provider\":{\"status\":\"completed\",\"turn\":3},\"message\":{\"content\":\"Reworked itinerary to ensure compliant transfer buffer: selected earlier ICE 528 (NUE 06:00 -> FRA 08:25, 45 EUR), providing a 220-minute transfer buffer (well exceeding the 90-minute requirement). Outbound flight LH 826 arrives in Copenhagen at 13:30 (before the 15:00 deadline, 210 EUR with baggage). Accommodation confirmed at Zleep Hotel Lyngby DTU (4 nights at 115 EUR/night refundable = 460 EUR). Total cost 715 EUR meets the 780 EUR budget ceiling.\",\"role\":\"assistant\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:5",
+          "qualifier": "hasActionRequest"
+        },
+        {
+          "objectId": "request:6",
+          "qualifier": "hasActionRequest"
+        }
+      ]
+    },
+    {
+      "id": "request:5",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:52:06.654657+00:00",
+          "value": "{\"name\":\"verify_constraints\",\"arguments\":{\"flight_arrival_time\":\"13:30\",\"flight_departure_time\":\"12:05\",\"flight_id\":\"LH826\",\"hotel_id\":\"zleep-hotel-lyngby\",\"rail_arrival_time\":\"08:25\",\"total_cost_eur\":715.0,\"train_id\":\"ICE528\",\"transfer_buffer_minutes\":220,\"trip_id\":\"tier3_multimodal_01\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier3_multimodal_01",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "train:ICE528",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "flight:LH826",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "hotel:zleep-hotel-lyngby",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:5",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:5",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:52:06.654724+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:52:06.654833+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "flight:LH826",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "hotel:zleep-hotel-lyngby",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "train:ICE528",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "trip:tier3_multimodal_01",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:5",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:5",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:52:06.654903+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"verify_constraints\\\",\\\"request_id\\\":\\\"request:5\\\",\\\"result\\\":{\\\"arrival_deadline_ok\\\":true,\\\"baggage_ok\\\":true,\\\"budget_ok\\\":true,\\\"hotel_cap_ok\\\":true,\\\"modes_ok\\\":[\\\"train\\\",\\\"flight\\\"],\\\"refundability_ok\\\":true,\\\"transfer_buffer_ok\\\":true,\\\"valid\\\":true}}}\",\"role\":\"user\"},\"data\":{\"arrival_deadline_ok\":true,\"baggage_ok\":true,\"budget_ok\":true,\"hotel_cap_ok\":true,\"modes_ok\":[\"train\",\"flight\"],\"refundability_ok\":true,\"transfer_buffer_ok\":true,\"valid\":true}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:5",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "trip:tier3_multimodal_01",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "train:ICE528",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "flight:LH826",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "hotel:zleep-hotel-lyngby",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "request:6",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:52:06.654987+00:00",
+          "value": "{\"name\":\"commit_itinerary\",\"arguments\":{\"selected_flight\":\"LH826\",\"selected_hotel\":\"zleep-hotel-lyngby\",\"selected_train\":\"ICE528\",\"total_cost_eur\":715.0,\"trip_id\":\"tier3_multimodal_01\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier3_multimodal_01",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "train:ICE528",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "flight:LH826",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "hotel:zleep-hotel-lyngby",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:6",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:6",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:52:06.655055+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:52:06.655459+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier3_multimodal_01",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "itin:tier3_multimodal_01",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "train:ICE528",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "flight:LH826",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "hotel:zleep-hotel-lyngby",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:6",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "itin:tier3_multimodal_01",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:52:06.655129+00:00",
+          "value": "{\"business_id\":\"itin:tier3_multimodal_01\",\"kind\":\"Itinerary\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T13:52:06.655129+00:00",
+          "value": "{\"business_id\":\"itin:tier3_multimodal_01\",\"kind\":\"Itinerary\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "result:6",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T13:52:06.655537+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"commit_itinerary\\\",\\\"request_id\\\":\\\"request:6\\\",\\\"result\\\":{\\\"itinerary_id\\\":\\\"itin:tier3_multimodal_01\\\",\\\"status\\\":\\\"confirmed\\\"}}}\",\"role\":\"user\"},\"data\":{\"itinerary_id\":\"itin:tier3_multimodal_01\",\"status\":\"confirmed\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:6",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "itin:tier3_multimodal_01",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "trip:tier3_multimodal_01",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "train:ICE528",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "flight:LH826",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "hotel:zleep-hotel-lyngby",
+          "qualifier": "describesObject"
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "event:1",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T13:50:36.062100+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "trip:tier3_multimodal_01",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:2",
+      "type": "Instruction.Registered",
+      "time": "2026-11-09T13:50:36.062216+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "instruction:base",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:3",
+      "type": "Instruction.Registered",
+      "time": "2026-11-09T13:51:20.279860+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "instruction:15dc1ff4ed42c87f",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:4",
+      "type": "Turn.Started",
+      "time": "2026-11-09T13:51:20.280075+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:1",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:5",
+      "type": "Prompt.Submitted",
+      "time": "2026-11-09T13:51:20.280075+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "prompt:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:1",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:6",
+      "type": "Response.Received",
+      "time": "2026-11-09T13:51:20.280173+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "response:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:1",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:7",
+      "type": "Turn.Finished",
+      "time": "2026-11-09T13:51:20.280173+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "response:1",
+          "qualifier": "response"
+        }
+      ]
+    },
+    {
+      "id": "event:8",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T13:51:20.280339+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "train:ICE528",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:9",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T13:51:20.280404+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "train:ICE624",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:10",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-09T13:51:20.280433+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:1",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:11",
+      "type": "Execution.Started",
+      "time": "2026-11-09T13:51:20.280515+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:1",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:12",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T13:51:20.280589+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "train:ICE528",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:1",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:13",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T13:51:20.280647+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "train:ICE624",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:1",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:14",
+      "type": "Execution.Finished",
+      "time": "2026-11-09T13:51:20.280704+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:1",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "trip:tier3_multimodal_01",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "train:ICE528",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "train:ICE624",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:15",
+      "type": "ActionResult.Received",
+      "time": "2026-11-09T13:51:20.280771+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:1",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:1",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:16",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T13:51:20.280868+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:LH826",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:17",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T13:51:20.280935+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:SK676",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:18",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-09T13:51:20.280963+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:1",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:19",
+      "type": "Execution.Started",
+      "time": "2026-11-09T13:51:20.281022+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:2",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:20",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T13:51:20.281090+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:LH826",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:2",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:21",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T13:51:20.281149+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:SK676",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:2",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:22",
+      "type": "Execution.Finished",
+      "time": "2026-11-09T13:51:20.281208+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:2",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "trip:tier3_multimodal_01",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "flight:LH826",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "flight:SK676",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:23",
+      "type": "ActionResult.Received",
+      "time": "2026-11-09T13:51:20.281277+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:2",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:2",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:24",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T13:51:20.281372+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:zleep-hotel-lyngby",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:25",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T13:51:20.281446+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:four-points-lyngby",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:26",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-09T13:51:20.281476+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:1",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:27",
+      "type": "Execution.Started",
+      "time": "2026-11-09T13:51:20.281542+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:3",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:28",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T13:51:20.281625+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:four-points-lyngby",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:3",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:29",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T13:51:20.281690+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:zleep-hotel-lyngby",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:3",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:30",
+      "type": "Execution.Finished",
+      "time": "2026-11-09T13:51:20.281754+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:3",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "trip:tier3_multimodal_01",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "hotel:four-points-lyngby",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "hotel:zleep-hotel-lyngby",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:31",
+      "type": "ActionResult.Received",
+      "time": "2026-11-09T13:51:20.281817+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:3",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:3",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:32",
+      "type": "History.Assembled",
+      "time": "2026-11-09T13:51:36.902555+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "history:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:2",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:33",
+      "type": "Turn.Started",
+      "time": "2026-11-09T13:51:36.902555+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:2",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:34",
+      "type": "Prompt.Submitted",
+      "time": "2026-11-09T13:51:36.902555+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "prompt:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:2",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:35",
+      "type": "Response.Received",
+      "time": "2026-11-09T13:51:36.902824+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "response:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:2",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:36",
+      "type": "Turn.Finished",
+      "time": "2026-11-09T13:51:36.902824+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "response:2",
+          "qualifier": "response"
+        }
+      ]
+    },
+    {
+      "id": "event:37",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-09T13:51:36.902968+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:4",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:2",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:38",
+      "type": "Execution.Started",
+      "time": "2026-11-09T13:51:36.903037+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:4",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:4",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:39",
+      "type": "Execution.Finished",
+      "time": "2026-11-09T13:51:36.903113+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:4",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:4",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "flight:LH826",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "hotel:zleep-hotel-lyngby",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "train:ICE624",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "trip:tier3_multimodal_01",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:40",
+      "type": "ActionResult.Received",
+      "time": "2026-11-09T13:51:36.903182+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:4",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:4",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:4",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:41",
+      "type": "History.Assembled",
+      "time": "2026-11-09T13:52:06.654223+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "history:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:3",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:42",
+      "type": "Turn.Started",
+      "time": "2026-11-09T13:52:06.654223+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:3",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:43",
+      "type": "Prompt.Submitted",
+      "time": "2026-11-09T13:52:06.654223+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "prompt:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:3",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:44",
+      "type": "Response.Received",
+      "time": "2026-11-09T13:52:06.654507+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "response:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:3",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:45",
+      "type": "Turn.Finished",
+      "time": "2026-11-09T13:52:06.654507+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "response:3",
+          "qualifier": "response"
+        }
+      ]
+    },
+    {
+      "id": "event:46",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-09T13:52:06.654657+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:5",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:3",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:47",
+      "type": "Execution.Started",
+      "time": "2026-11-09T13:52:06.654724+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:5",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:5",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:48",
+      "type": "Execution.Finished",
+      "time": "2026-11-09T13:52:06.654833+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:5",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:5",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "flight:LH826",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "hotel:zleep-hotel-lyngby",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "train:ICE528",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "trip:tier3_multimodal_01",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:49",
+      "type": "ActionResult.Received",
+      "time": "2026-11-09T13:52:06.654903+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:5",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:5",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:5",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:50",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-09T13:52:06.654987+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:6",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:3",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:51",
+      "type": "Execution.Started",
+      "time": "2026-11-09T13:52:06.655055+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:6",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:6",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:52",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T13:52:06.655162+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "itin:tier3_multimodal_01",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:53",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T13:52:06.655191+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "trip:tier3_multimodal_01",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:6",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:54",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T13:52:06.655264+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "train:ICE528",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:6",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:55",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T13:52:06.655333+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:LH826",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:6",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:56",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T13:52:06.655394+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:zleep-hotel-lyngby",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:6",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:57",
+      "type": "Execution.Finished",
+      "time": "2026-11-09T13:52:06.655459+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:6",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:6",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "trip:tier3_multimodal_01",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "itin:tier3_multimodal_01",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "train:ICE528",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "flight:LH826",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "hotel:zleep-hotel-lyngby",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:58",
+      "type": "ActionResult.Received",
+      "time": "2026-11-09T13:52:06.655537+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:6",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:6",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:6",
+          "qualifier": "request"
+        }
+      ]
+    }
+  ]
+}

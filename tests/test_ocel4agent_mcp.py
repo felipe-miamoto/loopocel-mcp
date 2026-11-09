@@ -1,0 +1,291 @@
+"""Regression and unit tests for ocel4agent-mcp."""
+
+from __future__ import annotations
+
+import glob
+import io
+import json
+from pathlib import Path
+import shutil
+import tempfile
+import unittest
+
+from ocel4agent_mcp.adapters.claude_code import ingest_transcript, record_hook_event
+from ocel4agent_mcp.adapters.llm_proxy import LLMRecordingRecorder
+from ocel4agent_mcp.adapters.tool_proxy import ToolCallProxy
+from ocel4agent_mcp.convert import convert, summarize_log
+from ocel4agent_mcp.figure import cohort_from_log, render_figure, render_session_figure
+from ocel4agent_mcp.server import LoopOCELServer, handle_jsonrpc, run_stdio
+from ocel4agent_mcp.validate import VerificationError, reconstruct, validate_log, validate_schema
+
+
+OCEL4AGENT_RESULTS = Path(__file__).resolve().parents[2] / "OCEL4Agent" / "results"
+
+
+class ConverterRegressionTests(unittest.TestCase):
+    def test_reproduces_all_46_ocel4agent_captures_byte_for_byte(self) -> None:
+        if not OCEL4AGENT_RESULTS.is_dir():
+            self.skipTest("OCEL4Agent results directory not present")
+        pairs = sorted(glob.glob(str(OCEL4AGENT_RESULTS / "**" / "capture.jsonl"), recursive=True))
+        self.assertEqual(len(pairs), 46)
+        for cap_str in pairs:
+            cap_path = Path(cap_str)
+            expected_bytes = (cap_path.parent / "loopocel.json").read_bytes()
+            with tempfile.TemporaryDirectory() as tmp:
+                tmp_dir = Path(tmp)
+                shutil.copy2(cap_path, tmp_dir / "capture.jsonl")
+                log = convert(tmp_dir)
+                actual_bytes = (tmp_dir / "loopocel.json").read_bytes()
+                self.assertEqual(actual_bytes, expected_bytes, f"Byte mismatch for {cap_path}")
+                schema_report = validate_schema(log)
+                self.assertTrue(schema_report["passed"], schema_report)
+
+    def test_primary_freight_trace_reconstructs_and_validates(self) -> None:
+        gemma04 = OCEL4AGENT_RESULTS / "freight-round1" / "gemma-04" / "loopocel.json"
+        if not gemma04.is_file():
+            self.skipTest("gemma-04 fixture not found")
+        ocel = json.loads(gemma04.read_text(encoding="utf-8"))
+        report = validate_log(ocel, ocel_path=gemma04)
+        self.assertTrue(report["passed"], report)
+        self.assertEqual(report["ontology"]["counts"]["turns"], 6)
+        self.assertEqual(report["ontology"]["counts"]["requests"], 5)
+
+    def test_detects_cycle_and_domain_range_violations(self) -> None:
+        gemma04 = OCEL4AGENT_RESULTS / "freight-round1" / "gemma-04" / "loopocel.json"
+        if not gemma04.is_file():
+            self.skipTest("gemma-04 fixture not found")
+        ocel = json.loads(gemma04.read_text(encoding="utf-8"))
+        ocel["objects"][6]["relationships"][0]["objectId"] = "order:O1"
+        with self.assertRaises(VerificationError):
+            reconstruct(ocel)
+
+
+class MCPServerAndLiveCaptureTests(unittest.TestCase):
+    def test_full_mcp_session_lifecycle_and_jsonrpc_stdio(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            server = LoopOCELServer(sessions_root=Path(tmp))
+
+            start_res = server.session_start(
+                task="general-agent-demo",
+                agent="antigravity",
+                initial_objects={
+                    "entity:E1": {"kind": "Entity", "status": "open"},
+                },
+                instruction="Inspect entity:E1 and update its status to processed.",
+            )
+            sid = start_res["session_id"]
+
+            t1 = server.record_turn(
+                session_id=sid,
+                response_message="I will inspect entity:E1 first.",
+                actions=[
+                    {
+                        "name": "inspect_entity",
+                        "arguments": {"entity_id": "entity:E1"},
+                        "result": {"id": "entity:E1", "kind": "Entity", "status": "open"},
+                        "targets": ["entity:E1"],
+                        "acted_on": ["entity:E1"],
+                        "describes": ["entity:E1"],
+                    }
+                ],
+            )
+            self.assertEqual(t1["turn_id"], "turn:1")
+            self.assertEqual(t1["actions_recorded"], 1)
+
+            t2 = server.record_turn(
+                session_id=sid,
+                response_message="Now updating entity:E1 to processed.",
+                actions=[
+                    {
+                        "name": "update_entity",
+                        "arguments": {"entity_id": "entity:E1", "status": "processed"},
+                        "result": {"ok": True, "id": "entity:E1", "kind": "Entity", "status": "processed"},
+                        "targets": ["entity:E1"],
+                        "acted_on": ["entity:E1"],
+                        "describes": ["entity:E1"],
+                        "changes": [
+                            {
+                                "id": "entity:E1",
+                                "state": {"kind": "Entity", "status": "processed"},
+                                "created": False,
+                            }
+                        ],
+                    }
+                ],
+            )
+            self.assertEqual(t2["turn_id"], "turn:2")
+
+            t3 = server.record_turn(
+                session_id=sid,
+                response_message="Task complete: entity:E1 is processed.",
+            )
+            self.assertEqual(t3["turn_id"], "turn:3")
+
+            end_res = server.session_end(sid)
+            self.assertTrue(end_res["validation"]["passed"], end_res["validation"])
+            self.assertEqual(end_res["summary"]["coverage"]["classes_covered"], 9)
+            self.assertTrue(Path(end_res["ocel_path"]).is_file())
+            self.assertTrue(Path(end_res["figure_outputs"]["svg"]).is_file())
+            self.assertTrue(Path(end_res["figure_outputs"]["png"]).is_file())
+
+            # Test JSON-RPC stdio round-trip
+            requests = [
+                {"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"protocolVersion": "2025-11-25"}},
+                {"jsonrpc": "2.0", "id": 2, "method": "tools/list"},
+                {"jsonrpc": "2.0", "id": 3, "method": "tools/call", "params": {"name": "get_figure", "arguments": {"session_id": sid, "format": "png"}}},
+                {"jsonrpc": "2.0", "id": 4, "method": "resources/read", "params": {"uri": f"loopocel://sessions/{sid}/summary"}},
+            ]
+            stdin_buf = io.StringIO("\n".join(json.dumps(r) for r in requests) + "\n")
+            stdout_buf = io.StringIO()
+            run_stdio(server, stdin=stdin_buf, stdout=stdout_buf)
+            responses = [json.loads(line) for line in stdout_buf.getvalue().splitlines() if line.strip()]
+            self.assertEqual(len(responses), 4)
+            self.assertEqual(responses[0]["result"]["serverInfo"]["name"], "ocel4agent-mcp")
+            tool_names = {t["name"] for t in responses[1]["result"]["tools"]}
+            self.assertIn("session_start", tool_names)
+            self.assertIn("record_turn", tool_names)
+            self.assertIn("get_figure", tool_names)
+            fig_content = responses[2]["result"]["content"]
+            self.assertEqual(fig_content[1]["type"], "image")
+            self.assertEqual(fig_content[1]["mimeType"], "image/png")
+
+
+class AdaptersAndFigureTests(unittest.TestCase):
+    def test_claude_code_hooks_and_transcript_adapter(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            sdir = Path(tmp) / "cc-session"
+            sdir.mkdir()
+            record_hook_event(
+                sdir,
+                {
+                    "hook_event_name": "PreToolUse",
+                    "tool_use_id": "toolu_01",
+                    "tool_name": "search_items",
+                },
+            )
+            transcript = Path(tmp) / "transcript.jsonl"
+            transcript_lines = [
+                {
+                    "timestamp": "2026-11-09T12:00:00Z",
+                    "message": {"role": "user", "content": "Find order_id order:101 and check item_id item:55."},
+                },
+                {
+                    "timestamp": "2026-11-09T12:00:01Z",
+                    "message": {
+                        "role": "assistant",
+                        "model": "claude-sonnet",
+                        "content": [
+                            {
+                                "type": "tool_use",
+                                "id": "toolu_01",
+                                "name": "lookup_order",
+                                "input": {"order_id": "order:101"},
+                            }
+                        ],
+                    },
+                },
+                {
+                    "timestamp": "2026-11-09T12:00:02Z",
+                    "message": {
+                        "role": "user",
+                        "content": [
+                            {
+                                "type": "tool_result",
+                                "tool_use_id": "toolu_01",
+                                "content": json.dumps({"order_id": "order:101", "item_id": "item:55", "status": "shipped"}),
+                            }
+                        ],
+                    },
+                },
+                {
+                    "timestamp": "2026-11-09T12:00:03Z",
+                    "message": {
+                        "role": "assistant",
+                        "model": "claude-sonnet",
+                        "content": [{"type": "text", "text": "Order 101 with item 55 is shipped."}],
+                    },
+                },
+            ]
+            transcript.write_text("\n".join(json.dumps(r) for r in transcript_lines) + "\n", encoding="utf-8")
+
+            ingest_transcript(sdir, transcript, task_id="check-order")
+            log = convert(sdir)
+            report = validate_log(log, ocel_path=sdir / "loopocel.json")
+            self.assertTrue(report["passed"], report)
+            summary = summarize_log(log)
+            self.assertEqual(summary["classes"]["Turn"], 2)
+            self.assertEqual(summary["classes"]["ActionRequest"], 1)
+            self.assertEqual(summary["classes"]["ProcessObject"], 2)
+            self.assertTrue(summary["partial_prompts"])
+
+            fig_res = render_session_figure(sdir)
+            svg_text = Path(fig_res["outputs"]["svg"]).read_text(encoding="utf-8")
+            self.assertIn("Prompt*", svg_text)
+            self.assertIn("ProcessObject.Registered [ext]", svg_text)
+
+    def test_llm_proxy_recorder_and_tool_proxy(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            pdir = Path(tmp) / "proxy-session"
+            rec = LLMRecordingRecorder(pdir, task_id="proxy-test")
+            rec.record_exchange(
+                "/v1/messages",
+                {
+                    "model": "claude-sonnet",
+                    "system": "You are a helpful assistant.",
+                    "messages": [{"role": "user", "content": "Check user_id user:U9"}],
+                },
+                {
+                    "role": "assistant",
+                    "content": [
+                        {
+                            "type": "tool_use",
+                            "id": "toolu_99",
+                            "name": "get_user",
+                            "input": {"user_id": "user:U9"},
+                        }
+                    ],
+                },
+            )
+            rec.record_exchange(
+                "/v1/messages",
+                {
+                    "model": "claude-sonnet",
+                    "system": "You are a helpful assistant.",
+                    "messages": [
+                        {"role": "user", "content": "Check user_id user:U9"},
+                        {
+                            "role": "assistant",
+                            "content": [{"type": "tool_use", "id": "toolu_99", "name": "get_user", "input": {"user_id": "user:U9"}}],
+                        },
+                        {
+                            "role": "user",
+                            "content": [{"type": "tool_result", "tool_use_id": "toolu_99", "content": '{"user_id":"user:U9","tier":"gold"}'}],
+                        },
+                    ],
+                },
+                {
+                    "role": "assistant",
+                    "content": [{"type": "text", "text": "User U9 is in the gold tier."}],
+                },
+            )
+            log = convert(pdir)
+            self.assertTrue(validate_log(log)["passed"])
+
+            tdir = Path(tmp) / "tool-proxy-session"
+            tproxy = ToolCallProxy(tdir, task_id="tool-proxy-test")
+            out = tproxy.invoke("fetch_item", {"item_id": "item:I1"}, lambda args: {"item_id": args["item_id"], "stock": 12})
+            self.assertEqual(out["stock"], 12)
+            tlog = convert(tdir)
+            self.assertTrue(validate_log(tlog)["passed"])
+
+            # Multi-cohort comparison figure
+            c1 = cohort_from_log(log, label="LLM Proxy")
+            c2 = cohort_from_log(tlog, label="Tool Proxy", color="#2E6B4E")
+            multi = render_figure([c1, c2], Path(tmp) / "comparison")
+            self.assertTrue(Path(multi["outputs"]["svg"]).is_file())
+            self.assertTrue(Path(multi["outputs"]["png"]).is_file())
+
+
+if __name__ == "__main__":
+    unittest.main()
+

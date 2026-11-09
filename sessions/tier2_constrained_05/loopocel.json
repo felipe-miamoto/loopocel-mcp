@@ -1,0 +1,1827 @@
+{
+  "objectTypes": [
+    {
+      "name": "Turn",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        },
+        {
+          "name": "state",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Prompt",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Response",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Instruction",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "History",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "eventTypes": [
+    {
+      "name": "ProcessObject.Registered",
+      "attributes": []
+    },
+    {
+      "name": "Instruction.Registered",
+      "attributes": []
+    },
+    {
+      "name": "Turn.Started",
+      "attributes": []
+    },
+    {
+      "name": "Prompt.Submitted",
+      "attributes": []
+    },
+    {
+      "name": "Response.Received",
+      "attributes": []
+    },
+    {
+      "name": "Turn.Finished",
+      "attributes": []
+    },
+    {
+      "name": "ActionRequest.Dispatched",
+      "attributes": []
+    },
+    {
+      "name": "Execution.Started",
+      "attributes": []
+    },
+    {
+      "name": "ProcessObject.StateChanged",
+      "attributes": []
+    },
+    {
+      "name": "Execution.Finished",
+      "attributes": []
+    },
+    {
+      "name": "ActionResult.Received",
+      "attributes": []
+    },
+    {
+      "name": "History.Assembled",
+      "attributes": []
+    }
+  ],
+  "objects": [
+    {
+      "id": "trip:tier2_constrained_05",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.680603+00:00",
+          "value": "{\"arrive_by_local\":\"12:30\",\"destination\":\"DUB\",\"max_hotel_per_night_eur\":120.0,\"max_total_eur\":610.0,\"nights\":3,\"origin\":\"VIE\",\"require_baggage\":true,\"require_refundable_hotel\":true,\"status\":\"requested\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.680603+00:00",
+          "value": "{\"arrive_by_local\":\"12:30\",\"destination\":\"DUB\",\"max_hotel_per_night_eur\":120.0,\"max_total_eur\":610.0,\"nights\":3,\"origin\":\"VIE\",\"require_baggage\":true,\"require_refundable_hotel\":true,\"status\":\"requested\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.683435+00:00",
+          "value": "{\"flight_id\":\"FR7007\",\"hotel_id\":\"ruby-molly-dublin\",\"status\":\"confirmed\",\"total_cost_eur\":440.0}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "instruction:base",
+      "type": "Instruction",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.680696+00:00",
+          "value": "{\"messages\":[{\"content\":\"Plan trip tier2_constrained_05: VIE to DUB, 2026-09-15 to 2026-09-18 (3 nights), max 610 EUR total, hotel <= 120 EUR/night refundable, arrive by 12:30, baggage required.\",\"role\":\"user\"}]}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "turn:1",
+      "type": "Turn",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.680811+00:00",
+          "value": "{\"index\":1,\"task_id\":\"Vienna to Dublin Under Strict Reimbursement Ceiling & Morning Arrival\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "prompt:1",
+          "qualifier": "hasPrompt"
+        },
+        {
+          "objectId": "response:1",
+          "qualifier": "hasResponse"
+        },
+        {
+          "objectId": "turn:2",
+          "qualifier": "hasNextTurn"
+        }
+      ]
+    },
+    {
+      "id": "prompt:1",
+      "type": "Prompt",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.680811+00:00",
+          "value": "{\"parameters\":{\"model\":\"live-web-agent\"},\"layout\":[\"instruction:base\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "instruction:base",
+          "qualifier": "hasInstruction"
+        }
+      ]
+    },
+    {
+      "id": "response:1",
+      "type": "Response",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.680912+00:00",
+          "value": "{\"provider\":{\"status\":\"completed\",\"turn\":1},\"message\":{\"content\":\"Searched live morning flights VIE-DUB and hotels in Dublin near Trinity/City Centre. Discovered Aer Lingus EI661, Ryanair FR7007, Ruby Molly Hotel, and Trinity City Hotel.\",\"role\":\"assistant\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:1",
+          "qualifier": "hasActionRequest"
+        },
+        {
+          "objectId": "request:2",
+          "qualifier": "hasActionRequest"
+        }
+      ]
+    },
+    {
+      "id": "flight:EI661",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.681036+00:00",
+          "value": "{\"id\":\"flight:EI661\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.681036+00:00",
+          "value": "{\"id\":\"flight:EI661\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.681332+00:00",
+          "value": "{\"business_id\":\"EI661\",\"kind\":\"Flight\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "flight:FR7007",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.681100+00:00",
+          "value": "{\"id\":\"flight:FR7007\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.681100+00:00",
+          "value": "{\"id\":\"flight:FR7007\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.681414+00:00",
+          "value": "{\"business_id\":\"FR7007\",\"kind\":\"Flight\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.683493+00:00",
+          "value": "{\"baggage_included\":true,\"booking_state\":\"selected\",\"price_eur\":125.0}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "request:1",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.681168+00:00",
+          "value": "{\"name\":\"search_web\",\"arguments\":{\"query\":\"morning flights Vienna VIE to Dublin DUB Aer Lingus Ryanair Austrian schedule price\",\"trip_id\":\"tier2_constrained_05\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier2_constrained_05",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "flight:EI661",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "flight:FR7007",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:1",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:1",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.681230+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.681485+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier2_constrained_05",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "flight:EI661",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "flight:FR7007",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:1",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:1",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.681633+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"search_web\\\",\\\"request_id\\\":\\\"request:1\\\",\\\"result\\\":{\\\"flights\\\":[{\\\"airline\\\":\\\"Aer Lingus\\\",\\\"arr\\\":\\\"13:30\\\",\\\"baggage_included\\\":true,\\\"dep\\\":\\\"11:35\\\",\\\"flight_id\\\":\\\"EI661\\\",\\\"price_eur\\\":145.0},{\\\"airline\\\":\\\"Ryanair\\\",\\\"arr\\\":\\\"07:50\\\",\\\"baggage_included\\\":true,\\\"dep\\\":\\\"05:50\\\",\\\"flight_id\\\":\\\"FR7007\\\",\\\"price_eur\\\":125.0}]}}}\",\"role\":\"user\"},\"data\":{\"flights\":[{\"airline\":\"Aer Lingus\",\"arr\":\"13:30\",\"baggage_included\":true,\"dep\":\"11:35\",\"flight_id\":\"EI661\",\"price_eur\":145.0},{\"airline\":\"Ryanair\",\"arr\":\"07:50\",\"baggage_included\":true,\"dep\":\"05:50\",\"flight_id\":\"FR7007\",\"price_eur\":125.0}]}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:1",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "flight:EI661",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "flight:FR7007",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "trip:tier2_constrained_05",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "hotel:ruby-molly-dublin",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.681737+00:00",
+          "value": "{\"id\":\"hotel:ruby-molly-dublin\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.681737+00:00",
+          "value": "{\"id\":\"hotel:ruby-molly-dublin\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.682023+00:00",
+          "value": "{\"business_id\":\"ruby-molly-dublin\",\"kind\":\"Hotel\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.683554+00:00",
+          "value": "{\"booking_state\":\"selected\",\"nights\":3,\"rate_per_night_eur\":105.0,\"refundable\":true}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "hotel:trinity-city-hotel-dublin",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.681807+00:00",
+          "value": "{\"id\":\"hotel:trinity-city-hotel-dublin\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.681807+00:00",
+          "value": "{\"id\":\"hotel:trinity-city-hotel-dublin\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.682084+00:00",
+          "value": "{\"business_id\":\"trinity-city-hotel-dublin\",\"kind\":\"Hotel\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "request:2",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.681869+00:00",
+          "value": "{\"name\":\"search_web\",\"arguments\":{\"query\":\"hotels Dublin City Centre Trinity DCU under 120 EUR per night\",\"trip_id\":\"tier2_constrained_05\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "hotel:ruby-molly-dublin",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "hotel:trinity-city-hotel-dublin",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "trip:tier2_constrained_05",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:2",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:2",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.681941+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.682145+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier2_constrained_05",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "hotel:ruby-molly-dublin",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "hotel:trinity-city-hotel-dublin",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:2",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:2",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.682213+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"search_web\\\",\\\"request_id\\\":\\\"request:2\\\",\\\"result\\\":{\\\"hotels\\\":[{\\\"hotel_id\\\":\\\"ruby-molly-dublin\\\",\\\"name\\\":\\\"Ruby Molly Hotel Dublin\\\",\\\"rate_per_night_eur\\\":105.0,\\\"refundable\\\":true},{\\\"hotel_id\\\":\\\"trinity-city-hotel-dublin\\\",\\\"name\\\":\\\"Trinity City Hotel Dublin\\\",\\\"rate_per_night_eur\\\":160.0,\\\"refundable\\\":true}]}}}\",\"role\":\"user\"},\"data\":{\"hotels\":[{\"hotel_id\":\"ruby-molly-dublin\",\"name\":\"Ruby Molly Hotel Dublin\",\"rate_per_night_eur\":105.0,\"refundable\":true},{\"hotel_id\":\"trinity-city-hotel-dublin\",\"name\":\"Trinity City Hotel Dublin\",\"rate_per_night_eur\":160.0,\"refundable\":true}]}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:2",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "hotel:ruby-molly-dublin",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "hotel:trinity-city-hotel-dublin",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "turn:2",
+      "type": "Turn",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.682287+00:00",
+          "value": "{\"index\":2,\"task_id\":\"Vienna to Dublin Under Strict Reimbursement Ceiling & Morning Arrival\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "prompt:2",
+          "qualifier": "hasPrompt"
+        },
+        {
+          "objectId": "response:2",
+          "qualifier": "hasResponse"
+        },
+        {
+          "objectId": "turn:3",
+          "qualifier": "hasNextTurn"
+        }
+      ]
+    },
+    {
+      "id": "prompt:2",
+      "type": "Prompt",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.682287+00:00",
+          "value": "{\"parameters\":{\"model\":\"live-web-agent\"},\"layout\":[\"instruction:base\",\"history:2\",\"result:1\",\"result:2\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "instruction:base",
+          "qualifier": "hasInstruction"
+        },
+        {
+          "objectId": "history:2",
+          "qualifier": "hasHistory"
+        },
+        {
+          "objectId": "result:1",
+          "qualifier": "hasActionResult"
+        },
+        {
+          "objectId": "result:2",
+          "qualifier": "hasActionResult"
+        }
+      ]
+    },
+    {
+      "id": "history:2",
+      "type": "History",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.682287+00:00",
+          "value": "{\"sources\":[\"response:1\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "response:1",
+          "qualifier": "hasSourceResponse"
+        }
+      ]
+    },
+    {
+      "id": "response:2",
+      "type": "Response",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.682425+00:00",
+          "value": "{\"provider\":{\"status\":\"completed\",\"turn\":2},\"message\":{\"content\":\"Attempted candidate combination: Aer Lingus EI661 (145 EUR) + Trinity City Hotel (160 EUR/night). Validation failed: flight arrival 13:30 misses 12:30 deadline and hotel rate exceeds 120 EUR/night ceiling.\",\"role\":\"assistant\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:3",
+          "qualifier": "hasActionRequest"
+        }
+      ]
+    },
+    {
+      "id": "request:3",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.682529+00:00",
+          "value": "{\"name\":\"verify_constraints\",\"arguments\":{\"arrival_time\":\"13:30\",\"flight_id\":\"EI661\",\"hotel_id\":\"trinity-city-hotel-dublin\",\"rate_per_night_eur\":160.0,\"total_cost_eur\":625.0,\"trip_id\":\"tier2_constrained_05\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier2_constrained_05",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "flight:EI661",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "hotel:trinity-city-hotel-dublin",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:3",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:3",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.682587+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.682661+00:00",
+          "value": "{\"outcome\":\"failure\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "flight:EI661",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "hotel:trinity-city-hotel-dublin",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "trip:tier2_constrained_05",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:3",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:3",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.682724+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"verify_constraints\\\",\\\"request_id\\\":\\\"request:3\\\",\\\"result\\\":{\\\"errors\\\":[\\\"Outbound arrival time 13:30 exceeds morning deadline 12:30.\\\",\\\"Hotel rate 160.00 EUR exceeds maximum 120.00 EUR.\\\",\\\"Total cost 625.00 EUR exceeds budget 610.00 EUR.\\\"],\\\"valid\\\":false}}}\",\"role\":\"user\"},\"data\":{\"errors\":[\"Outbound arrival time 13:30 exceeds morning deadline 12:30.\",\"Hotel rate 160.00 EUR exceeds maximum 120.00 EUR.\",\"Total cost 625.00 EUR exceeds budget 610.00 EUR.\"],\"valid\":false}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:3",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "trip:tier2_constrained_05",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "flight:EI661",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "hotel:trinity-city-hotel-dublin",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "turn:3",
+      "type": "Turn",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.682790+00:00",
+          "value": "{\"index\":3,\"task_id\":\"Vienna to Dublin Under Strict Reimbursement Ceiling & Morning Arrival\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "prompt:3",
+          "qualifier": "hasPrompt"
+        },
+        {
+          "objectId": "response:3",
+          "qualifier": "hasResponse"
+        }
+      ]
+    },
+    {
+      "id": "prompt:3",
+      "type": "Prompt",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.682790+00:00",
+          "value": "{\"parameters\":{\"model\":\"live-web-agent\"},\"layout\":[\"instruction:base\",\"history:3\",\"result:3\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "instruction:base",
+          "qualifier": "hasInstruction"
+        },
+        {
+          "objectId": "history:3",
+          "qualifier": "hasHistory"
+        },
+        {
+          "objectId": "result:3",
+          "qualifier": "hasActionResult"
+        }
+      ]
+    },
+    {
+      "id": "history:3",
+      "type": "History",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.682790+00:00",
+          "value": "{\"sources\":[\"response:1\",\"result:1\",\"result:2\",\"response:2\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "response:1",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:1",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:2",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:2",
+          "qualifier": "hasSourceResponse"
+        }
+      ]
+    },
+    {
+      "id": "response:3",
+      "type": "Response",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.682913+00:00",
+          "value": "{\"provider\":{\"status\":\"completed\",\"turn\":3},\"message\":{\"content\":\"Reworked plan: switched to early Ryanair FR7007 Regular fare with baggage (125 EUR, arrival 07:50) and Ruby Molly Hotel (3 nights at 105 EUR/night refundable = 315 EUR). Total cost 440 EUR meets the 610 EUR budget.\",\"role\":\"assistant\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:4",
+          "qualifier": "hasActionRequest"
+        },
+        {
+          "objectId": "request:5",
+          "qualifier": "hasActionRequest"
+        }
+      ]
+    },
+    {
+      "id": "request:4",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.683010+00:00",
+          "value": "{\"name\":\"verify_constraints\",\"arguments\":{\"arrival_time\":\"07:50\",\"baggage_included\":true,\"flight_id\":\"FR7007\",\"hotel_id\":\"ruby-molly-dublin\",\"rate_per_night_eur\":105.0,\"refundable\":true,\"total_cost_eur\":440.0,\"trip_id\":\"tier2_constrained_05\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier2_constrained_05",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "flight:FR7007",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "hotel:ruby-molly-dublin",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:4",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:4",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.683060+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.683126+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "flight:FR7007",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "hotel:ruby-molly-dublin",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "trip:tier2_constrained_05",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:4",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:4",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.683182+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"verify_constraints\\\",\\\"request_id\\\":\\\"request:4\\\",\\\"result\\\":{\\\"arrival_ok\\\":true,\\\"budget_ok\\\":true,\\\"hotel_cap_ok\\\":true,\\\"valid\\\":true}}}\",\"role\":\"user\"},\"data\":{\"arrival_ok\":true,\"budget_ok\":true,\"hotel_cap_ok\":true,\"valid\":true}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:4",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "trip:tier2_constrained_05",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "flight:FR7007",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "hotel:ruby-molly-dublin",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "request:5",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.683255+00:00",
+          "value": "{\"name\":\"commit_itinerary\",\"arguments\":{\"selected_flight\":\"FR7007\",\"selected_hotel\":\"ruby-molly-dublin\",\"total_cost_eur\":440.0,\"trip_id\":\"tier2_constrained_05\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier2_constrained_05",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "flight:FR7007",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "hotel:ruby-molly-dublin",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:5",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:5",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.683309+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.683610+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier2_constrained_05",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "itin:tier2_constrained_05",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "flight:FR7007",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "hotel:ruby-molly-dublin",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:5",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "itin:tier2_constrained_05",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.683381+00:00",
+          "value": "{\"business_id\":\"itin:tier2_constrained_05\",\"kind\":\"Itinerary\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.683381+00:00",
+          "value": "{\"business_id\":\"itin:tier2_constrained_05\",\"kind\":\"Itinerary\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "result:5",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.683672+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"commit_itinerary\\\",\\\"request_id\\\":\\\"request:5\\\",\\\"result\\\":{\\\"itinerary_id\\\":\\\"itin:tier2_constrained_05\\\",\\\"status\\\":\\\"confirmed\\\"}}}\",\"role\":\"user\"},\"data\":{\"itinerary_id\":\"itin:tier2_constrained_05\",\"status\":\"confirmed\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:5",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "itin:tier2_constrained_05",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "trip:tier2_constrained_05",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "flight:FR7007",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "hotel:ruby-molly-dublin",
+          "qualifier": "describesObject"
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "event:1",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T14:13:38.680603+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "trip:tier2_constrained_05",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:2",
+      "type": "Instruction.Registered",
+      "time": "2026-11-09T14:13:38.680696+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "instruction:base",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:3",
+      "type": "Turn.Started",
+      "time": "2026-11-09T14:13:38.680811+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:1",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:4",
+      "type": "Prompt.Submitted",
+      "time": "2026-11-09T14:13:38.680811+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "prompt:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:1",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:5",
+      "type": "Response.Received",
+      "time": "2026-11-09T14:13:38.680912+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "response:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:1",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:6",
+      "type": "Turn.Finished",
+      "time": "2026-11-09T14:13:38.680912+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "response:1",
+          "qualifier": "response"
+        }
+      ]
+    },
+    {
+      "id": "event:7",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T14:13:38.681067+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:EI661",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:8",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T14:13:38.681132+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:FR7007",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:9",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-09T14:13:38.681168+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:1",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:10",
+      "type": "Execution.Started",
+      "time": "2026-11-09T14:13:38.681230+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:1",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:11",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T14:13:38.681332+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:EI661",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:1",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:12",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T14:13:38.681414+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:FR7007",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:1",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:13",
+      "type": "Execution.Finished",
+      "time": "2026-11-09T14:13:38.681485+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:1",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "trip:tier2_constrained_05",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "flight:EI661",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "flight:FR7007",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:14",
+      "type": "ActionResult.Received",
+      "time": "2026-11-09T14:13:38.681633+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:1",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:1",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:15",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T14:13:38.681771+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:ruby-molly-dublin",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:16",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T14:13:38.681838+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:trinity-city-hotel-dublin",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:17",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-09T14:13:38.681869+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:1",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:18",
+      "type": "Execution.Started",
+      "time": "2026-11-09T14:13:38.681941+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:2",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:19",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T14:13:38.682023+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:ruby-molly-dublin",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:2",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:20",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T14:13:38.682084+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:trinity-city-hotel-dublin",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:2",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:21",
+      "type": "Execution.Finished",
+      "time": "2026-11-09T14:13:38.682145+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:2",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "trip:tier2_constrained_05",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "hotel:ruby-molly-dublin",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "hotel:trinity-city-hotel-dublin",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:22",
+      "type": "ActionResult.Received",
+      "time": "2026-11-09T14:13:38.682213+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:2",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:2",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:23",
+      "type": "History.Assembled",
+      "time": "2026-11-09T14:13:38.682287+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "history:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:2",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:24",
+      "type": "Turn.Started",
+      "time": "2026-11-09T14:13:38.682287+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:2",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:25",
+      "type": "Prompt.Submitted",
+      "time": "2026-11-09T14:13:38.682287+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "prompt:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:2",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:26",
+      "type": "Response.Received",
+      "time": "2026-11-09T14:13:38.682425+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "response:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:2",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:27",
+      "type": "Turn.Finished",
+      "time": "2026-11-09T14:13:38.682425+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "response:2",
+          "qualifier": "response"
+        }
+      ]
+    },
+    {
+      "id": "event:28",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-09T14:13:38.682529+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:2",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:29",
+      "type": "Execution.Started",
+      "time": "2026-11-09T14:13:38.682587+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:3",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:30",
+      "type": "Execution.Finished",
+      "time": "2026-11-09T14:13:38.682661+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:3",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "flight:EI661",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "hotel:trinity-city-hotel-dublin",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "trip:tier2_constrained_05",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:31",
+      "type": "ActionResult.Received",
+      "time": "2026-11-09T14:13:38.682724+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:3",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:3",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:32",
+      "type": "History.Assembled",
+      "time": "2026-11-09T14:13:38.682790+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "history:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:3",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:33",
+      "type": "Turn.Started",
+      "time": "2026-11-09T14:13:38.682790+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:3",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:34",
+      "type": "Prompt.Submitted",
+      "time": "2026-11-09T14:13:38.682790+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "prompt:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:3",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:35",
+      "type": "Response.Received",
+      "time": "2026-11-09T14:13:38.682913+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "response:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:3",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:36",
+      "type": "Turn.Finished",
+      "time": "2026-11-09T14:13:38.682913+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "response:3",
+          "qualifier": "response"
+        }
+      ]
+    },
+    {
+      "id": "event:37",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-09T14:13:38.683010+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:4",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:3",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:38",
+      "type": "Execution.Started",
+      "time": "2026-11-09T14:13:38.683060+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:4",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:4",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:39",
+      "type": "Execution.Finished",
+      "time": "2026-11-09T14:13:38.683126+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:4",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:4",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "flight:FR7007",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "hotel:ruby-molly-dublin",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "trip:tier2_constrained_05",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:40",
+      "type": "ActionResult.Received",
+      "time": "2026-11-09T14:13:38.683182+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:4",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:4",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:4",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:41",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-09T14:13:38.683255+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:5",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:3",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:42",
+      "type": "Execution.Started",
+      "time": "2026-11-09T14:13:38.683309+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:5",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:5",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:43",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T14:13:38.683407+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "itin:tier2_constrained_05",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:44",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T14:13:38.683435+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "trip:tier2_constrained_05",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:5",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:45",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T14:13:38.683493+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:FR7007",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:5",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:46",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T14:13:38.683554+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:ruby-molly-dublin",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:5",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:47",
+      "type": "Execution.Finished",
+      "time": "2026-11-09T14:13:38.683610+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:5",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:5",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "trip:tier2_constrained_05",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "itin:tier2_constrained_05",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "flight:FR7007",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "hotel:ruby-molly-dublin",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:48",
+      "type": "ActionResult.Received",
+      "time": "2026-11-09T14:13:38.683672+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:5",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:5",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:5",
+          "qualifier": "request"
+        }
+      ]
+    }
+  ]
+}

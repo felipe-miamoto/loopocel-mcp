@@ -1,0 +1,2044 @@
+{
+  "objectTypes": [
+    {
+      "name": "Turn",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        },
+        {
+          "name": "state",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Prompt",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Response",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Instruction",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "History",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "eventTypes": [
+    {
+      "name": "ProcessObject.Registered",
+      "attributes": []
+    },
+    {
+      "name": "Instruction.Registered",
+      "attributes": []
+    },
+    {
+      "name": "Turn.Started",
+      "attributes": []
+    },
+    {
+      "name": "Prompt.Submitted",
+      "attributes": []
+    },
+    {
+      "name": "Response.Received",
+      "attributes": []
+    },
+    {
+      "name": "Turn.Finished",
+      "attributes": []
+    },
+    {
+      "name": "ActionRequest.Dispatched",
+      "attributes": []
+    },
+    {
+      "name": "Execution.Started",
+      "attributes": []
+    },
+    {
+      "name": "ProcessObject.StateChanged",
+      "attributes": []
+    },
+    {
+      "name": "Execution.Finished",
+      "attributes": []
+    },
+    {
+      "name": "ActionResult.Received",
+      "attributes": []
+    },
+    {
+      "name": "History.Assembled",
+      "attributes": []
+    }
+  ],
+  "objects": [
+    {
+      "id": "trip:tier3_multimodal_02",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.814476+00:00",
+          "value": "{\"arrive_by_local\":\"15:30\",\"destination\":\"KRK\",\"max_hotel_per_night_eur\":110.0,\"max_total_eur\":720.0,\"min_transfer_minutes\":90,\"nights\":4,\"origin\":\"ZNV\",\"require_baggage\":true,\"require_refundable_hotel\":true,\"status\":\"requested\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.814476+00:00",
+          "value": "{\"arrive_by_local\":\"15:30\",\"destination\":\"KRK\",\"max_hotel_per_night_eur\":110.0,\"max_total_eur\":720.0,\"min_transfer_minutes\":90,\"nights\":4,\"origin\":\"ZNV\",\"require_baggage\":true,\"require_refundable_hotel\":true,\"status\":\"requested\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.817531+00:00",
+          "value": "{\"flight_id\":\"LH1364\",\"hotel_id\":\"hotel-wyspianski-krakow\",\"status\":\"confirmed\",\"total_cost_eur\":602.0,\"train_id\":\"ICE621\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "instruction:base",
+      "type": "Instruction",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.814568+00:00",
+          "value": "{\"messages\":[{\"content\":\"Plan trip tier3_multimodal_02: Koblenz via Frankfurt Airport to Krakow, 2026-09-01 to 2026-09-05 (4 nights), max 720 EUR total, hotel <= 110 EUR/night refundable, arrive by 15:30, train+flight with min 90 min transfer buffer.\",\"role\":\"user\"}]}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "turn:1",
+      "type": "Turn",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.814681+00:00",
+          "value": "{\"index\":1,\"task_id\":\"Koblenz Hbf via Frankfurt Airport to Krakow Rail+Air With 90-Min Buffer\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "prompt:1",
+          "qualifier": "hasPrompt"
+        },
+        {
+          "objectId": "response:1",
+          "qualifier": "hasResponse"
+        },
+        {
+          "objectId": "turn:2",
+          "qualifier": "hasNextTurn"
+        }
+      ]
+    },
+    {
+      "id": "prompt:1",
+      "type": "Prompt",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.814681+00:00",
+          "value": "{\"parameters\":{\"model\":\"live-web-agent\"},\"layout\":[\"instruction:base\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "instruction:base",
+          "qualifier": "hasInstruction"
+        }
+      ]
+    },
+    {
+      "id": "response:1",
+      "type": "Response",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.814770+00:00",
+          "value": "{\"provider\":{\"status\":\"completed\",\"turn\":1},\"message\":{\"content\":\"Searched live ICE connections Koblenz-Frankfurt Airport, Lufthansa flights FRA-KRK, and hotels in Krakow Old Town. Discovered ICE 25, ICE 621, LH 1364, and Hotel Wyspianski.\",\"role\":\"assistant\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:1",
+          "qualifier": "hasActionRequest"
+        },
+        {
+          "objectId": "request:2",
+          "qualifier": "hasActionRequest"
+        },
+        {
+          "objectId": "request:3",
+          "qualifier": "hasActionRequest"
+        }
+      ]
+    },
+    {
+      "id": "train:ICE25",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.814880+00:00",
+          "value": "{\"id\":\"train:ICE25\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.814880+00:00",
+          "value": "{\"id\":\"train:ICE25\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.815136+00:00",
+          "value": "{\"business_id\":\"ICE25\",\"kind\":\"Train\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "train:ICE621",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.814935+00:00",
+          "value": "{\"id\":\"train:ICE621\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.814935+00:00",
+          "value": "{\"id\":\"train:ICE621\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.815195+00:00",
+          "value": "{\"business_id\":\"ICE621\",\"kind\":\"Train\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.817694+00:00",
+          "value": "{\"booking_state\":\"selected\",\"price_eur\":32.0}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "request:1",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.814991+00:00",
+          "value": "{\"name\":\"search_web\",\"arguments\":{\"query\":\"ICE IC train Koblenz Hbf to Frankfurt Airport Fernbahnhof morning schedule\",\"trip_id\":\"tier3_multimodal_02\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier3_multimodal_02",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "train:ICE25",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "train:ICE621",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:1",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:1",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.815046+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.815251+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier3_multimodal_02",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "train:ICE25",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "train:ICE621",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:1",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:1",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.815314+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"search_web\\\",\\\"request_id\\\":\\\"request:1\\\",\\\"result\\\":{\\\"trains\\\":[{\\\"arr\\\":\\\"09:59\\\",\\\"dep\\\":\\\"08:48\\\",\\\"price_eur\\\":35.0,\\\"train_id\\\":\\\"ICE25\\\"},{\\\"arr\\\":\\\"07:59\\\",\\\"dep\\\":\\\"06:48\\\",\\\"price_eur\\\":32.0,\\\"train_id\\\":\\\"ICE621\\\"}]}}}\",\"role\":\"user\"},\"data\":{\"trains\":[{\"arr\":\"09:59\",\"dep\":\"08:48\",\"price_eur\":35.0,\"train_id\":\"ICE25\"},{\"arr\":\"07:59\",\"dep\":\"06:48\",\"price_eur\":32.0,\"train_id\":\"ICE621\"}]}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:1",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "train:ICE25",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "train:ICE621",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "trip:tier3_multimodal_02",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "flight:LH1364",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.815380+00:00",
+          "value": "{\"id\":\"flight:LH1364\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.815380+00:00",
+          "value": "{\"id\":\"flight:LH1364\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.815554+00:00",
+          "value": "{\"business_id\":\"LH1364\",\"kind\":\"Flight\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.817764+00:00",
+          "value": "{\"baggage_included\":true,\"booking_state\":\"selected\",\"price_eur\":230.0}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "request:2",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.815434+00:00",
+          "value": "{\"name\":\"search_web\",\"arguments\":{\"query\":\"direct flights Frankfurt FRA to Krakow KRK Lufthansa LOT schedule price\",\"trip_id\":\"tier3_multimodal_02\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "flight:LH1364",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "trip:tier3_multimodal_02",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:2",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:2",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.815488+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.815625+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier3_multimodal_02",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "flight:LH1364",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:2",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:2",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.815682+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"search_web\\\",\\\"request_id\\\":\\\"request:2\\\",\\\"result\\\":{\\\"flights\\\":[{\\\"airline\\\":\\\"Lufthansa\\\",\\\"arr\\\":\\\"12:35\\\",\\\"baggage_included\\\":true,\\\"dep\\\":\\\"11:00\\\",\\\"flight_id\\\":\\\"LH1364\\\",\\\"price_eur\\\":230.0}]}}}\",\"role\":\"user\"},\"data\":{\"flights\":[{\"airline\":\"Lufthansa\",\"arr\":\"12:35\",\"baggage_included\":true,\"dep\":\"11:00\",\"flight_id\":\"LH1364\",\"price_eur\":230.0}]}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:2",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "flight:LH1364",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "hotel:hotel-wyspianski-krakow",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.815744+00:00",
+          "value": "{\"id\":\"hotel:hotel-wyspianski-krakow\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.815744+00:00",
+          "value": "{\"id\":\"hotel:hotel-wyspianski-krakow\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.815932+00:00",
+          "value": "{\"business_id\":\"hotel-wyspianski-krakow\",\"kind\":\"Hotel\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.817843+00:00",
+          "value": "{\"booking_state\":\"selected\",\"nights\":4,\"rate_per_night_eur\":85.0,\"refundable\":true}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "request:3",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.815800+00:00",
+          "value": "{\"name\":\"search_web\",\"arguments\":{\"query\":\"hotels Krakow Old Town Kazimierz under 110 EUR per night\",\"trip_id\":\"tier3_multimodal_02\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "hotel:hotel-wyspianski-krakow",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "trip:tier3_multimodal_02",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:3",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:3",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.815859+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.815999+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier3_multimodal_02",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "hotel:hotel-wyspianski-krakow",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:3",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:3",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.816121+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"search_web\\\",\\\"request_id\\\":\\\"request:3\\\",\\\"result\\\":{\\\"hotels\\\":[{\\\"hotel_id\\\":\\\"hotel-wyspianski-krakow\\\",\\\"name\\\":\\\"Hotel Wyspianski Krakow\\\",\\\"rate_per_night_eur\\\":85.0,\\\"refundable\\\":true}]}}}\",\"role\":\"user\"},\"data\":{\"hotels\":[{\"hotel_id\":\"hotel-wyspianski-krakow\",\"name\":\"Hotel Wyspianski Krakow\",\"rate_per_night_eur\":85.0,\"refundable\":true}]}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:3",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "hotel:hotel-wyspianski-krakow",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "turn:2",
+      "type": "Turn",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.816202+00:00",
+          "value": "{\"index\":2,\"task_id\":\"Koblenz Hbf via Frankfurt Airport to Krakow Rail+Air With 90-Min Buffer\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "prompt:2",
+          "qualifier": "hasPrompt"
+        },
+        {
+          "objectId": "response:2",
+          "qualifier": "hasResponse"
+        },
+        {
+          "objectId": "turn:3",
+          "qualifier": "hasNextTurn"
+        }
+      ]
+    },
+    {
+      "id": "prompt:2",
+      "type": "Prompt",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.816202+00:00",
+          "value": "{\"parameters\":{\"model\":\"live-web-agent\"},\"layout\":[\"instruction:base\",\"history:2\",\"result:1\",\"result:2\",\"result:3\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "instruction:base",
+          "qualifier": "hasInstruction"
+        },
+        {
+          "objectId": "history:2",
+          "qualifier": "hasHistory"
+        },
+        {
+          "objectId": "result:1",
+          "qualifier": "hasActionResult"
+        },
+        {
+          "objectId": "result:2",
+          "qualifier": "hasActionResult"
+        },
+        {
+          "objectId": "result:3",
+          "qualifier": "hasActionResult"
+        }
+      ]
+    },
+    {
+      "id": "history:2",
+      "type": "History",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.816202+00:00",
+          "value": "{\"sources\":[\"response:1\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "response:1",
+          "qualifier": "hasSourceResponse"
+        }
+      ]
+    },
+    {
+      "id": "response:2",
+      "type": "Response",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.816322+00:00",
+          "value": "{\"provider\":{\"status\":\"completed\",\"turn\":2},\"message\":{\"content\":\"Evaluated candidate multi-modal itinerary: ICE 25 (arr 09:59) and LH 1364 (dep 11:00). Validation failed: transfer buffer at Frankfurt Airport is 61 minutes, which is below the mandatory 90-minute minimum buffer.\",\"role\":\"assistant\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:4",
+          "qualifier": "hasActionRequest"
+        }
+      ]
+    },
+    {
+      "id": "request:4",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.816427+00:00",
+          "value": "{\"name\":\"verify_constraints\",\"arguments\":{\"flight_departure_time\":\"11:00\",\"flight_id\":\"LH1364\",\"hotel_id\":\"hotel-wyspianski-krakow\",\"rail_arrival_time\":\"09:59\",\"total_cost_eur\":605.0,\"train_id\":\"ICE25\",\"transfer_buffer_minutes\":61,\"trip_id\":\"tier3_multimodal_02\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier3_multimodal_02",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "train:ICE25",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "flight:LH1364",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "hotel:hotel-wyspianski-krakow",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:4",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:4",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.816491+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.816577+00:00",
+          "value": "{\"outcome\":\"failure\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "flight:LH1364",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "hotel:hotel-wyspianski-krakow",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "train:ICE25",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "trip:tier3_multimodal_02",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:4",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:4",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.816651+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"verify_constraints\\\",\\\"request_id\\\":\\\"request:4\\\",\\\"result\\\":{\\\"errors\\\":[\\\"Transfer buffer between train ICE 25 (arr 09:59) and flight LH 1364 (dep 11:00) is 61 minutes, violating the required 90-minute minimum buffer.\\\"],\\\"valid\\\":false}}}\",\"role\":\"user\"},\"data\":{\"errors\":[\"Transfer buffer between train ICE 25 (arr 09:59) and flight LH 1364 (dep 11:00) is 61 minutes, violating the required 90-minute minimum buffer.\"],\"valid\":false}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:4",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "trip:tier3_multimodal_02",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "train:ICE25",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "flight:LH1364",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "hotel:hotel-wyspianski-krakow",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "turn:3",
+      "type": "Turn",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.816709+00:00",
+          "value": "{\"index\":3,\"task_id\":\"Koblenz Hbf via Frankfurt Airport to Krakow Rail+Air With 90-Min Buffer\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "prompt:3",
+          "qualifier": "hasPrompt"
+        },
+        {
+          "objectId": "response:3",
+          "qualifier": "hasResponse"
+        }
+      ]
+    },
+    {
+      "id": "prompt:3",
+      "type": "Prompt",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.816709+00:00",
+          "value": "{\"parameters\":{\"model\":\"live-web-agent\"},\"layout\":[\"instruction:base\",\"history:3\",\"result:4\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "instruction:base",
+          "qualifier": "hasInstruction"
+        },
+        {
+          "objectId": "history:3",
+          "qualifier": "hasHistory"
+        },
+        {
+          "objectId": "result:4",
+          "qualifier": "hasActionResult"
+        }
+      ]
+    },
+    {
+      "id": "history:3",
+      "type": "History",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.816709+00:00",
+          "value": "{\"sources\":[\"response:1\",\"result:1\",\"result:2\",\"result:3\",\"response:2\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "response:1",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:1",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:2",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:3",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:2",
+          "qualifier": "hasSourceResponse"
+        }
+      ]
+    },
+    {
+      "id": "response:3",
+      "type": "Response",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.816809+00:00",
+          "value": "{\"provider\":{\"status\":\"completed\",\"turn\":3},\"message\":{\"content\":\"Reworked plan: selected earlier ICE 621 (dep 06:48 arr 07:59, 32 EUR), providing a 181-minute transfer buffer before LH 1364 (dep 11:00 arr 12:35 <= 15:30, 230 EUR with bag). Confirmed Hotel Wyspianski (4 nights at 85 EUR/night refundable = 340 EUR). Total cost 602 EUR meets the 720 EUR ceiling.\",\"role\":\"assistant\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:5",
+          "qualifier": "hasActionRequest"
+        },
+        {
+          "objectId": "request:6",
+          "qualifier": "hasActionRequest"
+        }
+      ]
+    },
+    {
+      "id": "request:5",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.816898+00:00",
+          "value": "{\"name\":\"verify_constraints\",\"arguments\":{\"flight_departure_time\":\"11:00\",\"flight_id\":\"LH1364\",\"hotel_id\":\"hotel-wyspianski-krakow\",\"rail_arrival_time\":\"07:59\",\"total_cost_eur\":602.0,\"train_id\":\"ICE621\",\"transfer_buffer_minutes\":181,\"trip_id\":\"tier3_multimodal_02\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier3_multimodal_02",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "train:ICE621",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "flight:LH1364",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "hotel:hotel-wyspianski-krakow",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:5",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:5",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.817017+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.817094+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "flight:LH1364",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "hotel:hotel-wyspianski-krakow",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "train:ICE621",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "trip:tier3_multimodal_02",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:5",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:5",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.817158+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"verify_constraints\\\",\\\"request_id\\\":\\\"request:5\\\",\\\"result\\\":{\\\"arrival_ok\\\":true,\\\"budget_ok\\\":true,\\\"transfer_buffer_ok\\\":true,\\\"valid\\\":true}}}\",\"role\":\"user\"},\"data\":{\"arrival_ok\":true,\"budget_ok\":true,\"transfer_buffer_ok\":true,\"valid\":true}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:5",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "trip:tier3_multimodal_02",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "train:ICE621",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "flight:LH1364",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "hotel:hotel-wyspianski-krakow",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "request:6",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.817231+00:00",
+          "value": "{\"name\":\"commit_itinerary\",\"arguments\":{\"selected_flight\":\"LH1364\",\"selected_hotel\":\"hotel-wyspianski-krakow\",\"selected_train\":\"ICE621\",\"total_cost_eur\":602.0,\"trip_id\":\"tier3_multimodal_02\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier3_multimodal_02",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "train:ICE621",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "flight:LH1364",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "hotel:hotel-wyspianski-krakow",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:6",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:6",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.817284+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.817922+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:tier3_multimodal_02",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "itin:tier3_multimodal_02",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "train:ICE621",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "flight:LH1364",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "hotel:hotel-wyspianski-krakow",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:6",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "itin:tier3_multimodal_02",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.817389+00:00",
+          "value": "{\"business_id\":\"itin:tier3_multimodal_02\",\"kind\":\"Itinerary\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-09T14:13:38.817389+00:00",
+          "value": "{\"business_id\":\"itin:tier3_multimodal_02\",\"kind\":\"Itinerary\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "result:6",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-09T14:13:38.818007+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"commit_itinerary\\\",\\\"request_id\\\":\\\"request:6\\\",\\\"result\\\":{\\\"itinerary_id\\\":\\\"itin:tier3_multimodal_02\\\",\\\"status\\\":\\\"confirmed\\\"}}}\",\"role\":\"user\"},\"data\":{\"itinerary_id\":\"itin:tier3_multimodal_02\",\"status\":\"confirmed\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:6",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "itin:tier3_multimodal_02",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "trip:tier3_multimodal_02",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "train:ICE621",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "flight:LH1364",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "hotel:hotel-wyspianski-krakow",
+          "qualifier": "describesObject"
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "event:1",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T14:13:38.814476+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "trip:tier3_multimodal_02",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:2",
+      "type": "Instruction.Registered",
+      "time": "2026-11-09T14:13:38.814568+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "instruction:base",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:3",
+      "type": "Turn.Started",
+      "time": "2026-11-09T14:13:38.814681+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:1",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:4",
+      "type": "Prompt.Submitted",
+      "time": "2026-11-09T14:13:38.814681+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "prompt:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:1",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:5",
+      "type": "Response.Received",
+      "time": "2026-11-09T14:13:38.814770+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "response:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:1",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:6",
+      "type": "Turn.Finished",
+      "time": "2026-11-09T14:13:38.814770+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "response:1",
+          "qualifier": "response"
+        }
+      ]
+    },
+    {
+      "id": "event:7",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T14:13:38.814908+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "train:ICE25",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:8",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T14:13:38.814963+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "train:ICE621",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:9",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-09T14:13:38.814991+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:1",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:10",
+      "type": "Execution.Started",
+      "time": "2026-11-09T14:13:38.815046+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:1",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:11",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T14:13:38.815136+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "train:ICE25",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:1",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:12",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T14:13:38.815195+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "train:ICE621",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:1",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:13",
+      "type": "Execution.Finished",
+      "time": "2026-11-09T14:13:38.815251+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:1",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "trip:tier3_multimodal_02",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "train:ICE25",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "train:ICE621",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:14",
+      "type": "ActionResult.Received",
+      "time": "2026-11-09T14:13:38.815314+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:1",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:1",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:15",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T14:13:38.815407+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:LH1364",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:16",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-09T14:13:38.815434+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:1",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:17",
+      "type": "Execution.Started",
+      "time": "2026-11-09T14:13:38.815488+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:2",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:18",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T14:13:38.815554+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:LH1364",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:2",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:19",
+      "type": "Execution.Finished",
+      "time": "2026-11-09T14:13:38.815625+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:2",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "trip:tier3_multimodal_02",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "flight:LH1364",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:20",
+      "type": "ActionResult.Received",
+      "time": "2026-11-09T14:13:38.815682+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:2",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:2",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:21",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T14:13:38.815771+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:hotel-wyspianski-krakow",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:22",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-09T14:13:38.815800+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:1",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:23",
+      "type": "Execution.Started",
+      "time": "2026-11-09T14:13:38.815859+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:3",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:24",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T14:13:38.815932+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:hotel-wyspianski-krakow",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:3",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:25",
+      "type": "Execution.Finished",
+      "time": "2026-11-09T14:13:38.815999+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:3",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "trip:tier3_multimodal_02",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "hotel:hotel-wyspianski-krakow",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:26",
+      "type": "ActionResult.Received",
+      "time": "2026-11-09T14:13:38.816121+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:3",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:3",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:27",
+      "type": "History.Assembled",
+      "time": "2026-11-09T14:13:38.816202+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "history:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:2",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:28",
+      "type": "Turn.Started",
+      "time": "2026-11-09T14:13:38.816202+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:2",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:29",
+      "type": "Prompt.Submitted",
+      "time": "2026-11-09T14:13:38.816202+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "prompt:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:2",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:30",
+      "type": "Response.Received",
+      "time": "2026-11-09T14:13:38.816322+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "response:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:2",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:31",
+      "type": "Turn.Finished",
+      "time": "2026-11-09T14:13:38.816322+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "response:2",
+          "qualifier": "response"
+        }
+      ]
+    },
+    {
+      "id": "event:32",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-09T14:13:38.816427+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:4",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:2",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:33",
+      "type": "Execution.Started",
+      "time": "2026-11-09T14:13:38.816491+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:4",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:4",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:34",
+      "type": "Execution.Finished",
+      "time": "2026-11-09T14:13:38.816577+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:4",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:4",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "flight:LH1364",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "hotel:hotel-wyspianski-krakow",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "train:ICE25",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "trip:tier3_multimodal_02",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:35",
+      "type": "ActionResult.Received",
+      "time": "2026-11-09T14:13:38.816651+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:4",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:4",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:4",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:36",
+      "type": "History.Assembled",
+      "time": "2026-11-09T14:13:38.816709+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "history:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:3",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:37",
+      "type": "Turn.Started",
+      "time": "2026-11-09T14:13:38.816709+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:3",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:38",
+      "type": "Prompt.Submitted",
+      "time": "2026-11-09T14:13:38.816709+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "prompt:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:3",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:39",
+      "type": "Response.Received",
+      "time": "2026-11-09T14:13:38.816809+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "response:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:3",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:40",
+      "type": "Turn.Finished",
+      "time": "2026-11-09T14:13:38.816809+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "response:3",
+          "qualifier": "response"
+        }
+      ]
+    },
+    {
+      "id": "event:41",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-09T14:13:38.816898+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:5",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:3",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:42",
+      "type": "Execution.Started",
+      "time": "2026-11-09T14:13:38.817017+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:5",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:5",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:43",
+      "type": "Execution.Finished",
+      "time": "2026-11-09T14:13:38.817094+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:5",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:5",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "flight:LH1364",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "hotel:hotel-wyspianski-krakow",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "train:ICE621",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "trip:tier3_multimodal_02",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:44",
+      "type": "ActionResult.Received",
+      "time": "2026-11-09T14:13:38.817158+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:5",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:5",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:5",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:45",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-09T14:13:38.817231+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:6",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:3",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:46",
+      "type": "Execution.Started",
+      "time": "2026-11-09T14:13:38.817284+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:6",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:6",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:47",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-09T14:13:38.817458+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "itin:tier3_multimodal_02",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:48",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T14:13:38.817531+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "trip:tier3_multimodal_02",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:6",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:49",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T14:13:38.817694+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "train:ICE621",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:6",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:50",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T14:13:38.817764+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:LH1364",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:6",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:51",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-09T14:13:38.817843+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:hotel-wyspianski-krakow",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:6",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:52",
+      "type": "Execution.Finished",
+      "time": "2026-11-09T14:13:38.817922+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:6",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:6",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "trip:tier3_multimodal_02",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "itin:tier3_multimodal_02",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "train:ICE621",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "flight:LH1364",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "hotel:hotel-wyspianski-krakow",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:53",
+      "type": "ActionResult.Received",
+      "time": "2026-11-09T14:13:38.818007+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:6",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:6",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:6",
+          "qualifier": "request"
+        }
+      ]
+    }
+  ]
+}
