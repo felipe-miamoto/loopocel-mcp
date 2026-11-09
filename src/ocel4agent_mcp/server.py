@@ -649,6 +649,100 @@ class LoopOCELServer:
             return {"contents": [{"uri": uri, "mimeType": "image/svg+xml", "text": svg_text}]}
         raise ValueError(f"Unknown resource kind: {kind}")
 
+    def list_prompts(self) -> list[dict[str, Any]]:
+        return [
+            {
+                "name": "record-task",
+                "description": "Instruct the agent to execute a task while recording every reasoning turn, tool execution, and domain object state transition into a validated LoopOCEL (OCEL 2.0) log.",
+                "arguments": [
+                    {
+                        "name": "task",
+                        "description": "The user task or instruction to execute and record.",
+                        "required": True,
+                    },
+                    {
+                        "name": "session_id",
+                        "description": "Optional explicit session ID (auto-generated if omitted).",
+                        "required": False,
+                    },
+                    {
+                        "name": "profile",
+                        "description": "Optional domain profile label (e.g. travel, coding, general).",
+                        "required": False,
+                    },
+                ],
+            },
+            {
+                "name": "ingest-and-analyze",
+                "description": "Ingest an existing agent transcript file into ocel4agent-mcp, validate OCEL 2.0 compliance, and render the LoopOCEL ontology coverage figure.",
+                "arguments": [
+                    {
+                        "name": "transcript_path",
+                        "description": "Path to the transcript file (Claude Code JSONL, Antigravity transcript.jsonl, or chat JSON).",
+                        "required": True,
+                    },
+                    {
+                        "name": "session_id",
+                        "description": "Optional session ID.",
+                        "required": False,
+                    },
+                    {
+                        "name": "task",
+                        "description": "Optional task description.",
+                        "required": False,
+                    },
+                ],
+            },
+        ]
+
+    def get_prompt(self, name: str, arguments: dict[str, Any] | None = None) -> dict[str, Any]:
+        args = arguments or {}
+        if name == "record-task":
+            task_text = str(args.get("task") or "Execute the requested task.")
+            session_id = args.get("session_id")
+            profile = str(args.get("profile") or "general")
+            sid_hint = f'session_id="{session_id}"' if session_id else "an explicit or auto-generated session_id"
+            prompt_body = (
+                f"Execute the following task while recording a complete LoopOCEL (OCEL 2.0) process log via `ocel4agent-mcp`:\n\n"
+                f"Task: {task_text}\n\n"
+                f"Follow this instrumentation protocol strictly:\n"
+                f"1. **Start Session**: Before taking action, call `session_start` with `task`={json.dumps(task_text)}, `profile`={json.dumps(profile)}, {sid_hint}, `instruction`={json.dumps(task_text)}, and `initial_objects` containing the initial domain `ProcessObject` instances (using `<kind>:<id>` keys such as `trip:01` or `file:app.py`).\n"
+                f"2. **Record Every Turn**: After each reasoning and tool-use cycle, call `record_turn` with:\n"
+                f"   - `session_id`: the active session ID\n"
+                f"   - `response_message`: your reasoning summary for this turn\n"
+                f"   - `actions`: list of executed tools, each with `name`, `arguments`, `outcome` (`\"success\"` or `\"rejected\"`), `result`, `targets` (list of targeted `ProcessObject` IDs), `acted_on`, `describes`, and `changes` (`{{\"<kind>:<id>\": {{\"state\": {{...}}, \"created\": true/false}}}}`) for any domain entity created or mutated.\n"
+                f"3. **Finalize & Render**: When the task is complete, call `session_end(session_id=...)` to build and validate `loopocel.json` and render `figure.svg` / `figure.png`, then call `get_figure(session_id=...)` to return the ontology coverage diagram."
+            )
+            return {
+                "description": f"Record LoopOCEL execution log for task: {task_text}",
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": {"type": "text", "text": prompt_body},
+                    }
+                ],
+            }
+        if name == "ingest-and-analyze":
+            tpath = str(args.get("transcript_path") or "")
+            session_id = args.get("session_id") or "ingested_session"
+            task_text = str(args.get("task") or f"Ingested transcript {Path(tpath).name if tpath else ''}").strip()
+            prompt_body = (
+                f"Ingest the transcript at `{tpath}` into `ocel4agent-mcp` and generate its validated LoopOCEL log and coverage figure:\n"
+                f"1. Call `session_start(session_id={json.dumps(session_id)}, task={json.dumps(task_text)}, mode=\"transcript\")`.\n"
+                f"2. Call `session_end(session_id={json.dumps(session_id)}, transcript_path={json.dumps(tpath)})`.\n"
+                f"3. Call `get_summary(session_id={json.dumps(session_id)})` and `get_figure(session_id={json.dumps(session_id)})` and summarize the ontology coverage and validation status."
+            )
+            return {
+                "description": f"Ingest and analyze transcript: {tpath}",
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": {"type": "text", "text": prompt_body},
+                    }
+                ],
+            }
+        raise ValueError(f"Unknown prompt: {name}")
+
 
 def handle_jsonrpc(server: LoopOCELServer, request: dict[str, Any]) -> dict[str, Any] | None:
     """Handle one MCP JSON-RPC 2.0 request or notification."""
@@ -670,6 +764,7 @@ def handle_jsonrpc(server: LoopOCELServer, request: dict[str, Any]) -> dict[str,
                 "capabilities": {
                     "tools": {"listChanged": False},
                     "resources": {"subscribe": False, "listChanged": False},
+                    "prompts": {"listChanged": False},
                 },
                 "serverInfo": SERVER_INFO,
                 "instructions": "Record agent loops into LoopOCEL (OCEL 2.0) logs and render ontology coverage figures.",
@@ -700,6 +795,14 @@ def handle_jsonrpc(server: LoopOCELServer, request: dict[str, Any]) -> dict[str,
             else:
                 content.append({"type": "text", "text": json.dumps(structured, indent=2)})
             result = {"content": content, "structuredContent": structured, "isError": False}
+        elif method == "prompts/list":
+            result = {"prompts": server.list_prompts()}
+        elif method == "prompts/get":
+            pname = params.get("name")
+            pargs = params.get("arguments") or {}
+            if not isinstance(pname, str) or not isinstance(pargs, dict):
+                return None if is_notification else _error(request_id, -32602, "Invalid params")
+            result = server.get_prompt(pname, pargs)
         elif method == "resources/list":
             result = {"resources": server.list_resources()}
         elif method == "resources/templates/list":
@@ -902,5 +1005,23 @@ def create_fastmcp_server(sessions_root: Path | str | None = None) -> Any:
     def list_sessions() -> dict[str, Any]:
         return core.list_sessions()
 
+    @mcp.prompt(name="record-task")
+    def prompt_record_task(task: str, session_id: str | None = None, profile: str = "general") -> str:
+        res = core.get_prompt("record-task", {"task": task, "session_id": session_id, "profile": profile})
+        return res["messages"][0]["content"]["text"]
+
+    @mcp.prompt(name="ingest-and-analyze")
+    def prompt_ingest_and_analyze(
+        transcript_path: str,
+        session_id: str = "ingested_session",
+        task: str | None = None,
+    ) -> str:
+        res = core.get_prompt(
+            "ingest-and-analyze",
+            {"transcript_path": transcript_path, "session_id": session_id, "task": task},
+        )
+        return res["messages"][0]["content"]["text"]
+
     return mcp
+
 

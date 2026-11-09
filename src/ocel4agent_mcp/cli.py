@@ -9,6 +9,7 @@ import time
 
 from .adapters.claude_code import ingest_transcript, main_hook_cli
 from .adapters.llm_proxy import LLMProxyServer
+from .adapters.tool_proxy import MCPStdioWrapper
 from .convert import convert, summarize_log
 from .figure import render_session_figure
 from .server import LoopOCELServer, handle_jsonrpc, run_http, run_stdio
@@ -58,6 +59,11 @@ def main(argv: list[str] | None = None) -> int:
     proxy_p.add_argument("--host", default="127.0.0.1")
     proxy_p.add_argument("--port", type=int, default=18080)
     proxy_p.add_argument("--task", default="proxy-task")
+
+    wrap_p = sub.add_parser("wrap", help="Wrap a downstream stdio MCP server and record all tools/call interactions")
+    wrap_p.add_argument("--session-dir", type=Path, required=True, help="Directory to store LoopOCEL session artifacts")
+    wrap_p.add_argument("--task", default="mcp-wrapped-task", help="Task identifier")
+    wrap_p.add_argument("command", nargs=argparse.REMAINDER, help="Downstream MCP server command (prefix with --)")
 
     call_p = sub.add_parser("call", help="Invoke an MCP tool on LoopOCELServer via JSON-RPC tools/call")
     call_p.add_argument("tool_name", help="MCP tool name (e.g. session_start, record_turn, session_end)")
@@ -121,6 +127,13 @@ def main(argv: list[str] | None = None) -> int:
         except KeyboardInterrupt:
             proxy.stop()
         return 0
+
+    if args.subcommand == "wrap":
+        cmd = list(args.command)
+        if cmd and cmd[0] == "--":
+            cmd = cmd[1:]
+        wrapper = MCPStdioWrapper(args.session_dir, cmd, task_id=args.task)
+        return wrapper.run()
 
     if args.subcommand == "call":
         server = LoopOCELServer(sessions_root=args.sessions_root)

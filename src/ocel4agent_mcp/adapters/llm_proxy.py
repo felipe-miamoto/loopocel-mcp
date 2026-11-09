@@ -223,6 +223,112 @@ class LLMRecordingRecorder:
         return msg, calls
 
 
+def reassemble_sse_response(raw_sse: str, *, is_anthropic: bool = False) -> dict[str, Any] | None:
+    """Reassemble an Anthropic or OpenAI Server-Sent Events (SSE) stream into a single response object."""
+    events: list[dict[str, Any]] = []
+    for line in raw_sse.splitlines():
+        s = line.strip()
+        if not s.startswith("data:"):
+            continue
+        payload = s[5:].strip()
+        if not payload or payload == "[DONE]":
+            continue
+        try:
+            obj = json.loads(payload)
+            if isinstance(obj, dict):
+                events.append(obj)
+        except json.JSONDecodeError:
+            continue
+
+    if not events:
+        return None
+
+    # Detect Anthropic SSE format
+    if is_anthropic or any(e.get("type") in ("message_start", "content_block_start", "content_block_delta") for e in events):
+        msg_meta: dict[str, Any] = {"role": "assistant", "content": []}
+        blocks_by_index: dict[int, dict[str, Any]] = {}
+        partial_json_by_index: dict[int, list[str]] = {}
+        for ev in events:
+            etype = ev.get("type")
+            if etype == "message_start" and isinstance(ev.get("message"), dict):
+                for k, v in ev["message"].items():
+                    if k != "content":
+                        msg_meta[k] = deepcopy(v)
+            elif etype == "content_block_start":
+                idx = int(ev.get("index", len(blocks_by_index)))
+                cb = deepcopy(ev.get("content_block") or {"type": "text", "text": ""})
+                blocks_by_index[idx] = cb
+                if cb.get("type") == "tool_use":
+                    partial_json_by_index[idx] = []
+            elif etype == "content_block_delta":
+                idx = int(ev.get("index", 0))
+                delta = ev.get("delta") or {}
+                dtype = delta.get("type")
+                block = blocks_by_index.setdefault(idx, {"type": "text", "text": ""})
+                if dtype == "text_delta":
+                    block["text"] = str(block.get("text") or "") + str(delta.get("text") or "")
+                elif dtype == "input_json_delta":
+                    partial_json_by_index.setdefault(idx, []).append(str(delta.get("partial_json") or ""))
+            elif etype == "message_delta":
+                delta = ev.get("delta") or {}
+                for k, v in delta.items():
+                    msg_meta[k] = v
+
+        assembled_blocks: list[dict[str, Any]] = []
+        for idx in sorted(blocks_by_index):
+            block = blocks_by_index[idx]
+            if block.get("type") == "tool_use" and idx in partial_json_by_index:
+                raw_json = "".join(partial_json_by_index[idx]).strip()
+                if raw_json:
+                    try:
+                        block["input"] = json.loads(raw_json)
+                    except json.JSONDecodeError:
+                        block["input"] = {"raw": raw_json}
+                elif not isinstance(block.get("input"), dict):
+                    block["input"] = {}
+            assembled_blocks.append(block)
+        msg_meta["content"] = assembled_blocks
+        return msg_meta
+
+    # OpenAI chat.completion.chunk SSE format
+    content_parts: list[str] = []
+    tool_calls_by_index: dict[int, dict[str, Any]] = {}
+    resp_meta: dict[str, Any] = {"object": "chat.completion"}
+    for ev in events:
+        for k in ("id", "model", "created"):
+            if k in ev and k not in resp_meta:
+                resp_meta[k] = ev[k]
+        choices = ev.get("choices")
+        if not isinstance(choices, list) or not choices:
+            continue
+        c0 = choices[0] if isinstance(choices[0], dict) else {}
+        delta = c0.get("delta") if isinstance(c0.get("delta"), dict) else {}
+        if isinstance(delta.get("content"), str):
+            content_parts.append(delta["content"])
+        for tc in delta.get("tool_calls") or ():
+            if not isinstance(tc, dict):
+                continue
+            t_idx = int(tc.get("index", 0))
+            entry = tool_calls_by_index.setdefault(
+                t_idx,
+                {"id": tc.get("id") or f"call_{t_idx + 1}", "type": "function", "function": {"name": "", "arguments": ""}},
+            )
+            if tc.get("id"):
+                entry["id"] = tc["id"]
+            fn = tc.get("function")
+            if isinstance(fn, dict):
+                if fn.get("name"):
+                    entry["function"]["name"] += str(fn["name"])
+                if fn.get("arguments"):
+                    entry["function"]["arguments"] += str(fn["arguments"])
+
+    message: dict[str, Any] = {"role": "assistant", "content": "".join(content_parts)}
+    if tool_calls_by_index:
+        message["tool_calls"] = [tool_calls_by_index[i] for i in sorted(tool_calls_by_index)]
+    resp_meta["choices"] = [{"index": 0, "message": message, "finish_reason": "tool_calls" if tool_calls_by_index else "stop"}]
+    return resp_meta
+
+
 class LLMProxyServer:
     """Local HTTP proxy forwarding requests to an upstream LLM API while recording LoopOCEL evidence."""
 
@@ -269,9 +375,19 @@ class LLMProxyServer:
 
                 try:
                     req_json = json.loads(raw_req.decode("utf-8"))
-                    resp_json = json.loads(raw_resp.decode("utf-8"))
-                    if isinstance(req_json, dict) and isinstance(resp_json, dict) and status == 200:
-                        parent.recorder.record_exchange(self.path, req_json, resp_json)
+                    if isinstance(req_json, dict) and status == 200:
+                        text_resp = raw_resp.decode("utf-8", errors="replace")
+                        content_type = dict((k.lower(), v) for k, v in resp_headers).get("content-type", "")
+                        resp_json: dict[str, Any] | None = None
+                        if "text/event-stream" in content_type.lower() or text_resp.lstrip().startswith(("event:", "data:")):
+                            is_anth = "/v1/messages" in self.path or "anthropic_version" in req_json
+                            resp_json = reassemble_sse_response(text_resp, is_anthropic=is_anth)
+                        else:
+                            parsed = json.loads(text_resp)
+                            if isinstance(parsed, dict):
+                                resp_json = parsed
+                        if isinstance(resp_json, dict):
+                            parent.recorder.record_exchange(self.path, req_json, resp_json)
                 except Exception:
                     pass
 

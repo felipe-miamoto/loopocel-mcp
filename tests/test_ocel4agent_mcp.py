@@ -11,8 +11,8 @@ import tempfile
 import unittest
 
 from ocel4agent_mcp.adapters.claude_code import ingest_transcript, record_hook_event
-from ocel4agent_mcp.adapters.llm_proxy import LLMRecordingRecorder
-from ocel4agent_mcp.adapters.tool_proxy import ToolCallProxy
+from ocel4agent_mcp.adapters.llm_proxy import LLMRecordingRecorder, reassemble_sse_response
+from ocel4agent_mcp.adapters.tool_proxy import MCPStdioWrapper, ToolCallProxy
 from ocel4agent_mcp.convert import convert, summarize_log
 from ocel4agent_mcp.figure import cohort_from_log, render_figure, render_session_figure
 from ocel4agent_mcp.server import LoopOCELServer, handle_jsonrpc, run_stdio
@@ -285,7 +285,98 @@ class AdaptersAndFigureTests(unittest.TestCase):
             self.assertTrue(Path(multi["outputs"]["svg"]).is_file())
             self.assertTrue(Path(multi["outputs"]["png"]).is_file())
 
+    def test_prompts_sse_reassembly_and_mcp_stdio_wrapper(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            server = LoopOCELServer(sessions_root=tmp)
+            p_list = handle_jsonrpc(server, {"jsonrpc": "2.0", "id": 10, "method": "prompts/list"})
+            assert p_list is not None
+            prompt_names = {p["name"] for p in p_list["result"]["prompts"]}
+            self.assertIn("record-task", prompt_names)
+            self.assertIn("ingest-and-analyze", prompt_names)
+
+            p_get = handle_jsonrpc(
+                server,
+                {
+                    "jsonrpc": "2.0",
+                    "id": 11,
+                    "method": "prompts/get",
+                    "params": {"name": "record-task", "arguments": {"task": "Book flight to Vienna", "session_id": "s1"}},
+                },
+            )
+            assert p_get is not None
+            self.assertIn("session_start", p_get["result"]["messages"][0]["content"]["text"])
+
+            # Test Anthropic SSE reassembly
+            anth_sse = "\n".join(
+                [
+                    "event: message_start",
+                    'data: {"type":"message_start","message":{"id":"msg_01","role":"assistant","content":[]}}',
+                    "event: content_block_start",
+                    'data: {"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}}',
+                    "event: content_block_delta",
+                    'data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Checking flight..."}}',
+                    "event: content_block_start",
+                    'data: {"type":"content_block_start","index":1,"content_block":{"type":"tool_use","id":"toolu_sse1","name":"lookup_flight","input":{}}}',
+                    "event: content_block_delta",
+                    'data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"{\\"flight_id\\": "}}',
+                    "event: content_block_delta",
+                    'data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"\\"flight:OS112\\"}"}}',
+                    "event: message_stop",
+                    'data: {"type":"message_stop"}',
+                ]
+            )
+            anth_resp = reassemble_sse_response(anth_sse, is_anthropic=True)
+            assert anth_resp is not None
+            self.assertEqual(anth_resp["content"][0]["text"], "Checking flight...")
+            self.assertEqual(anth_resp["content"][1]["input"]["flight_id"], "flight:OS112")
+
+            # Test OpenAI SSE reassembly
+            oai_sse = "\n".join(
+                [
+                    'data: {"id":"chatcmpl-1","choices":[{"index":0,"delta":{"role":"assistant","content":"Hello "}}]}',
+                    'data: {"id":"chatcmpl-1","choices":[{"index":0,"delta":{"content":"world","tool_calls":[{"index":0,"id":"call_sse1","function":{"name":"get_hotel","arguments":"{\\"hotel_id\\":"}}]}}]}',
+                    'data: {"id":"chatcmpl-1","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"\\"hotel:H1\\"}"}}]}}]}',
+                    "data: [DONE]",
+                ]
+            )
+            oai_resp = reassemble_sse_response(oai_sse, is_anthropic=False)
+            assert oai_resp is not None
+            msg = oai_resp["choices"][0]["message"]
+            self.assertEqual(msg["content"], "Hello world")
+            self.assertEqual(json.loads(msg["tool_calls"][0]["function"]["arguments"])["hotel_id"], "hotel:H1")
+
+            # Test MCPStdioWrapper interception
+            wdir = Path(tmp) / "wrapped-session"
+            wrapper = MCPStdioWrapper(wdir, ["echo"], task_id="wrap-test")
+            wrapper.observe_client_message(
+                json.dumps(
+                    {
+                        "jsonrpc": "2.0",
+                        "id": 42,
+                        "method": "tools/call",
+                        "params": {"name": "reserve_room", "arguments": {"hotel_id": "hotel:H1"}},
+                    }
+                )
+            )
+            wrapper.observe_server_message(
+                json.dumps(
+                    {
+                        "jsonrpc": "2.0",
+                        "id": 42,
+                        "result": {
+                            "content": [{"type": "text", "text": '{"hotel_id":"hotel:H1","status":"booked"}'}]
+                        },
+                    }
+                )
+            )
+            fin = wrapper.finalize()
+            assert fin is not None
+            self.assertGreater(fin["objects"], 0)
+            wlog = json.loads((wdir / "loopocel.json").read_text(encoding="utf-8"))
+            self.assertTrue(validate_log(wlog)["passed"])
+
 
 if __name__ == "__main__":
     unittest.main()
+
 
