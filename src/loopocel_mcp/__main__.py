@@ -1,4 +1,4 @@
-"""Allow running ocel4agent_mcp as `python -m ocel4agent_mcp`."""
+"""Allow running loopocel_mcp as `python -m loopocel_mcp`."""
 
 from .cli import main
 

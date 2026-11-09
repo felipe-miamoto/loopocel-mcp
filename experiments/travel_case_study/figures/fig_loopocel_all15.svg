@@ -3,7 +3,7 @@
 <rect x="-220" y="-220" width="2140" height="1520" fill="#FFFFFF"/>
 <text x="-150" y="-172" font-size="16" font-weight="700" fill="#1F2328">LoopOCEL — Live Web Travel Planning Cohort (n=15 runs)</text>
 <text x="-150" y="-145" font-size="13.5" fill="#1F2328">Classes 9/9 · O2O 15/16 · Baseline events 11/14 (+1 event extension)</text>
-<text x="-150" y="-121" font-size="12" fill="#57606A">Recorded via ocel4agent-mcp across Tier 1 (Direct), Tier 2 (Constrained), and Tier 3 (Multi-Modal)</text>
+<text x="-150" y="-121" font-size="12" fill="#57606A">Recorded via loopocel-mcp across Tier 1 (Direct), Tier 2 (Constrained), and Tier 3 (Multi-Modal)</text>
 <text x="-150" y="-97" font-size="13.5" fill="#1F2328">Travel (n=15): 485 objects / 719 events · 1,323 O2O links</text>
 <path d="M175 625 C270 625 280 360 380 360" fill="none" stroke="#22252A" stroke-width="1.65" stroke-linejoin="round"/>
 <line x1="362.0" y1="360.0" x2="368.0" y2="360.0" stroke="#22252A" stroke-width="1.65"/>

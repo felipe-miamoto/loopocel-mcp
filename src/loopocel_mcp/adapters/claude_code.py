@@ -536,7 +536,7 @@ def _ingest_normalized_turns(
     return {"turns_ingested": len(turns), "requests_ingested": req_counter}
 
 
-def claude_code_settings_snippet(session_dir: Path | str, command: str = "ocel4agent-mcp") -> dict[str, Any]:
+def claude_code_settings_snippet(session_dir: Path | str, command: str = "loopocel-mcp") -> dict[str, Any]:
     """Return a Claude Code .claude/settings.json hooks snippet for live session capture."""
     target = str(Path(session_dir).resolve())
     hook_cmd = f'{command} hook --session-dir "{target}"'

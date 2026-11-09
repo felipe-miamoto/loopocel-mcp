@@ -21,7 +21,7 @@ from .validate import validate_log
 
 MCP_PROTOCOL_VERSION = "2025-11-25"
 SUPPORTED_PROTOCOL_VERSIONS = ("2025-11-25", "2025-06-18", "2025-03-26", "2024-11-05")
-SERVER_INFO = {"name": "ocel4agent-mcp", "version": "0.1.0"}
+SERVER_INFO = {"name": "loopocel-mcp", "version": "0.1.0"}
 
 
 class _LiveSessionState:
@@ -674,7 +674,7 @@ class LoopOCELServer:
             },
             {
                 "name": "ingest-and-analyze",
-                "description": "Ingest an existing agent transcript file into ocel4agent-mcp, validate OCEL 2.0 compliance, and render the LoopOCEL ontology coverage figure.",
+                "description": "Ingest an existing agent transcript file into loopocel-mcp, validate OCEL 2.0 compliance, and render the LoopOCEL ontology coverage figure.",
                 "arguments": [
                     {
                         "name": "transcript_path",
@@ -703,7 +703,7 @@ class LoopOCELServer:
             profile = str(args.get("profile") or "general")
             sid_hint = f'session_id="{session_id}"' if session_id else "an explicit or auto-generated session_id"
             prompt_body = (
-                f"Execute the following task while recording a complete LoopOCEL (OCEL 2.0) process log via `ocel4agent-mcp`:\n\n"
+                f"Execute the following task while recording a complete LoopOCEL (OCEL 2.0) process log via `loopocel-mcp`:\n\n"
                 f"Task: {task_text}\n\n"
                 f"Follow this instrumentation protocol strictly:\n"
                 f"1. **Start Session**: Before taking action, call `session_start` with `task`={json.dumps(task_text)}, `profile`={json.dumps(profile)}, {sid_hint}, `instruction`={json.dumps(task_text)}, and `initial_objects` containing the initial domain `ProcessObject` instances (using `<kind>:<id>` keys such as `trip:01` or `file:app.py`).\n"
@@ -727,7 +727,7 @@ class LoopOCELServer:
             session_id = args.get("session_id") or "ingested_session"
             task_text = str(args.get("task") or f"Ingested transcript {Path(tpath).name if tpath else ''}").strip()
             prompt_body = (
-                f"Ingest the transcript at `{tpath}` into `ocel4agent-mcp` and generate its validated LoopOCEL log and coverage figure:\n"
+                f"Ingest the transcript at `{tpath}` into `loopocel-mcp` and generate its validated LoopOCEL log and coverage figure:\n"
                 f"1. Call `session_start(session_id={json.dumps(session_id)}, task={json.dumps(task_text)}, mode=\"transcript\")`.\n"
                 f"2. Call `session_end(session_id={json.dumps(session_id)}, transcript_path={json.dumps(tpath)})`.\n"
                 f"3. Call `get_summary(session_id={json.dumps(session_id)})` and `get_figure(session_id={json.dumps(session_id)})` and summarize the ontology coverage and validation status."
@@ -914,7 +914,7 @@ def create_fastmcp_server(sessions_root: Path | str | None = None) -> Any:
     from mcp.server.fastmcp import FastMCP, Image
 
     core = LoopOCELServer(sessions_root=sessions_root)
-    mcp = FastMCP("ocel4agent-mcp")
+    mcp = FastMCP("loopocel-mcp")
 
     @mcp.tool()
     def session_start(

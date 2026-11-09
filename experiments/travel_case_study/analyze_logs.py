@@ -18,19 +18,19 @@ SRC_DIR = REPO_ROOT / "src"
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
-from ocel4agent_mcp.convert import (  # noqa: E402
+from loopocel_mcp.convert import (  # noqa: E402
     BASELINE_EVENTS_BY_FAMILY,
     BASELINE_EVENT_SET,
     OBJECT_TYPES,
     RELATIONS,
     summarize_log,
 )
-from ocel4agent_mcp.figure import (  # noqa: E402
+from loopocel_mcp.figure import (  # noqa: E402
     CohortData,
     cohort_from_log,
     render_figure,
 )
-from ocel4agent_mcp.validate import pm4py_check, validate_log  # noqa: E402
+from loopocel_mcp.validate import pm4py_check, validate_log  # noqa: E402
 
 TASKS_FILE = HERE / "tasks.json"
 SESSIONS_DIR = REPO_ROOT / "sessions"
@@ -1057,7 +1057,7 @@ def run_analysis(sessions_dir: Path | None = None) -> dict[str, Any]:
     merged_all = merge_cohorts(
         label=f"Travel (n={len(all_cohorts)})",
         title=f"LoopOCEL — Live Web Travel Planning Cohort (n={len(all_cohorts)} runs)",
-        subtitle="Recorded via ocel4agent-mcp across Tier 1 (Direct), Tier 2 (Constrained), and Tier 3 (Multi-Modal)",
+        subtitle="Recorded via loopocel-mcp across Tier 1 (Direct), Tier 2 (Constrained), and Tier 3 (Multi-Modal)",
         cohorts=all_cohorts,
         color="#2B5C8F",
     )

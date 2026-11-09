@@ -1,22 +1,22 @@
-# Execution Runbook: 15 Live-Web Travel Planning Runs via `ocel4agent-mcp`
+# Execution Runbook: 15 Live-Web Travel Planning Runs via `loopocel-mcp`
 
 This directory contains only:
 - [`tasks.json`](tasks.json) — The 15 academic & conference travel tasks across 3 complexity tiers (`tier1_direct_01`..`05`, `tier2_constrained_01`..`05`, `tier3_multimodal_01`..`05`).
 - [`analyze_logs.py`](analyze_logs.py) — Post-run process mining and cohort analysis script that reads `sessions/<task_id>/loopocel.json` and generates Table 1, the LoopOCEL coverage figures, and the discovered Object-Centric Process Graph (OC-DFG).
 
-All 15 experiments are recorded **directly through the `ocel4agent-mcp` MCP server**—no domain-specific wrapper scripts are used.
+All 15 experiments are recorded **directly through the `loopocel-mcp` MCP server**—no domain-specific wrapper scripts are used.
 
 ---
 
-## How to Record Each Run Using `ocel4agent-mcp`
+## How to Record Each Run Using `loopocel-mcp`
 
-The `ocel4agent-mcp` server is registered as a workspace plugin in [`.agents/plugins/ocel4agent-mcp/mcp_config.json`](../../../.agents/plugins/ocel4agent-mcp/mcp_config.json) storing sessions in `sessions`.
+The `loopocel-mcp` server is registered as a workspace plugin in [`.agents/plugins/loopocel-mcp/mcp_config.json`](../../../.agents/plugins/loopocel-mcp/mcp_config.json) storing sessions in `sessions`.
 
 You can invoke the MCP tools (`session_start`, `record_object`, `record_turn`, `session_end`, `get_log`, `get_figure`, `get_summary`, `list_sessions`) either:
 1. **Directly as MCP tools** if loaded in your active tool declarations, or
-2. **Via JSON-RPC `tools/call` against `ocel4agent-mcp`**:
+2. **Via JSON-RPC `tools/call` against `loopocel-mcp`**:
    ```bash
-   PYTHONPATH=src python3 -m ocel4agent_mcp --sessions-root sessions call <tool_name> --args-json '<json>'
+   PYTHONPATH=src python3 -m loopocel_mcp --sessions-root sessions call <tool_name> --args-json '<json>'
    ```
 
 ### MCP Tool Sequence Per Task (`<task_id>` from `tasks.json`)

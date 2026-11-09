@@ -1,32 +1,32 @@
 ---
-name: ocel4agent-logger
-description: Record autonomous AI agent executions into validated LoopOCEL (OCEL 2.0 JSON) logs and render ontology coverage diagrams using ocel4agent-mcp. Use when asked to log an agent task as OCEL 2.0 / LoopOCEL, ingest an agent transcript, wrap a downstream MCP server, or visualize LoopOCEL ontology coverage and instance cardinalities.
+name: loopocel-logger
+description: Record autonomous AI agent executions into validated LoopOCEL (OCEL 2.0 JSON) logs and render ontology coverage diagrams using loopocel-mcp. Use when asked to log an agent task as OCEL 2.0 / LoopOCEL, ingest an agent transcript, wrap a downstream MCP server, or visualize LoopOCEL ontology coverage and instance cardinalities.
 ---
 
-# OCEL4Agent-MCP Instrumentation Skill
+# LoopOCEL-MCP Instrumentation Skill
 
-This skill teaches an agent how to record its own execution—or convert an existing transcript/session—into a validated **LoopOCEL (OCEL 2.0 JSON)** object-centric event log and ontology coverage diagram using **`ocel4agent-mcp`**.
+This skill teaches an agent how to record its own execution—or convert an existing transcript/session—into a validated **LoopOCEL (OCEL 2.0 JSON)** object-centric event log and ontology coverage diagram using **`loopocel-mcp`**.
 
 ---
 
 ## 1. Choose the Right Capture Mode
 
-`ocel4agent-mcp` supports four capture modes depending on your setup:
+`loopocel-mcp` supports four capture modes depending on your setup:
 
 1. **Direct MCP Tool Recording (`mode="mcp"`)**:
-   - Use when `ocel4agent-mcp` is connected as an MCP server and you want to actively record each turn and domain `ProcessObject` state change as you execute a task.
+   - Use when `loopocel-mcp` is connected as an MCP server and you want to actively record each turn and domain `ProcessObject` state change as you execute a task.
 2. **Post-Hoc Transcript Ingestion (`mode="transcript"`)**:
    - Use when an agent has already completed a run (Claude Code JSONL, Antigravity `transcript.jsonl`, or OpenAI/Anthropic chat JSON) and you want to convert its transcript into `loopocel.json` + `figure.svg`/`figure.png`.
-3. **Downstream MCP Server Wrapper (`ocel4agent-mcp wrap`)**:
+3. **Downstream MCP Server Wrapper (`loopocel-mcp wrap`)**:
    - Use when you want zero-token passive recording of all `tools/call` executions sent to another MCP server.
-4. **Streaming HTTP LLM Proxy (`ocel4agent-mcp proxy`)**:
+4. **Streaming HTTP LLM Proxy (`loopocel-mcp proxy`)**:
    - Use when you want passive full-fidelity capture of raw LLM requests/responses (including SSE `text/event-stream` chunks) via `ANTHROPIC_BASE_URL` or `OPENAI_BASE_URL`.
 
 ---
 
 ## 2. Mode 1: Direct MCP Tool Recording Protocol (`mode="mcp"`)
 
-When executing a user task while recording via `ocel4agent-mcp` tools, follow this exact 3-step lifecycle:
+When executing a user task while recording via `loopocel-mcp` tools, follow this exact 3-step lifecycle:
 
 ### Step 1: Open the Session (`session_start`)
 Before executing the first domain action, call `session_start`:
@@ -104,7 +104,7 @@ To convert an existing agent transcript file without re-running the task:
    - Call `session_end({"session_id": "run_01", "transcript_path": "/path/to/transcript.jsonl"})`
 2. Or via CLI:
    ```sh
-   ocel4agent-mcp ingest sessions/run_01 /path/to/transcript.jsonl --task "Task name"
+   loopocel-mcp ingest sessions/run_01 /path/to/transcript.jsonl --task "Task name"
    ```
 
 ---
@@ -113,11 +113,11 @@ To convert an existing agent transcript file without re-running the task:
 
 - **Wrap any stdio MCP server**:
   ```sh
-  ocel4agent-mcp wrap --session-dir sessions/wrapped_run --task "Filesystem task" -- npx -y @modelcontextprotocol/server-filesystem /workspace
+  loopocel-mcp wrap --session-dir sessions/wrapped_run --task "Filesystem task" -- npx -y @modelcontextprotocol/server-filesystem /workspace
   ```
 - **Run local HTTP/SSE LLM proxy**:
   ```sh
-  ocel4agent-mcp proxy --session-dir sessions/proxy_run --upstream https://api.anthropic.com --port 18080
+  loopocel-mcp proxy --session-dir sessions/proxy_run --upstream https://api.anthropic.com --port 18080
   ```
   Then point `ANTHROPIC_BASE_URL=http://127.0.0.1:18080` (or `OPENAI_BASE_URL`) before running your agent.
 

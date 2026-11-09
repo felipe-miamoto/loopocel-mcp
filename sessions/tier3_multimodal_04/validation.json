@@ -2,7 +2,7 @@
   "passed": true,
   "schema": {
     "passed": true,
-    "schema": "src/ocel4agent_mcp/schema/ocel20-schema-json.json",
+    "schema": "src/loopocel_mcp/schema/ocel20-schema-json.json",
     "schema_sha256": "0c08b6b23b7cc6219840ce5a2a5288da4d28589649b5a2784997beefccb00a5f",
     "errors": []
   },

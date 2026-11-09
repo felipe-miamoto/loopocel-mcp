@@ -1,4 +1,4 @@
-"""Command-line interface for ocel4agent-mcp."""
+"""Command-line interface for loopocel-mcp."""
 
 from __future__ import annotations
 
@@ -18,7 +18,7 @@ from .validate import validate_log
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        prog="ocel4agent-mcp",
+        prog="loopocel-mcp",
         description="LoopOCEL MCP server, capture adapters, converter, validator, and figure renderer",
     )
     parser.add_argument(

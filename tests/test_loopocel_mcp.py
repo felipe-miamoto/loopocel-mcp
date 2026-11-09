@@ -1,4 +1,4 @@
-"""Regression and unit tests for ocel4agent-mcp."""
+"""Regression and unit tests for loopocel-mcp."""
 
 from __future__ import annotations
 
@@ -10,13 +10,13 @@ import shutil
 import tempfile
 import unittest
 
-from ocel4agent_mcp.adapters.claude_code import ingest_transcript, record_hook_event
-from ocel4agent_mcp.adapters.llm_proxy import LLMRecordingRecorder, reassemble_sse_response
-from ocel4agent_mcp.adapters.tool_proxy import MCPStdioWrapper, ToolCallProxy
-from ocel4agent_mcp.convert import convert, summarize_log
-from ocel4agent_mcp.figure import cohort_from_log, render_figure, render_session_figure
-from ocel4agent_mcp.server import LoopOCELServer, handle_jsonrpc, run_stdio
-from ocel4agent_mcp.validate import VerificationError, reconstruct, validate_log, validate_schema
+from loopocel_mcp.adapters.claude_code import ingest_transcript, record_hook_event
+from loopocel_mcp.adapters.llm_proxy import LLMRecordingRecorder, reassemble_sse_response
+from loopocel_mcp.adapters.tool_proxy import MCPStdioWrapper, ToolCallProxy
+from loopocel_mcp.convert import convert, summarize_log
+from loopocel_mcp.figure import cohort_from_log, render_figure, render_session_figure
+from loopocel_mcp.server import LoopOCELServer, handle_jsonrpc, run_stdio
+from loopocel_mcp.validate import VerificationError, reconstruct, validate_log, validate_schema
 
 
 OCEL4AGENT_RESULTS = Path(__file__).resolve().parents[2] / "OCEL4Agent" / "results"
@@ -140,7 +140,7 @@ class MCPServerAndLiveCaptureTests(unittest.TestCase):
             run_stdio(server, stdin=stdin_buf, stdout=stdout_buf)
             responses = [json.loads(line) for line in stdout_buf.getvalue().splitlines() if line.strip()]
             self.assertEqual(len(responses), 4)
-            self.assertEqual(responses[0]["result"]["serverInfo"]["name"], "ocel4agent-mcp")
+            self.assertEqual(responses[0]["result"]["serverInfo"]["name"], "loopocel-mcp")
             tool_names = {t["name"] for t in responses[1]["result"]["tools"]}
             self.assertIn("session_start", tool_names)
             self.assertIn("record_turn", tool_names)
