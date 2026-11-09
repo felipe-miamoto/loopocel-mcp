@@ -192,7 +192,7 @@ def validate_schema(ocel: dict[str, Any], schema_path: Path | None = None) -> di
 
     return {
         "passed": not errors,
-        "schema": str(source),
+        "schema": source.name if source == SCHEMA_FILE else str(source.name),
         "schema_sha256": schema_sha,
         "errors": errors,
     }

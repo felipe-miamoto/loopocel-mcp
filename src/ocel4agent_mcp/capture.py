@@ -6,8 +6,61 @@ from datetime import datetime, timezone
 import hashlib
 import json
 from pathlib import Path
+import re
 from typing import Any
 import uuid
+
+
+_SENSITIVE_KEYS = frozenset(
+    {
+        "api_key",
+        "apikey",
+        "x-api-key",
+        "x_api_key",
+        "authorization",
+        "proxy-authorization",
+        "password",
+        "passwd",
+        "secret",
+        "client_secret",
+        "access_token",
+        "refresh_token",
+        "id_token",
+        "private_key",
+        "session_token",
+    }
+)
+
+_SECRET_PATTERNS = (
+    re.compile(r"(?i)\b(Bearer\s+)[A-Za-z0-9._~+/=-]{12,}"),
+    re.compile(r"\b(sk-(?:proj-|ant-)?[A-Za-z0-9_-]{16,})\b"),
+    re.compile(r"\b(AIza[0-9A-Za-z_-]{30,})\b"),
+    re.compile(r"\b(gh[pousr]_[A-Za-z0-9]{20,})\b"),
+    re.compile(r"\b(xox[baprs]-[A-Za-z0-9-]{16,})\b"),
+)
+
+
+def redact_secrets(value: Any) -> Any:
+    """Recursively scrub credentials, API keys, and bearer tokens before persisting capture records."""
+    if isinstance(value, dict):
+        out: dict[str, Any] = {}
+        for k, v in value.items():
+            if isinstance(k, str) and k.lower().strip() in _SENSITIVE_KEYS:
+                out[k] = "[REDACTED]"
+            else:
+                out[k] = redact_secrets(v)
+        return out
+    if isinstance(value, list):
+        return [redact_secrets(item) for item in value]
+    if isinstance(value, str):
+        scrubbed = value
+        for pat in _SECRET_PATTERNS:
+            if pat.pattern.startswith("(?i)\\b(Bearer"):
+                scrubbed = pat.sub(r"\1[REDACTED]", scrubbed)
+            else:
+                scrubbed = pat.sub("[REDACTED]", scrubbed)
+        return scrubbed
+    return value
 
 
 BASELINE_EVENT_TYPES = (
@@ -77,8 +130,9 @@ class Capture:
 
     def raw(self, kind: str, data: dict[str, Any], *, timestamp: str | None = None) -> str:
         stamp = timestamp or now()
+        safe_data = redact_secrets(data)
         with self.path.open("a", encoding="utf-8") as stream:
-            stream.write(canonical({"kind": kind, "time": stamp, "data": data}) + "\n")
+            stream.write(canonical({"kind": kind, "time": stamp, "data": safe_data}) + "\n")
         return stamp
 
     def event(
@@ -376,7 +430,7 @@ class SessionStore:
             "status": "recording",
             "started_at": now(),
             "finished_at": None,
-            "directory": str(directory.resolve()),
+            "directory": f"sessions/{sid}",
         }
         if id_fields:
             meta["id_fields"] = id_fields
@@ -399,7 +453,7 @@ class SessionStore:
                     "status": "completed" if (directory / "loopocel.json").is_file() else "recording",
                     "started_at": None,
                     "finished_at": None,
-                    "directory": str(directory.resolve()),
+                    "directory": f"sessions/{session_id}",
                 }
             raise FileNotFoundError(f"Unknown session: {session_id}")
         return json.loads(meta_path.read_text(encoding="utf-8"))

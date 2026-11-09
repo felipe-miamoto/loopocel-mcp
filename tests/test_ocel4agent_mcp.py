@@ -375,6 +375,22 @@ class AdaptersAndFigureTests(unittest.TestCase):
             wlog = json.loads((wdir / "loopocel.json").read_text(encoding="utf-8"))
             self.assertTrue(validate_log(wlog)["passed"])
 
+            # Verify automatic credential/secret redaction in Capture
+            server.session_start(session_id="sec_test", task="Secret redaction check")
+            server.record_turn(
+                session_id="sec_test",
+                response_message="Used token sk-ant-api03-1234567890abcdefghij and Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+                parameters={"api_key": "super-secret-key", "model": "test-model"},
+            )
+            server.session_end(session_id="sec_test")
+            sec_raw = (Path(tmp) / "sec_test" / "capture.jsonl").read_text(encoding="utf-8")
+            sec_ocel = (Path(tmp) / "sec_test" / "loopocel.json").read_text(encoding="utf-8")
+            for text_blob in (sec_raw, sec_ocel):
+                self.assertNotIn("super-secret-key", text_blob)
+                self.assertNotIn("sk-ant-api03-1234567890abcdefghij", text_blob)
+                self.assertNotIn("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9", text_blob)
+                self.assertIn("[REDACTED]", text_blob)
+
 
 if __name__ == "__main__":
     unittest.main()
