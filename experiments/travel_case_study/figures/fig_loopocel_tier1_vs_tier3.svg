@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="-220 -220 2140 1520" width="1605" height="1140" font-family="Arial, Helvetica, DejaVu Sans, sans-serif">
 <rect x="-220" y="-220" width="2140" height="1520" fill="#FFFFFF"/>
-<text x="-150" y="-172" font-size="16" font-weight="700" fill="#1F2328">LoopOCEL — Tier 1 (Direct) vs. Tier 3 (Multi-Modal) Travel Runs</text>
+<text x="-150" y="-172" font-size="16" font-weight="700" fill="#1F2328">Tier 1 · Direct Round-Trip</text>
 <text x="-150" y="-145" font-size="13.5" fill="#1F2328">Classes 9/9 · O2O 14/16 · Baseline events 11/14 (+1 event extension)</text>
-<text x="-150" y="-121" font-size="12" fill="#57606A">Comparison of low-complexity vs. high-complexity live web travel planning sessions</text>
-<text x="-150" y="-97" font-size="13.5" fill="#1F2328">Tier 1 Direct (n=5): 131 objects / 196 events · 322 O2O links</text>
-<text x="960" y="-172" font-size="16" font-weight="700" fill="#1F2328">LoopOCEL — Tier 1 (Direct) vs. Tier 3 (Multi-Modal) Travel Runs</text>
+<text x="-150" y="-121" font-size="12" fill="#57606A">5 live web runs · unconstrained point-to-point flights</text>
+<text x="-150" y="-97" font-size="13.5" fill="#1F2328">Tier 1 Direct: 131 objects / 196 events · 322 O2O links</text>
+<text x="960" y="-172" font-size="16" font-weight="700" fill="#1F2328">Tier 3 · Multi-Modal &amp; Multi-Stop</text>
 <text x="960" y="-145" font-size="13.5" fill="#1F2328">Classes 9/9 · O2O 15/16 · Baseline events 11/14 (+1 event extension)</text>
-<text x="960" y="-121" font-size="12" fill="#57606A">Comparison of low-complexity vs. high-complexity live web travel planning sessions</text>
-<text x="960" y="-97" font-size="13.5" fill="#1F2328">Tier 3 Multi-Modal (n=5): 188 objects / 282 events · 563 O2O links</text>
+<text x="960" y="-121" font-size="12" fill="#57606A">5 live web runs · rail+air transfer buffer &amp; multi-hotel</text>
+<text x="960" y="-97" font-size="13.5" fill="#1F2328">Tier 3 Multi-Modal: 188 objects / 282 events · 563 O2O links</text>
 <path d="M175 625 C270 625 280 360 380 360" fill="none" stroke="#22252A" stroke-width="1.65" stroke-linejoin="round"/>
 <line x1="362.0" y1="360.0" x2="368.0" y2="360.0" stroke="#22252A" stroke-width="1.65"/>
 <polygon points="380.0,360.0 368.0,364.5 368.0,355.5" fill="#22252A"/>
@@ -192,10 +192,10 @@
 <line x1="-150" y1="1185" x2="-112" y2="1185" stroke="#22252A" stroke-width="3.2"/>
 <text x="-102" y="1189" font-size="12" font-weight="600" fill="#22252A">Multiple cohorts</text>
 <line x1="310" y1="1185" x2="348" y2="1185" stroke="#2B5C8F" stroke-width="3.2"/>
-<text x="358" y="1189" font-size="12" font-weight="600" fill="#2B5C8F">Tier 1 Direct (n=5) only</text>
+<text x="358" y="1189" font-size="12" font-weight="600" fill="#2B5C8F">Tier 1 Direct only</text>
 <line x1="770" y1="1185" x2="808" y2="1185" stroke="#2E6B4E" stroke-width="3.2"/>
-<text x="818" y="1189" font-size="12" font-weight="600" fill="#2E6B4E">Tier 3 Multi-Modal (n=5) only</text>
-<text x="-150" y="1217" font-size="11.5" fill="#272727">Count order: <tspan fill="#2B5C8F" font-weight="600">Tier 1 Direct (n=5)</tspan><tspan fill="#8C959F"> | </tspan><tspan fill="#2E6B4E" font-weight="600">Tier 3 Multi-Modal (n=5)</tspan>&#160;&#160;&#160;&#160;Exact object / event / O2O instance counts. 0 = no recorded instance.</text>
+<text x="818" y="1189" font-size="12" font-weight="600" fill="#2E6B4E">Tier 3 Multi-Modal only</text>
+<text x="-150" y="1217" font-size="11.5" fill="#272727">Count order: <tspan fill="#2B5C8F" font-weight="600">Tier 1 Direct</tspan><tspan fill="#8C959F"> | </tspan><tspan fill="#2E6B4E" font-weight="600">Tier 3 Multi-Modal</tspan>&#160;&#160;&#160;&#160;Exact object / event / O2O instance counts. 0 = no recorded instance.</text>
 <text x="-150" y="1239" font-size="11.5" fill="#272727">* Partial Prompt capture. [ext] Outside the 14 baseline event types. Uncaptured does not mean nonexistent.</text>
 <text x="-150" y="1261" font-size="11.5" fill="#272727">Rounded boxes: object classes. Hexagons: event types. Gray dotted links: focal E2O only. Name / edge colors show coverage; count colors show cohorts.</text>
 </svg>

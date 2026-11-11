@@ -877,6 +877,15 @@ def _render_pure_python_png(cohorts: list[CohortData], png_path: Path) -> bool:
 def _svg_to_png_fallback(svg_path: Path, png_path: Path, cohorts: list[CohortData] | None = None) -> bool:
     """Convert an SVG file to PNG using system tools or pure-Python fallback."""
     png_path.parent.mkdir(parents=True, exist_ok=True)
+    if shutil.which("sips"):
+        res = subprocess.run(
+            ["sips", "-Z", "3200", "-s", "format", "png", str(svg_path), "--out", str(png_path)],
+            capture_output=True,
+            timeout=25,
+        )
+        if res.returncode == 0 and png_path.is_file():
+            return True
+
     for binary, cmd_builder in (
         ("rsvg-convert", lambda s, p: ["rsvg-convert", "-o", str(p), str(s)]),
         ("magick", lambda s, p: ["magick", str(s), str(p)]),

@@ -1,77 +1,78 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1320 620" width="1320" height="620">
-<defs>
-  <marker id="arr-turn" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 8 5 L 0 9 z" fill="#2A5B84"/></marker>
-  <marker id="arr-act" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 8 5 L 0 9 z" fill="#7A4D8B"/></marker>
-  <marker id="arr-pobj" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 8 5 L 0 9 z" fill="#B85D19"/></marker>
-  <marker id="arr-hist" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 8 5 L 0 9 z" fill="#2E7D5B"/></marker>
-</defs>
-<rect x="0" y="0" width="1320" height="620" fill="#FFFFFF"/>
-<text x="30" y="34" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="bold" fill="#1B2430">View 1: Agent-Loop Control-Flow OC-DFG — Architectural LoopOCEL Process Graph (n = 15 runs)</text>
-<text x="30" y="54" font-family="Helvetica, Arial, sans-serif" font-size="11.5" fill="#4A5568">Projected from LoopOCEL OCEL 2.0 logs across Turn/Prompt/Response (blue), ActionRequest/Execution/ActionResult (purple), History (green), and ProcessObject (orange)</text>
-<rect x="35" y="130" width="170" height="52" rx="7" ry="7" fill="#F0F6FC" stroke="#2A5B84" stroke-width="2"/>
-<text x="120" y="152" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#1B2430">Instruction.Registered</text>
-<text x="120" y="170" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#2A5B84" font-weight="bold">freq = 18</text>
-<rect x="240" y="130" width="145" height="52" rx="7" ry="7" fill="#F0F6FC" stroke="#2A5B84" stroke-width="2"/>
-<text x="312" y="152" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#1B2430">Turn.Started</text>
-<text x="312" y="170" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#2A5B84" font-weight="bold">freq = 40</text>
-<rect x="420" y="130" width="160" height="52" rx="7" ry="7" fill="#F0F6FC" stroke="#2A5B84" stroke-width="2"/>
-<text x="500" y="152" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#1B2430">Prompt.Submitted</text>
-<text x="500" y="170" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#2A5B84" font-weight="bold">freq = 40</text>
-<rect x="615" y="130" width="160" height="52" rx="7" ry="7" fill="#F0F6FC" stroke="#2A5B84" stroke-width="2"/>
-<text x="695" y="152" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#1B2430">Response.Received</text>
-<text x="695" y="170" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#2A5B84" font-weight="bold">freq = 40</text>
-<rect x="815" y="130" width="185" height="52" rx="7" ry="7" fill="#F8F2FC" stroke="#7A4D8B" stroke-width="2"/>
-<text x="907" y="152" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#1B2430">ActionRequest.Dispatched</text>
-<text x="907" y="170" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#7A4D8B" font-weight="bold">freq = 75</text>
-<rect x="1040" y="130" width="185" height="52" rx="7" ry="7" fill="#F8F2FC" stroke="#7A4D8B" stroke-width="2"/>
-<text x="1132" y="152" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#1B2430">Execution.Started</text>
-<text x="1132" y="170" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#7A4D8B" font-weight="bold">freq = 75</text>
-<rect x="790" y="255" width="205" height="52" rx="7" ry="7" fill="#FFF7F0" stroke="#B85D19" stroke-width="2"/>
-<text x="892" y="277" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#1B2430">ProcessObject.Registered [ext]</text>
-<text x="892" y="295" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#B85D19" font-weight="bold">freq = 97</text>
-<rect x="1030" y="255" width="205" height="52" rx="7" ry="7" fill="#FFF7F0" stroke="#B85D19" stroke-width="2"/>
-<text x="1132" y="277" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#1B2430">ProcessObject.StateChanged</text>
-<text x="1132" y="295" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#B85D19" font-weight="bold">freq = 119</text>
-<rect x="1040" y="385" width="185" height="52" rx="7" ry="7" fill="#F8F2FC" stroke="#7A4D8B" stroke-width="2"/>
-<text x="1132" y="407" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#1B2430">Execution.Finished</text>
-<text x="1132" y="425" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#7A4D8B" font-weight="bold">freq = 75</text>
-<rect x="795" y="385" width="185" height="52" rx="7" ry="7" fill="#F8F2FC" stroke="#7A4D8B" stroke-width="2"/>
-<text x="887" y="407" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#1B2430">ActionResult.Received</text>
-<text x="887" y="425" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#7A4D8B" font-weight="bold">freq = 75</text>
-<rect x="500" y="385" width="165" height="52" rx="7" ry="7" fill="#EFFAF5" stroke="#2E7D5B" stroke-width="2"/>
-<text x="582" y="407" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#1B2430">History.Assembled</text>
-<text x="582" y="425" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#2E7D5B" font-weight="bold">freq = 25</text>
-<rect x="240" y="385" width="155" height="52" rx="7" ry="7" fill="#F0F6FC" stroke="#2A5B84" stroke-width="2"/>
-<text x="317" y="407" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#1B2430">Turn.Finished</text>
-<text x="317" y="425" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#2A5B84" font-weight="bold">freq = 40</text>
-<line x1="205" y1="156" x2="240" y2="156" stroke="#2A5B84" stroke-width="2.2" marker-end="url(#arr-turn)"/>
-<text x="222" y="144" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="bold" fill="#2A5B84">Instruction (18)</text>
-<line x1="385" y1="156" x2="420" y2="156" stroke="#2A5B84" stroke-width="2.2" marker-end="url(#arr-turn)"/>
-<text x="402" y="144" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="bold" fill="#2A5B84">Turn (40)</text>
-<line x1="580" y1="156" x2="615" y2="156" stroke="#2A5B84" stroke-width="2.2" marker-end="url(#arr-turn)"/>
-<text x="597" y="144" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="bold" fill="#2A5B84">Prompt (40)</text>
-<line x1="775" y1="156" x2="815" y2="156" stroke="#7A4D8B" stroke-width="2.2" marker-end="url(#arr-act)"/>
-<text x="795" y="144" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="bold" fill="#7A4D8B">Response (40)</text>
-<line x1="1000" y1="156" x2="1040" y2="156" stroke="#7A4D8B" stroke-width="2.2" marker-end="url(#arr-act)"/>
-<text x="1020" y="144" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="bold" fill="#7A4D8B">ActionReq (75)</text>
-<line x1="895" y1="182" x2="895" y2="255" stroke="#B85D19" stroke-width="2.2" marker-end="url(#arr-pobj)"/>
-<text x="845" y="222" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="bold" fill="#B85D19">registers (97)</text>
-<line x1="1132" y1="182" x2="1132" y2="255" stroke="#B85D19" stroke-width="2.2" marker-end="url(#arr-pobj)"/>
-<text x="1185" y="222" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="bold" fill="#B85D19">mutates (119)</text>
-<line x1="1132" y1="307" x2="1132" y2="385" stroke="#7A4D8B" stroke-width="2.2" marker-end="url(#arr-act)"/>
-<text x="1180" y="350" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="bold" fill="#7A4D8B">Exec (75)</text>
-<line x1="1040" y1="411" x2="980" y2="411" stroke="#7A4D8B" stroke-width="2.2" marker-end="url(#arr-act)"/>
-<text x="1010" y="400" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="bold" fill="#7A4D8B">Result (75)</text>
-<line x1="795" y1="411" x2="665" y2="411" stroke="#2E7D5B" stroke-width="2.2" marker-end="url(#arr-hist)"/>
-<text x="730" y="400" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="bold" fill="#2E7D5B">History (25)</text>
-<line x1="500" y1="411" x2="395" y2="411" stroke="#2A5B84" stroke-width="2.2" marker-end="url(#arr-turn)"/>
-<text x="447" y="400" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="bold" fill="#2A5B84">Turn (40)</text>
-<path d="M 317 385 L 317 280 L 500 280 L 500 182" fill="none" stroke="#2E7D5B" stroke-width="2.2" stroke-dasharray="6,4" marker-end="url(#arr-hist)"/>
-<text x="410" y="270" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" font-weight="bold" fill="#2E7D5B">Next-Turn &amp; History Carryover Loop (25 multi-turn transitions)</text>
-<rect x="35" y="475" width="1250" height="115" rx="8" ry="8" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/>
-<text x="55" y="500" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1B2430">Object-Centric ProcessObject Funnel &amp; Complexity Tier Summary</text>
-<text x="55" y="524" font-family="Helvetica, Arial, sans-serif" font-size="11.5" fill="#334155">* Total ProcessObjects tracked: 97   * ProcessObject.Registered: 97   * ProcessObject.StateChanged (mutations): 119</text>
-<text x="55" y="552" font-family="Helvetica, Arial, sans-serif" font-size="10.5" font-weight="bold" fill="#B85D19">Tier 1: Direct (Low Complexity): Turns=2.00 ± 0.00, Exec=4.00 ± 0.00 ok / 0.00 ± 0.00 fail</text>
-<text x="465" y="552" font-family="Helvetica, Arial, sans-serif" font-size="10.5" font-weight="bold" fill="#B85D19">Tier 2: Constrained (Medium Complexity): Turns=3.00 ± 0.00, Exec=4.00 ± 0.00 ok / 1.00 ± 0.00 fail</text>
-<text x="875" y="552" font-family="Helvetica, Arial, sans-serif" font-size="10.5" font-weight="bold" fill="#B85D19">Tier 3: Multi-Modal / Multi-Stop (High Complexity): Turns=3.00 ± 0.00, Exec=5.00 ± 0.00 ok / 1.00 ± 0.00 fail</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1360 325" width="1360" height="325">
+<rect x="0" y="0" width="1360" height="325" fill="#FFFFFF"/>
+<line x1="197.0" y1="65.0" x2="222.0" y2="65.0" stroke="#2A5B84" stroke-width="2.8"/>
+<polygon points="232.0,65.0 222.0,69.2 222.0,60.8" fill="#2A5B84"/>
+<text x="214" y="22" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" font-weight="bold" fill="#2A5B84">Instr (18)</text>
+<line x1="382.0" y1="65.0" x2="410.0" y2="65.0" stroke="#2A5B84" stroke-width="2.8"/>
+<polygon points="420.0,65.0 410.0,69.2 410.0,60.8" fill="#2A5B84"/>
+<text x="401" y="22" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" font-weight="bold" fill="#2A5B84">Turn (40)</text>
+<line x1="595.0" y1="65.0" x2="622.0" y2="65.0" stroke="#2A5B84" stroke-width="2.8"/>
+<polygon points="632.0,65.0 622.0,69.2 622.0,60.8" fill="#2A5B84"/>
+<text x="613" y="22" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" font-weight="bold" fill="#2A5B84">Prompt (40)</text>
+<line x1="810.0" y1="65.0" x2="840.0" y2="65.0" stroke="#7A4D8B" stroke-width="2.8"/>
+<polygon points="850.0,65.0 840.0,69.2 840.0,60.8" fill="#7A4D8B"/>
+<text x="830" y="22" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" font-weight="bold" fill="#7A4D8B">Resp (40)</text>
+<line x1="1065.0" y1="65.0" x2="1100.0" y2="65.0" stroke="#7A4D8B" stroke-width="2.8"/>
+<polygon points="1110.0,65.0 1100.0,69.2 1100.0,60.8" fill="#7A4D8B"/>
+<text x="1087" y="22" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" font-weight="bold" fill="#7A4D8B">ActReq (75)</text>
+<line x1="957.0" y1="96.0" x2="957.0" y2="134.0" stroke="#B85D19" stroke-width="2.8"/>
+<polygon points="957.0,144.0 952.8,134.0 961.2,134.0" fill="#B85D19"/>
+<text x="882" y="126" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" font-weight="bold" fill="#B85D19">registers (97)</text>
+<line x1="1227.0" y1="96.0" x2="1227.0" y2="134.0" stroke="#B85D19" stroke-width="2.8"/>
+<polygon points="1227.0,144.0 1222.8,134.0 1231.2,134.0" fill="#B85D19"/>
+<text x="1296" y="126" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" font-weight="bold" fill="#B85D19">mutates (119)</text>
+<line x1="1227.0" y1="206.0" x2="1227.0" y2="244.0" stroke="#7A4D8B" stroke-width="2.8"/>
+<polygon points="1227.0,254.0 1222.8,244.0 1231.2,244.0" fill="#7A4D8B"/>
+<text x="1280" y="235" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" font-weight="bold" fill="#7A4D8B">Exec (75)</text>
+<line x1="1110.0" y1="285.0" x2="1065.0" y2="285.0" stroke="#7A4D8B" stroke-width="2.8"/>
+<polygon points="1055.0,285.0 1065.0,280.8 1065.0,289.2" fill="#7A4D8B"/>
+<text x="1082" y="242" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" font-weight="bold" fill="#7A4D8B">Result (75)</text>
+<line x1="840.0" y1="285.0" x2="720.0" y2="285.0" stroke="#2E7D5B" stroke-width="2.8"/>
+<polygon points="710.0,285.0 720.0,280.8 720.0,289.2" fill="#2E7D5B"/>
+<text x="775" y="242" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" font-weight="bold" fill="#2E7D5B">History (25)</text>
+<line x1="525.0" y1="285.0" x2="402.0" y2="285.0" stroke="#2A5B84" stroke-width="2.8"/>
+<polygon points="392.0,285.0 402.0,280.8 402.0,289.2" fill="#2A5B84"/>
+<text x="458" y="242" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" font-weight="bold" fill="#2A5B84">Turn (40)</text>
+<path d="M 312.0 254.0 L 312.0 175.0 L 508.0 175.0 L 508.0 106.0" fill="none" stroke="#2E7D5B" stroke-width="2.8" stroke-linejoin="round" stroke-dasharray="6,4"/>
+<polygon points="508.0,96.0 512.2,106.0 503.8,106.0" fill="#2E7D5B"/>
+<rect x="235" y="142" width="350" height="26" rx="4" fill="#FFFFFF" fill-opacity="0.95"/>
+<text x="410" y="160" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" font-weight="bold" fill="#2E7D5B">Next-Turn &amp; History Carryover Loop (25 transitions)</text>
+<rect x="12" y="34" width="185" height="62" rx="8" ry="8" fill="#F0F6FC" stroke="#2A5B84" stroke-width="2.5"/>
+<text x="104" y="60" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" fill="#1B2430">Instruction.Registered</text>
+<text x="104" y="82" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" fill="#2A5B84" font-weight="bold">freq = 18</text>
+<rect x="232" y="34" width="150" height="62" rx="8" ry="8" fill="#F0F6FC" stroke="#2A5B84" stroke-width="2.5"/>
+<text x="307" y="60" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" fill="#1B2430">Turn.Started</text>
+<text x="307" y="82" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" fill="#2A5B84" font-weight="bold">freq = 40</text>
+<rect x="420" y="34" width="175" height="62" rx="8" ry="8" fill="#F0F6FC" stroke="#2A5B84" stroke-width="2.5"/>
+<text x="507" y="60" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" fill="#1B2430">Prompt.Submitted</text>
+<text x="507" y="82" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" fill="#2A5B84" font-weight="bold">freq = 40</text>
+<rect x="632" y="34" width="178" height="62" rx="8" ry="8" fill="#F0F6FC" stroke="#2A5B84" stroke-width="2.5"/>
+<text x="721" y="60" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" fill="#1B2430">Response.Received</text>
+<text x="721" y="82" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" fill="#2A5B84" font-weight="bold">freq = 40</text>
+<rect x="850" y="34" width="215" height="62" rx="8" ry="8" fill="#F8F2FC" stroke="#7A4D8B" stroke-width="2.5"/>
+<text x="957" y="60" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" fill="#1B2430">ActionRequest.Dispatched</text>
+<text x="957" y="82" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" fill="#7A4D8B" font-weight="bold">freq = 75</text>
+<rect x="1110" y="34" width="235" height="62" rx="8" ry="8" fill="#F8F2FC" stroke="#7A4D8B" stroke-width="2.5"/>
+<text x="1227" y="60" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" fill="#1B2430">Execution.Started</text>
+<text x="1227" y="82" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" fill="#7A4D8B" font-weight="bold">freq = 75</text>
+<rect x="835" y="144" width="245" height="62" rx="8" ry="8" fill="#FFF7F0" stroke="#B85D19" stroke-width="2.5"/>
+<text x="957" y="164" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1B2430">ProcessObject.Registered</text>
+<text x="957" y="180" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#B85D19">Trip, Flight, Hotel</text>
+<text x="957" y="197" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12.5" fill="#B85D19" font-weight="bold">freq = 97</text>
+<rect x="1105" y="144" width="245" height="62" rx="8" ry="8" fill="#FFF7F0" stroke="#B85D19" stroke-width="2.5"/>
+<text x="1227" y="164" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1B2430">ProcessObject.StateChanged</text>
+<text x="1227" y="180" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#B85D19">Trip, Flight, Hotel Deltas</text>
+<text x="1227" y="197" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12.5" fill="#B85D19" font-weight="bold">freq = 119</text>
+<rect x="1110" y="254" width="235" height="62" rx="8" ry="8" fill="#F8F2FC" stroke="#7A4D8B" stroke-width="2.5"/>
+<text x="1227" y="280" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" fill="#1B2430">Execution.Finished</text>
+<text x="1227" y="302" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" fill="#7A4D8B" font-weight="bold">freq = 75</text>
+<rect x="840" y="254" width="215" height="62" rx="8" ry="8" fill="#F8F2FC" stroke="#7A4D8B" stroke-width="2.5"/>
+<text x="947" y="280" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" fill="#1B2430">ActionResult.Received</text>
+<text x="947" y="302" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" fill="#7A4D8B" font-weight="bold">freq = 75</text>
+<rect x="525" y="254" width="185" height="62" rx="8" ry="8" fill="#EFFAF5" stroke="#2E7D5B" stroke-width="2.5"/>
+<text x="617" y="280" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" fill="#1B2430">History.Assembled</text>
+<text x="617" y="302" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" fill="#2E7D5B" font-weight="bold">freq = 25</text>
+<rect x="232" y="254" width="160" height="62" rx="8" ry="8" fill="#F0F6FC" stroke="#2A5B84" stroke-width="2.5"/>
+<text x="312" y="280" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" fill="#1B2430">Turn.Finished</text>
+<text x="312" y="302" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" fill="#2A5B84" font-weight="bold">freq = 40</text>
 </svg>

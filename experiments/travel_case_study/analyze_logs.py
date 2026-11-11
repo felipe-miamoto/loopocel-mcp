@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 import json
+import math
 import re
+import shutil
 import statistics
 import struct
+import subprocess
 import sys
 import xml.etree.ElementTree as ET
 import zlib
@@ -98,7 +101,38 @@ FONT_5X7: dict[str, tuple[int, ...]] = {
 
 
 def rasterize_svg_to_png(svg_path: Path, png_path: Path) -> None:
-    """Pure-Python SVG-to-PNG rasterizer for our generated process graph SVGs."""
+    """Rasterize SVG to high-DPI anti-aliased PNG via Chrome headless, or pure-Python fallback."""
+    png_path.parent.mkdir(parents=True, exist_ok=True)
+    chrome_path = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+    if Path(chrome_path).is_file():
+        try:
+            tree = ET.parse(svg_path)
+            root = tree.getroot()
+            w = int(float(root.attrib.get("width", "1360")))
+            h = int(float(root.attrib.get("height", "325")))
+            html_content = f"<!DOCTYPE html><html><head><meta charset='utf-8'><style>*{{margin:0;padding:0;box-sizing:border-box;}}html,body{{width:{w}px;height:{h}px;margin:0;padding:0;overflow:hidden;background:#ffffff;}}svg{{width:{w}px;height:{h}px;display:block;}}</style></head><body>{svg_path.read_text(encoding='utf-8')}</body></html>"
+            tmp_html = svg_path.with_suffix(".render_tmp.html")
+            tmp_html.write_text(html_content, encoding="utf-8")
+            res = subprocess.run(
+                [
+                    chrome_path,
+                    "--headless=new",
+                    "--no-sandbox",
+                    "--hide-scrollbars",
+                    "--force-device-scale-factor=2",
+                    f"--window-size={w},{h}",
+                    f"--screenshot={png_path}",
+                    f"file://{tmp_html.resolve()}",
+                ],
+                capture_output=True,
+                timeout=30,
+            )
+            tmp_html.unlink(missing_ok=True)
+            if res.returncode == 0 and png_path.is_file() and png_path.stat().st_size > 20000:
+                return
+        except Exception:
+            pass
+
     tree = ET.parse(svg_path)
     root = tree.getroot()
     width = int(float(root.attrib.get("width", "1320")))
@@ -595,6 +629,62 @@ def extract_semantic_process(
     }
 
 
+def _draw_svg_arrow(
+    lines: list[str],
+    x1: float,
+    y1: float,
+    x2: float,
+    y2: float,
+    color: str,
+    stroke_width: float = 2.2,
+    dashed: bool = False,
+) -> None:
+    """Draw a line segment with an explicit polygon arrowhead at (x2, y2)."""
+    dx, dy = x2 - x1, y2 - y1
+    length = math.hypot(dx, dy) or 1.0
+    ux, uy = dx / length, dy / length
+    head_len, half_w = 10.0, 4.2
+    bx, by = x2 - head_len * ux, y2 - head_len * uy
+    dash_attr = ' stroke-dasharray="5,4"' if dashed else ""
+    lines.append(
+        f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{bx:.1f}" y2="{by:.1f}" '
+        f'stroke="{color}" stroke-width="{stroke_width}"{dash_attr}/>'
+    )
+    p1 = f"{x2:.1f},{y2:.1f}"
+    p2 = f"{bx - half_w * uy:.1f},{by + half_w * ux:.1f}"
+    p3 = f"{bx + half_w * uy:.1f},{by - half_w * ux:.1f}"
+    lines.append(f'<polygon points="{p1} {p2} {p3}" fill="{color}"/>')
+
+
+def _draw_svg_polyline_arrow(
+    lines: list[str],
+    pts: list[tuple[float, float]],
+    color: str,
+    stroke_width: float = 2.2,
+    dashed: bool = False,
+) -> None:
+    """Draw a multi-point polyline with an explicit polygon arrowhead at the last vertex."""
+    if len(pts) < 2:
+        return
+    tip, prev = pts[-1], pts[-2]
+    dx, dy = tip[0] - prev[0], tip[1] - prev[1]
+    length = math.hypot(dx, dy) or 1.0
+    ux, uy = dx / length, dy / length
+    head_len, half_w = 10.0, 4.2
+    bx, by = tip[0] - head_len * ux, tip[1] - head_len * uy
+    path_pts = pts[:-1] + [(bx, by)]
+    d = "M " + " L ".join(f"{px:.1f} {py:.1f}" for px, py in path_pts)
+    dash_attr = ' stroke-dasharray="6,4"' if dashed else ""
+    lines.append(
+        f'<path d="{d}" fill="none" stroke="{color}" stroke-width="{stroke_width}" '
+        f'stroke-linejoin="round"{dash_attr}/>'
+    )
+    p1 = f"{tip[0]:.1f},{tip[1]:.1f}"
+    p2 = f"{bx - half_w * uy:.1f},{by + half_w * ux:.1f}"
+    p3 = f"{bx + half_w * uy:.1f},{by - half_w * ux:.1f}"
+    lines.append(f'<polygon points="{p1} {p2} {p3}" fill="{color}"/>')
+
+
 def render_ocdfg_svg(
     ocdfg: dict[str, Any],
     tier_metrics: dict[str, Any],
@@ -603,106 +693,84 @@ def render_ocdfg_svg(
 ) -> None:
     """Render View 1: Agent-Loop Control-Flow & Object-Type OC-DFG."""
     ev_freq = ocdfg["event_frequencies"]
-    obj_counts = ocdfg["objects_per_type"]
-    n_logs = ocdfg["n_logs"]
 
-    W, H = 1320, 620
+    W, H = 1360, 325
     lines: list[str] = [
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}">',
-        "<defs>",
-        '  <marker id="arr-turn" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 8 5 L 0 9 z" fill="#2A5B84"/></marker>',
-        '  <marker id="arr-act" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 8 5 L 0 9 z" fill="#7A4D8B"/></marker>',
-        '  <marker id="arr-pobj" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 8 5 L 0 9 z" fill="#B85D19"/></marker>',
-        '  <marker id="arr-hist" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 8 5 L 0 9 z" fill="#2E7D5B"/></marker>',
-        "</defs>",
         f'<rect x="0" y="0" width="{W}" height="{H}" fill="#FFFFFF"/>',
-        f'<text x="30" y="34" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="bold" fill="#1B2430">'
-        f"View 1: Agent-Loop Control-Flow OC-DFG — Architectural LoopOCEL Process Graph (n = {n_logs} runs)</text>",
-        '<text x="30" y="54" font-family="Helvetica, Arial, sans-serif" font-size="11.5" fill="#4A5568">'
-        "Projected from LoopOCEL OCEL 2.0 logs across Turn/Prompt/Response (blue), ActionRequest/Execution/ActionResult (purple), History (green), and ProcessObject (orange)</text>",
     ]
 
     act_nodes = [
-        ("Instruction.Registered", "Instruction.Registered", 35, 130, 170, 52, "#2A5B84", "#F0F6FC"),
-        ("Turn.Started", "Turn.Started", 240, 130, 145, 52, "#2A5B84", "#F0F6FC"),
-        ("Prompt.Submitted", "Prompt.Submitted", 420, 130, 160, 52, "#2A5B84", "#F0F6FC"),
-        ("Response.Received", "Response.Received", 615, 130, 160, 52, "#2A5B84", "#F0F6FC"),
-        ("ActionRequest.Dispatched", "ActionRequest.Dispatched", 815, 130, 185, 52, "#7A4D8B", "#F8F2FC"),
-        ("Execution.Started", "Execution.Started", 1040, 130, 185, 52, "#7A4D8B", "#F8F2FC"),
-        ("ProcessObject.Registered", "ProcessObject.Registered [ext]", 790, 255, 205, 52, "#B85D19", "#FFF7F0"),
-        ("ProcessObject.StateChanged", "ProcessObject.StateChanged", 1030, 255, 205, 52, "#B85D19", "#FFF7F0"),
-        ("Execution.Finished", "Execution.Finished", 1040, 385, 185, 52, "#7A4D8B", "#F8F2FC"),
-        ("ActionResult.Received", "ActionResult.Received", 795, 385, 185, 52, "#7A4D8B", "#F8F2FC"),
-        ("History.Assembled", "History.Assembled", 500, 385, 165, 52, "#2E7D5B", "#EFFAF5"),
-        ("Turn.Finished", "Turn.Finished", 240, 385, 155, 52, "#2A5B84", "#F0F6FC"),
+        ("Instruction.Registered", "Instruction.Registered", "", 12, 34, 185, 62, "#2A5B84", "#F0F6FC"),
+        ("Turn.Started", "Turn.Started", "", 232, 34, 150, 62, "#2A5B84", "#F0F6FC"),
+        ("Prompt.Submitted", "Prompt.Submitted", "", 420, 34, 175, 62, "#2A5B84", "#F0F6FC"),
+        ("Response.Received", "Response.Received", "", 632, 34, 178, 62, "#2A5B84", "#F0F6FC"),
+        ("ActionRequest.Dispatched", "ActionRequest.Dispatched", "", 850, 34, 215, 62, "#7A4D8B", "#F8F2FC"),
+        ("Execution.Started", "Execution.Started", "", 1110, 34, 235, 62, "#7A4D8B", "#F8F2FC"),
+        ("ProcessObject.Registered", "ProcessObject.Registered", "Trip, Flight, Hotel", 835, 144, 245, 62, "#B85D19", "#FFF7F0"),
+        ("ProcessObject.StateChanged", "ProcessObject.StateChanged", "Trip, Flight, Hotel Deltas", 1105, 144, 245, 62, "#B85D19", "#FFF7F0"),
+        ("Execution.Finished", "Execution.Finished", "", 1110, 254, 235, 62, "#7A4D8B", "#F8F2FC"),
+        ("ActionResult.Received", "ActionResult.Received", "", 840, 254, 215, 62, "#7A4D8B", "#F8F2FC"),
+        ("History.Assembled", "History.Assembled", "", 525, 254, 185, 62, "#2E7D5B", "#EFFAF5"),
+        ("Turn.Finished", "Turn.Finished", "", 232, 254, 160, 62, "#2A5B84", "#F0F6FC"),
     ]
-
-    for nid, label, x, y, w, h, stroke, fill in act_nodes:
-        cnt = ev_freq.get(nid, 0)
-        lines.append(
-            f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="7" ry="7" fill="{fill}" stroke="{stroke}" stroke-width="2"/>'
-        )
-        lines.append(
-            f'<text x="{x + w // 2}" y="{y + 22}" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#1B2430">{escape(label)}</text>'
-        )
-        lines.append(
-            f'<text x="{x + w // 2}" y="{y + 40}" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="{stroke}" font-weight="bold">freq = {cnt}</text>'
-        )
 
     edges = [
-        (205, 156, 240, 156, "#2A5B84", "arr-turn", f"Instruction ({ev_freq.get('Instruction.Registered', 0)})", 222, 144),
-        (385, 156, 420, 156, "#2A5B84", "arr-turn", f"Turn ({ev_freq.get('Turn.Started', 0)})", 402, 144),
-        (580, 156, 615, 156, "#2A5B84", "arr-turn", f"Prompt ({ev_freq.get('Prompt.Submitted', 0)})", 597, 144),
-        (775, 156, 815, 156, "#7A4D8B", "arr-act", f"Response ({ev_freq.get('Response.Received', 0)})", 795, 144),
-        (1000, 156, 1040, 156, "#7A4D8B", "arr-act", f"ActionReq ({ev_freq.get('ActionRequest.Dispatched', 0)})", 1020, 144),
-        (895, 182, 895, 255, "#B85D19", "arr-pobj", f"registers ({ev_freq.get('ProcessObject.Registered', 0)})", 845, 222),
-        (1132, 182, 1132, 255, "#B85D19", "arr-pobj", f"mutates ({ev_freq.get('ProcessObject.StateChanged', 0)})", 1185, 222),
-        (1132, 307, 1132, 385, "#7A4D8B", "arr-act", f"Exec ({ev_freq.get('Execution.Finished', 0)})", 1180, 350),
-        (1040, 411, 980, 411, "#7A4D8B", "arr-act", f"Result ({ev_freq.get('ActionResult.Received', 0)})", 1010, 400),
-        (795, 411, 665, 411, "#2E7D5B", "arr-hist", f"History ({ev_freq.get('History.Assembled', 0)})", 730, 400),
-        (500, 411, 395, 411, "#2A5B84", "arr-turn", f"Turn ({ev_freq.get('Turn.Finished', 0)})", 447, 400),
+        (197, 65, 232, 65, "#2A5B84", f"Instr ({ev_freq.get('Instruction.Registered', 0)})", 214, 22),
+        (382, 65, 420, 65, "#2A5B84", f"Turn ({ev_freq.get('Turn.Started', 0)})", 401, 22),
+        (595, 65, 632, 65, "#2A5B84", f"Prompt ({ev_freq.get('Prompt.Submitted', 0)})", 613, 22),
+        (810, 65, 850, 65, "#7A4D8B", f"Resp ({ev_freq.get('Response.Received', 0)})", 830, 22),
+        (1065, 65, 1110, 65, "#7A4D8B", f"ActReq ({ev_freq.get('ActionRequest.Dispatched', 0)})", 1087, 22),
+        (957, 96, 957, 144, "#B85D19", f"registers ({ev_freq.get('ProcessObject.Registered', 0)})", 882, 126),
+        (1227, 96, 1227, 144, "#B85D19", f"mutates ({ev_freq.get('ProcessObject.StateChanged', 0)})", 1296, 126),
+        (1227, 206, 1227, 254, "#7A4D8B", f"Exec ({ev_freq.get('Execution.Finished', 0)})", 1280, 235),
+        (1110, 285, 1055, 285, "#7A4D8B", f"Result ({ev_freq.get('ActionResult.Received', 0)})", 1082, 242),
+        (840, 285, 710, 285, "#2E7D5B", f"History ({ev_freq.get('History.Assembled', 0)})", 775, 242),
+        (525, 285, 392, 285, "#2A5B84", f"Turn ({ev_freq.get('Turn.Finished', 0)})", 458, 242),
     ]
-    for x1, y1, x2, y2, col, marker, lbl, lx, ly in edges:
+    for x1, y1, x2, y2, col, lbl, lx, ly in edges:
+        _draw_svg_arrow(lines, x1, y1, x2, y2, col, stroke_width=2.8)
         lines.append(
-            f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{col}" stroke-width="2.2" marker-end="url(#{marker})"/>'
-        )
-        lines.append(
-            f'<text x="{lx}" y="{ly}" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="bold" fill="{col}">{escape(lbl)}</text>'
+            f'<text x="{lx}" y="{ly}" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" font-weight="bold" fill="{col}">{escape(lbl)}</text>'
         )
 
-    lines.append(
-        '<path d="M 317 385 L 317 280 L 500 280 L 500 182" fill="none" stroke="#2E7D5B" stroke-width="2.2" stroke-dasharray="6,4" marker-end="url(#arr-hist)"/>'
+    _draw_svg_polyline_arrow(
+        lines,
+        [(312, 254), (312, 175), (508, 175), (508, 96)],
+        "#2E7D5B",
+        stroke_width=2.8,
+        dashed=True,
     )
     lines.append(
-        f'<text x="410" y="270" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" font-weight="bold" fill="#2E7D5B">'
-        f"Next-Turn &amp; History Carryover Loop ({ev_freq.get('History.Assembled', 0)} multi-turn transitions)</text>"
-    )
-
-    lines.append(
-        '<rect x="35" y="475" width="1250" height="115" rx="8" ry="8" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/>'
+        '<rect x="235" y="142" width="350" height="26" rx="4" fill="#FFFFFF" fill-opacity="0.95"/>'
     )
     lines.append(
-        '<text x="55" y="500" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1B2430">'
-        "Object-Centric ProcessObject Funnel &amp; Complexity Tier Summary</text>"
-    )
-    pobj_total = obj_counts.get("ProcessObject", 0)
-    mut_events = ev_freq.get("ProcessObject.StateChanged", 0)
-    reg_events = ev_freq.get("ProcessObject.Registered", 0)
-    lines.append(
-        f'<text x="55" y="524" font-family="Helvetica, Arial, sans-serif" font-size="11.5" fill="#334155">'
-        f"* Total ProcessObjects tracked: {pobj_total}   "
-        f"* ProcessObject.Registered: {reg_events}   "
-        f"* ProcessObject.StateChanged (mutations): {mut_events}</text>"
+        f'<text x="410" y="160" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" font-weight="bold" fill="#2E7D5B">'
+        f"Next-Turn &amp; History Carryover Loop ({ev_freq.get('History.Assembled', 0)} transitions)</text>"
     )
 
-    y_tier = 552
-    for idx, (_, tinfo) in enumerate(tier_metrics.items()):
-        x_pos = 55 + idx * 410
+    for nid, label, sublabel, x, y, w, h, stroke, fill in act_nodes:
+        cnt = ev_freq.get(nid, 0)
         lines.append(
-            f'<text x="{x_pos}" y="{y_tier}" font-family="Helvetica, Arial, sans-serif" font-size="10.5" font-weight="bold" fill="#B85D19">'
-            f"{escape(tinfo['label'])}: "
-            f"Turns={tinfo['turns_ms']}, Exec={tinfo['exec_succ_ms']} ok / {tinfo['exec_fail_ms']} fail</text>"
+            f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="8" ry="8" fill="{fill}" stroke="{stroke}" stroke-width="2.5"/>'
         )
+        if sublabel:
+            lines.append(
+                f'<text x="{x + w // 2}" y="{y + 20}" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1B2430">{escape(label)}</text>'
+            )
+            lines.append(
+                f'<text x="{x + w // 2}" y="{y + 36}" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#B85D19">{escape(sublabel)}</text>'
+            )
+            lines.append(
+                f'<text x="{x + w // 2}" y="{y + 53}" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12.5" fill="{stroke}" font-weight="bold">freq = {cnt}</text>'
+            )
+        else:
+            lines.append(
+                f'<text x="{x + w // 2}" y="{y + 26}" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" fill="#1B2430">{escape(label)}</text>'
+            )
+            lines.append(
+                f'<text x="{x + w // 2}" y="{y + 48}" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" fill="{stroke}" font-weight="bold">freq = {cnt}</text>'
+            )
 
     lines.append("</svg>")
     svg_text = "\n".join(lines)
@@ -719,230 +787,145 @@ def render_semantic_process_svg(
     sc = sem["step_counts"]
     disc = sem["discovered_by_kind"]
     comm = sem["committed_by_kind"]
-    n_runs = sem["n_runs"]
-    traces = sem["traces"]
 
-    W, H = 1360, 760
+    W, H = 1360, 305
     lines: list[str] = [
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}">',
-        "<defs>",
-        '  <marker id="arr-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 8 5 L 0 9 z" fill="#2A5B84"/></marker>',
-        '  <marker id="arr-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 8 5 L 0 9 z" fill="#2E7D5B"/></marker>',
-        '  <marker id="arr-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 8 5 L 0 9 z" fill="#B03030"/></marker>',
-        '  <marker id="arr-orange" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 8 5 L 0 9 z" fill="#B85D19"/></marker>',
-        "</defs>",
         f'<rect x="0" y="0" width="{W}" height="{H}" fill="#FFFFFF"/>',
-        f'<text x="30" y="32" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="bold" fill="#1B2430">'
-        f"View 2: Discovered Domain Process Graph &amp; Actual Agent Workflow Content (n = {n_runs} runs)</text>",
-        '<text x="30" y="52" font-family="Helvetica, Arial, sans-serif" font-size="11.5" fill="#4A5568">'
-        "Extracted from LoopOCEL ActionRequest (queries), ActionResult (candidates obtained), Execution (pass/fail), and ProcessObject.StateChanged (bookings committed)</text>",
-        # Panel A background
-        '<rect x="25" y="68" width="1310" height="335" rx="8" ry="8" fill="#FAFBFD" stroke="#CBD5E1" stroke-width="1.5"/>',
-        '<text x="45" y="92" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1B2430">'
-        "A. Aggregated Task Process Graph (Web Searches -&gt; Candidate Results Obtained -&gt; Constraint Verification -&gt; Rework Loop -&gt; Final Booking)</text>",
     ]
 
-    # Panel A Nodes: (x, y, w, h, title, subtitle, count_str, stroke, fill)
+    # Nodes: (x, y, w, h, title, subtitle, count_str, stroke, fill)
     panel_a_nodes = [
         (
-            45, 195, 165, 68,
+            12, 108, 182, 74,
             "1. Trip Specification",
-            "Origin, Dest, Budget, Cap",
+            "Entity: Trip (Budget, Dates)",
             f"trips = {sc.get('trip_registered', 0)}",
             "#2A5B84", "#F0F6FC",
         ),
         (
-            255, 108, 195, 62,
+            234, 14, 212, 72,
             "2a. Search Web: Rail",
-            "DB ICE / Intercity schedules",
+            "DB ICE / Intercity queries",
             f"queries = {sc.get('search_rail', 0)}",
             "#2A5B84", "#F0F6FC",
         ),
         (
-            255, 198, 195, 62,
+            234, 109, 212, 72,
             "2b. Search Web: Flights",
-            "Direct &amp; hub air schedules",
+            "Direct &amp; hub air queries",
             f"queries = {sc.get('search_flights', 0)}",
             "#2A5B84", "#F0F6FC",
         ),
         (
-            255, 288, 195, 62,
+            234, 204, 212, 72,
             "2c. Search Web: Hotels",
-            "Venue proximity &amp; rates",
+            "Venue proximity queries",
             f"queries = {sc.get('search_hotels', 0)}",
             "#2A5B84", "#F0F6FC",
         ),
         (
-            495, 108, 205, 62,
+            486, 14, 222, 72,
             "3a. Rail Options Obtained",
-            "train:* times &amp; EUR fares",
+            "Entity: Train (Times &amp; Fares)",
             f"selected {comm.get('train', 0)} / {disc.get('train', 0)} trains",
             "#7A4D8B", "#F8F2FC",
         ),
         (
-            495, 198, 205, 62,
+            486, 109, 222, 72,
             "3b. Flight Options Obtained",
-            "flight:* times, bags &amp; fares",
+            "Entity: Flight (Times &amp; Bags)",
             f"selected {comm.get('flight', 0)} / {disc.get('flight', 0)} flights",
             "#7A4D8B", "#F8F2FC",
         ),
         (
-            495, 288, 205, 62,
+            486, 204, 222, 72,
             "3c. Hotel Options Obtained",
-            "hotel:* nightly rate &amp; policy",
+            "Entity: Hotel (Rates &amp; Policies)",
             f"selected {comm.get('hotel', 0)} / {disc.get('hotel', 0)} hotels",
             "#7A4D8B", "#F8F2FC",
         ),
         (
-            750, 195, 210, 68,
+            750, 104, 235, 76,
             "4. Verify Trip Constraints",
-            "Budget, Hotel Cap, Buffer, Bag",
-            f"checks = {sc.get('verify_constraints', 0)}",
+            "Evaluates [Trip × Flight × Hotel]",
+            f"checks = {sc.get('verify_constraints', 0)} (Joint Validation)",
             "#2A5B84", "#F0F6FC",
         ),
         (
-            750, 305, 210, 68,
+            750, 214, 235, 76,
             "4a. Constraint Violation!",
             "Cap / Buffer / Baggage Failed",
             f"failures = {sc.get('constraint_failed_rework', 0)} (Rework)",
             "#B03030", "#FDF2F2",
         ),
         (
-            1010, 195, 145, 68,
+            1010, 104, 135, 76,
             "5. Verified OK",
-            "All rules satisfied",
+            "All Rules Satisfied",
             f"passed = {sc.get('constraints_verified', 0)}",
             "#2E7D5B", "#EFFAF5",
         ),
         (
-            1185, 195, 135, 68,
+            1170, 104, 178, 76,
             "6. Commit Plan",
-            "Mutate trip/bookings",
+            "Mutates Trip, Flight, Hotel",
             f"committed = {sc.get('commit_itinerary', 0)}",
             "#B85D19", "#FFF7F0",
         ),
     ]
 
+    pa_edges = [
+        (194, 130, 234, 50, "#2A5B84"),
+        (194, 145, 234, 145, "#2A5B84"),
+        (194, 160, 234, 240, "#2A5B84"),
+        (446, 50, 486, 50, "#7A4D8B"),
+        (446, 145, 486, 145, "#7A4D8B"),
+        (446, 240, 486, 240, "#7A4D8B"),
+        (708, 50, 750, 128, "#2A5B84"),
+        (708, 145, 750, 145, "#2A5B84"),
+        (708, 240, 750, 162, "#2A5B84"),
+        (867, 180, 867, 214, "#B03030"),
+        (985, 142, 1010, 142, "#2E7D5B"),
+        (1145, 142, 1170, 142, "#B85D19"),
+    ]
+    for x1, y1, x2, y2, col in pa_edges:
+        _draw_svg_arrow(lines, x1, y1, x2, y2, col, stroke_width=2.8)
+
+    # Multi-object convergence indicator above node 4
+    lines.append(
+        '<text x="867" y="97" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#2A5B84">Multi-Object Convergence</text>'
+    )
+
+    # Rework loop arrow from 4a back to 4
+    _draw_svg_polyline_arrow(
+        lines,
+        [(985, 252), (1014, 252), (1014, 162), (985, 162)],
+        "#B03030",
+        stroke_width=2.8,
+        dashed=True,
+    )
+    lines.append(
+        '<text x="1115" y="244" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.5" font-weight="bold" fill="#B03030">Rework Loop (10x):</text>'
+    )
+    lines.append(
+        '<text x="1115" y="264" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#B03030">Select compliant candidate</text>'
+    )
+
     for x, y, w, h, t1, t2, t3, stroke, fill in panel_a_nodes:
         lines.append(
-            f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="7" ry="7" fill="{fill}" stroke="{stroke}" stroke-width="2"/>'
+            f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="8" ry="8" fill="{fill}" stroke="{stroke}" stroke-width="2.5"/>'
         )
         lines.append(
-            f'<text x="{x + w // 2}" y="{y + 20}" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#1B2430">{t1}</text>'
+            f'<text x="{x + w // 2}" y="{y + 23}" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" fill="#1B2430">{t1}</text>'
+        )
+        sub_sz = "11.5" if len(t2) > 22 else "12.5"
+        lines.append(
+            f'<text x="{x + w // 2}" y="{y + 44}" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="{sub_sz}" fill="#4A5568">{t2}</text>'
         )
         lines.append(
-            f'<text x="{x + w // 2}" y="{y + 38}" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" fill="#4A5568">{t2}</text>'
+            f'<text x="{x + w // 2}" y="{y + 64}" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="{stroke}">{escape(t3)}</text>'
         )
-        lines.append(
-            f'<text x="{x + w // 2}" y="{y + 55}" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" font-weight="bold" fill="{stroke}">{escape(t3)}</text>'
-        )
-
-    # Panel A Edges
-    pa_edges = [
-        (210, 215, 255, 139, "#2A5B84", "arr-blue"),
-        (210, 229, 255, 229, "#2A5B84", "arr-blue"),
-        (210, 243, 255, 319, "#2A5B84", "arr-blue"),
-        (450, 139, 495, 139, "#7A4D8B", "arr-blue"),
-        (450, 229, 495, 229, "#7A4D8B", "arr-blue"),
-        (450, 319, 495, 319, "#7A4D8B", "arr-blue"),
-        (700, 139, 750, 215, "#2A5B84", "arr-blue"),
-        (700, 229, 750, 229, "#2A5B84", "arr-blue"),
-        (700, 319, 750, 243, "#2A5B84", "arr-blue"),
-        (855, 263, 855, 305, "#B03030", "arr-red"),
-        (960, 229, 1010, 229, "#2E7D5B", "arr-green"),
-        (1155, 229, 1185, 229, "#B85D19", "arr-orange"),
-    ]
-    for x1, y1, x2, y2, col, marker in pa_edges:
-        lines.append(
-            f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{col}" stroke-width="2.2" marker-end="url(#{marker})"/>'
-        )
-
-    # Rework loop arrow from 4a back to 4 (selecting alternative candidate from obtained results)
-    lines.append(
-        '<path d="M 960 339 L 988 339 L 988 245 L 960 245" fill="none" stroke="#B03030" stroke-width="2.2" stroke-dasharray="5,4" marker-end="url(#arr-red)"/>'
-    )
-    lines.append(
-        '<text x="1065" y="340" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="bold" fill="#B03030">Rework: Pick compliant</text>'
-    )
-    lines.append(
-        '<text x="1065" y="355" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="bold" fill="#B03030">train / flight / hotel</text>'
-    )
-
-    # Panel B: Concrete Execution Traces
-    lines.append(
-        '<rect x="25" y="418" width="1310" height="318" rx="8" ry="8" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/>'
-    )
-    lines.append(
-        '<text x="45" y="444" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1B2430">'
-        "B. Representative Concrete Agent Execution Traces (Actual Queries, Obtained Candidates, Failure Reasons, and Final Bookings)</text>"
-    )
-
-    rep_tasks = [
-        ("tier1_direct_01", "Tier 1 (Direct): FRA -> CPH"),
-        ("tier2_constrained_01", "Tier 2 (Constrained): BER -> KRK"),
-        ("tier3_multimodal_01", "Tier 3 (Multi-Modal): NUE -> FRA -> CPH"),
-    ]
-    available_reps = [(tid, lbl) for tid, lbl in rep_tasks if tid in traces]
-    if not available_reps:
-        available_reps = [(tid, tid) for tid in list(traces.keys())[:3]]
-
-    for row_idx, (tid, row_label) in enumerate(available_reps):
-        tinfo = traces[tid]
-        y_top = 462 + row_idx * 88
-        lines.append(
-            f'<text x="45" y="{y_top + 14}" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#1B2430">{escape(row_label)}</text>'
-        )
-        steps = tinfo["steps"]
-        n_s = max(1, len(steps))
-        box_w = min(235, int((1250 - (n_s - 1) * 22) / n_s))
-        for s_idx, st in enumerate(steps):
-            bx = 45 + s_idx * (box_w + 22)
-            by = y_top + 22
-            bh = 50
-            outcome = st["outcome"]
-            if outcome == "failure":
-                stroke, fill = "#B03030", "#FDF2F2"
-            elif st["kind"] == "commit":
-                stroke, fill = "#B85D19", "#FFF7F0"
-            elif st["kind"] == "verify_passed":
-                stroke, fill = "#2E7D5B", "#EFFAF5"
-            else:
-                stroke, fill = "#2A5B84", "#F0F6FC"
-
-            lines.append(
-                f'<rect x="{bx}" y="{by}" width="{box_w}" height="{bh}" rx="6" ry="6" fill="{fill}" stroke="{stroke}" stroke-width="1.8"/>'
-            )
-            summary_txt = str(st["summary"])
-            # Split summary_txt into 2 lines so it fits cleanly inside box_w
-            max_chars = max(20, int(box_w / 6.2))
-            if len(summary_txt) <= max_chars:
-                l1, l2 = summary_txt, ""
-            else:
-                split_pos = summary_txt.rfind(" ", 0, max_chars)
-                if split_pos <= 0:
-                    split_pos = max_chars
-                l1 = summary_txt[:split_pos].strip()
-                l2 = summary_txt[split_pos:].strip()
-                if len(l2) > max_chars + 4:
-                    l2 = l2[: max_chars + 1] + "..."
-
-            lines.append(
-                f'<text x="{bx + box_w // 2}" y="{by + 21}" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="bold" fill="{stroke}">{escape(l1)}</text>'
-            )
-            if l2:
-                lines.append(
-                    f'<text x="{bx + box_w // 2}" y="{by + 38}" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#334155">{escape(l2)}</text>'
-                )
-
-            if s_idx < len(steps) - 1:
-                ax1 = bx + box_w
-                ax2 = bx + box_w + 22
-                ay = by + bh // 2
-                acol = "#B03030" if outcome == "failure" else "#2A5B84"
-                amark = "arr-red" if outcome == "failure" else "arr-blue"
-                lines.append(
-                    f'<line x1="{ax1}" y1="{ay}" x2="{ax2}" y2="{ay}" stroke="{acol}" stroke-width="2" marker-end="url(#{amark})"/>'
-                )
 
     lines.append("</svg>")
     svg_text = "\n".join(lines)
@@ -1067,16 +1050,16 @@ def run_analysis(sessions_dir: Path | None = None) -> dict[str, Any]:
         "tier3_multimodal"
     ):
         c_t1 = merge_cohorts(
-            label=f"Tier 1 Direct (n={len(cohorts_by_tier['tier1_direct'])})",
-            title="LoopOCEL — Tier 1 (Direct) vs. Tier 3 (Multi-Modal) Travel Runs",
-            subtitle="Comparison of low-complexity vs. high-complexity live web travel planning sessions",
+            label="Tier 1 Direct",
+            title="Tier 1 · Direct Round-Trip",
+            subtitle=f"{len(cohorts_by_tier['tier1_direct'])} live web runs · unconstrained point-to-point flights",
             cohorts=cohorts_by_tier["tier1_direct"],
             color="#2B5C8F",
         )
         c_t3 = merge_cohorts(
-            label=f"Tier 3 Multi-Modal (n={len(cohorts_by_tier['tier3_multimodal'])})",
-            title="LoopOCEL — Tier 1 (Direct) vs. Tier 3 (Multi-Modal) Travel Runs",
-            subtitle="Comparison of low-complexity vs. high-complexity live web travel planning sessions",
+            label="Tier 3 Multi-Modal",
+            title="Tier 3 · Multi-Modal & Multi-Stop",
+            subtitle=f"{len(cohorts_by_tier['tier3_multimodal'])} live web runs · rail+air transfer buffer & multi-hotel",
             cohorts=cohorts_by_tier["tier3_multimodal"],
             color="#2E6B4E",
         )
