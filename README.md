@@ -40,6 +40,8 @@ After updating the server, restart or reload the MCP server in your agent (Antig
 
 ## Quick Start: Plug In Your Agent
 
+The step-by-step first-time setup for Claude Desktop, Claude Code, Codex, Cursor, Gemini CLI, and Antigravity (install, register, restart, verify) is in [`skills/loopocel-logger/SKILL.md`](skills/loopocel-logger/SKILL.md#setup-first-time-only). Agents that load the skill can walk you through it.
+
 ### 1. Claude Desktop / Cursor / Windsurf (`mcp.json`)
 
 Add `loopocel-mcp` to your MCP client configuration:

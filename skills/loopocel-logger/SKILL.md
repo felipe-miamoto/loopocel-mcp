@@ -1,11 +1,80 @@
 ---
 name: loopocel-logger
-description: Record autonomous AI agent executions live into validated LoopOCEL (OCEL 2.0 JSON) logs and show the agent-loop OC-DFG and semantic process graph using loopocel-mcp. Use whenever the loopocel MCP server is connected and the user gives a multi-step task (planning, searching, booking, coding, data work), when asked to log an agent task as OCEL 2.0 / LoopOCEL, ingest an agent transcript, wrap a downstream MCP server, or show process graphs or ontology coverage of a run.
+description: Record autonomous AI agent executions live into validated LoopOCEL (OCEL 2.0 JSON) logs and show the agent-loop OC-DFG and semantic process graph using loopocel-mcp. Use when asked to install, set up, or connect loopocel-mcp to an agent (Claude Desktop, Claude Code, Codex, Cursor, Antigravity, Gemini CLI); whenever the loopocel MCP server is connected and the user gives a multi-step task (planning, searching, booking, coding, data work), when asked to log an agent task as OCEL 2.0 / LoopOCEL, ingest an agent transcript, wrap a downstream MCP server, or show process graphs or ontology coverage of a run.
 ---
 
 # LoopOCEL-MCP Instrumentation Skill
 
 This skill teaches an agent how to record its own execution—or convert an existing transcript/session—into a validated **LoopOCEL (OCEL 2.0 JSON)** object-centric event log and ontology coverage diagram using **`loopocel-mcp`**.
+
+---
+
+## Setup (first time only)
+
+The server must be registered with the agent before a task starts. Its tools (`session_start`, `record_turn`, `session_end`, `get_process_graphs` ...) then appear in the agent's own tool list. If they are not there, set the server up with the steps below, or ask the user to, instead of driving the code another way.
+
+### Step A: Install
+
+```sh
+git clone https://github.com/felipe-miamoto/loopocel-mcp.git
+cd loopocel-mcp
+uv venv --python 3.12 && uv pip install -e .     # or: python3.12 -m venv .venv && .venv/bin/pip install -e .
+```
+
+This puts a `loopocel-mcp` command in `.venv/bin/`. Note two absolute paths; every client below needs them, because desktop apps start servers from `/` and without your shell `PATH`:
+
+- `<REPO>`: the absolute path of the clone (`pwd` inside it)
+- `<REPO>/.venv/bin/loopocel-mcp`: the server command
+
+Sessions are stored in `<REPO>/sessions` (any absolute folder works).
+
+### Step B: Register the server in your agent
+
+**Claude Desktop**: Settings → Developer → Edit Config opens `claude_desktop_config.json`. Add an `mcpServers` entry next to the existing keys:
+
+```json
+"mcpServers": {
+  "loopocel": {
+    "command": "<REPO>/.venv/bin/loopocel-mcp",
+    "args": ["--sessions-root", "<REPO>/sessions", "serve"]
+  }
+}
+```
+
+**Claude Code** (run in the project where you will work; `--scope user` makes it available everywhere):
+
+```sh
+claude mcp add loopocel -- <REPO>/.venv/bin/loopocel-mcp --sessions-root <REPO>/sessions serve
+```
+
+**Codex** (`~/.codex/config.toml`):
+
+```toml
+[mcp_servers.loopocel]
+command = "<REPO>/.venv/bin/loopocel-mcp"
+args = ["--sessions-root", "<REPO>/sessions", "serve"]
+```
+
+**Cursor** (`~/.cursor/mcp.json`), **Gemini CLI** (`~/.gemini/settings.json`), **Antigravity** (MCP server settings, or a workspace plugin at `.agents/plugins/loopocel-mcp/mcp_config.json`): the same `mcpServers` → `loopocel` entry as for Claude Desktop.
+
+### Step C: Restart and check
+
+1. Restart the client completely (Claude Desktop: Cmd+Q and reopen; Claude Code: start a new session; Antigravity: refresh the MCP server, since it caches tool lists).
+2. Check that the client shows `loopocel` as connected with 10 tools, including `get_process_graphs`, and the prompts `record-task` and `process-graphs`. In Claude Code: `claude mcp list`.
+3. Turn on the client's web search or other tools the task needs. loopocel only records; the agent still needs real tools to do the work, otherwise it has nothing real to record.
+4. Optional smoke test from a terminal:
+   ```sh
+   echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | <REPO>/.venv/bin/loopocel-mcp --sessions-root /tmp/loopocel-check serve
+   ```
+
+### Step D: Use it
+
+Give the agent a normal multi-step task, for example *"Using the loopocel MCP server, record this task: Plan a round-trip from Frankfurt to Copenhagen …"*, then ask for the process graphs (`get_process_graphs`, or the `process-graphs` prompt). After `session_end`, `provenance.recorded_via` should read `mcp-stdio` and `provenance.live` should be `true`.
+
+**Troubleshooting**
+- *Tools do not appear*: the path in `command` must be absolute and executable; check the client's MCP log (Claude Desktop: Settings → Developer → Open Logs).
+- *`recorded_via` is `cli` or `python-api`*: the agent did not use the MCP tools; the server is not registered in that client or the client was not restarted.
+- *Errors from a loopocel tool*: report them; do not edit files in `sessions/` by hand.
 
 ---
 
