@@ -40,57 +40,67 @@ After updating the server, restart or reload the MCP server in your agent (Antig
 
 ## Quick Start: Plug In Your Agent
 
-The step-by-step first-time setup for Claude Desktop, Claude Code, Codex, Cursor, Gemini CLI, and Antigravity (install, register, restart, verify) is in [`skills/loopocel-logger/SKILL.md`](skills/loopocel-logger/SKILL.md#setup-first-time-only). Agents that load the skill can walk you through it.
+The same steps, with troubleshooting, are in [`skills/loopocel-logger/SKILL.md`](skills/loopocel-logger/SKILL.md#setup-first-time-only), so agents that load the skill can walk you through them.
 
-### 1. Claude Desktop / Cursor / Windsurf (`mcp.json`)
-
-Add `loopocel-mcp` to your MCP client configuration:
-
-```json
-{
-  "mcpServers": {
-    "loopocel": {
-      "command": "uvx",
-      "args": [
-        "--from",
-        "git+https://github.com/felipe-miamoto/loopocel-mcp",
-        "loopocel-mcp",
-        "--sessions-root",
-        "./sessions",
-        "serve"
-      ]
-    }
-  }
-}
-```
-
-Or from a local clone:
-
-```json
-{
-  "mcpServers": {
-    "loopocel": {
-      "command": "python3",
-      "args": ["-m", "loopocel_mcp", "--sessions-root", "./sessions", "serve"],
-      "env": {
-        "PYTHONPATH": "/path/to/loopocel-mcp/src"
-      }
-    }
-  }
-}
-```
-
-### 2. Claude Code CLI
+### 1. Install
 
 ```sh
-claude mcp add loopocel -- uvx --from git+https://github.com/felipe-miamoto/loopocel-mcp loopocel-mcp
+git clone https://github.com/felipe-miamoto/loopocel-mcp.git
+cd loopocel-mcp
+uv venv --python 3.12 && uv pip install -e .     # or: python3.12 -m venv .venv && .venv/bin/pip install -e .
 ```
 
-### 3. Install the Agent Skill (`SKILL.md`)
+This creates the server command `<REPO>/.venv/bin/loopocel-mcp`, where `<REPO>` is the absolute path of the clone (`pwd`). Use absolute paths in every client configuration: desktop apps start MCP servers from `/` and without your shell `PATH`. Sessions are stored under `--sessions-root`, here `<REPO>/sessions`.
+
+### 2. Register the Server
+
+**Claude Desktop** (Settings → Developer → Edit Config), **Cursor** (`~/.cursor/mcp.json`), **Gemini CLI** (`~/.gemini/settings.json`), **Antigravity** (MCP server settings or `.agents/plugins/loopocel-mcp/mcp_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "loopocel": {
+      "command": "<REPO>/.venv/bin/loopocel-mcp",
+      "args": ["--sessions-root", "<REPO>/sessions", "serve"]
+    }
+  }
+}
+```
+
+If the file already has other settings, add only the `"mcpServers"` entry next to them.
+
+**Claude Code** (add `--scope user` to make it available in every project):
+
+```sh
+claude mcp add loopocel -- <REPO>/.venv/bin/loopocel-mcp --sessions-root <REPO>/sessions serve
+```
+
+**Codex** (`~/.codex/config.toml`):
+
+```toml
+[mcp_servers.loopocel]
+command = "<REPO>/.venv/bin/loopocel-mcp"
+args = ["--sessions-root", "<REPO>/sessions", "serve"]
+```
+
+### 3. Restart and Verify
+
+1. Restart the client completely (Claude Desktop: Cmd+Q and reopen; Claude Code: new session; Antigravity: refresh the MCP server, which caches tool lists).
+2. Check that `loopocel` is connected with 10 tools, including `get_process_graphs` (Claude Code: `claude mcp list`).
+3. Turn on web search or whatever tools the task needs: loopocel only records, the agent still does the work with its own tools.
+4. After a recorded task, `session_end` should report `provenance.recorded_via: "mcp-stdio"` and `provenance.live: true`.
+
+Smoke test without a client:
+
+```sh
+echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | <REPO>/.venv/bin/loopocel-mcp --sessions-root /tmp/loopocel-check serve
+```
+
+### 4. Install the Agent Skill (`SKILL.md`)
 
 To teach any skill-compatible agent (Claude Code, Antigravity, Cursor, Codex) how to structure `ProcessObject` IDs, state changes, and turns automatically, copy [`skills/loopocel-logger/SKILL.md`](skills/loopocel-logger/SKILL.md) into your workspace's `.agents/skills/loopocel-logger/SKILL.md` (or `.claude/skills/`).
 
-### 4. Wrap Any Existing MCP Server Passively (`loopocel-mcp wrap`)
+### 5. Wrap Any Existing MCP Server Passively (`loopocel-mcp wrap`)
 
 Wrap any third-party MCP server in your `mcp.json` to automatically record all tool executions into a validated `loopocel.json` and render the coverage figure and both process graphs when the session closes:
 
