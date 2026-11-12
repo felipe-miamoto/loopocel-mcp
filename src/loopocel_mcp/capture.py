@@ -258,19 +258,24 @@ class Capture:
         *,
         dispatched: bool = True,
         rejected: bool = False,
+        internal: bool = False,
         emit_event: bool = True,
         timestamp: str | None = None,
     ) -> str:
+        record = {
+            "id": request_id,
+            "response_id": response_id,
+            "turn_id": turn_id,
+            "name": name,
+            "arguments": arguments,
+            "targets": list(targets or []),
+        }
+        if internal:
+            # Step the agent performed itself (reasoning, checking, deciding), not a tool call.
+            record["internal"] = True
         stamp = self.raw(
             "action_request",
-            {
-                "id": request_id,
-                "response_id": response_id,
-                "turn_id": turn_id,
-                "name": name,
-                "arguments": arguments,
-                "targets": list(targets or []),
-            },
+            record,
             timestamp=timestamp,
         )
         if emit_event:

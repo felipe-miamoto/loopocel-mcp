@@ -195,6 +195,23 @@ class ProcessObjectExtractor:
             if oid not in obs.acted_on:
                 obs.acted_on.append(oid)
 
+        if isinstance(explicit_changes, dict):
+            # Map form: {"<kind>:<id>": {"state": {...}, "created": bool}} or {"<kind>:<id>": {...state}}
+            explicit_changes = [
+                {"id": k, **(v if isinstance(v, dict) and "state" in v else {"state": v})}
+                for k, v in explicit_changes.items()
+            ]
+        for change in explicit_changes or ():
+            cid = change["id"]
+            cstate = change["state"]
+            # An object is created only the first time it is seen; a later "created" flag
+            # from the agent would register the same identity twice.
+            created = cid not in self.states
+            self.states[cid] = cstate
+            obs.changes.append({"id": cid, "state": cstate, "created": created})
+            if cid not in obs.acted_on:
+                obs.acted_on.append(cid)
+
         for oid in explicit_acted_on or ():
             if oid not in self.states:
                 self.states[oid] = {"id": oid}
@@ -208,21 +225,6 @@ class ProcessObjectExtractor:
                 obs.initial_objects[oid] = self.states[oid]
             if oid not in obs.describes:
                 obs.describes.append(oid)
-
-        if isinstance(explicit_changes, dict):
-            # Map form: {"<kind>:<id>": {"state": {...}, "created": bool}} or {"<kind>:<id>": {...state}}
-            explicit_changes = [
-                {"id": k, **(v if isinstance(v, dict) and "state" in v else {"state": v})}
-                for k, v in explicit_changes.items()
-            ]
-        for change in explicit_changes or ():
-            cid = change["id"]
-            cstate = change["state"]
-            created = bool(change.get("created", cid not in self.states))
-            self.states[cid] = cstate
-            obs.changes.append({"id": cid, "state": cstate, "created": created})
-            if cid not in obs.acted_on:
-                obs.acted_on.append(cid)
 
         return obs
 

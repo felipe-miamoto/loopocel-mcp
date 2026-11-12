@@ -196,6 +196,7 @@ def _action_steps(log: dict[str, Any]) -> list[dict[str, Any]]:
         steps.append(
             {
                 "request_id": rid,
+                "internal": bool(request.get("internal")),
                 "tool": name,
                 "outcome": outcome,
                 "failed": outcome not in SUCCESS_OUTCOMES,
@@ -258,6 +259,7 @@ def discover_semantic_process(logs: list[dict[str, Any]]) -> dict[str, Any]:
                     "tool": st["tool"],
                     "count": 0,
                     "failed": st["failed"],
+                    "internal": st["internal"],
                     "outcome": st["outcome"],
                     "touched_kinds": Counter(),
                     "changed_kinds": Counter(),
@@ -284,6 +286,7 @@ def discover_semantic_process(logs: list[dict[str, Any]]) -> dict[str, Any]:
                     "count": v["count"],
                     "tool": v["tool"],
                     "kind": "failed" if v["failed"] else ("mutating" if v["changed_kinds"] else "action"),
+                    "internal": v["internal"],
                     "outcome": v["outcome"],
                     "touched_kinds": dict(v["touched_kinds"].most_common()),
                     "changed_kinds": dict(v["changed_kinds"].most_common()),
@@ -962,6 +965,8 @@ def semantic_scene(
             node_lines[k] = [(k, 13.5, "#FFFFFF", True), (f"{a['count']} run{'s' if a['count'] != 1 else ''}", 11, "#D0D7DE", False)]
             continue
         lines = [(a["tool"], 14, INK, True)]
+        if a.get("internal"):
+            lines.append(("agent step, no tool", 11, FAINT, False))
         if kind == "failed":
             lines.append((a.get("outcome", "failed"), 11.5, stroke, True))
         on = _kinds_text(a["touched_kinds"])
@@ -986,6 +991,10 @@ def semantic_scene(
         ("failed or rejected action", "#B3261E", False),
         ("recovery after a failure", "#2E7D4F", True),
     ]
+    if any(a.get("internal") for a in acts.values()):
+        footer_internal = "Steps marked 'agent step, no tool' were done by the agent itself (checking, deciding), not by a tool."
+    else:
+        footer_internal = ""
     rows = [
         [
             kind,
@@ -998,6 +1007,8 @@ def semantic_scene(
     table = (["kind", "objects", "changed", "final state"], rows) if rows else None
     variants = sem.get("variants", {})
     footer = [[(f"{len(variants)} distinct action sequence{'s' if len(variants) != 1 else ''} across {sem['n_runs']} run{'s' if sem['n_runs'] != 1 else ''}. Edge label = number of transitions.", MUTED)]]
+    if footer_internal:
+        footer.append([(footer_internal, MUTED)])
     footer += [[(f"Warning: {n}", "#B3261E")] for n in notes or ()]
     return _draw_graph(
         title=title,

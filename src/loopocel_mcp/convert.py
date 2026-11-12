@@ -173,7 +173,11 @@ def convert(directory: Path | str, *, write_output: bool = True) -> dict[str, An
                     add_object(
                         data["id"],
                         "ActionRequest",
-                        {"name": data["name"], "arguments": data["arguments"]},
+                        {
+                            "name": data["name"],
+                            "arguments": data["arguments"],
+                            **({"internal": True} if data.get("internal") else {}),
+                        },
                         time,
                     )
                     edge(data["response_id"], "hasActionRequest", data["id"])

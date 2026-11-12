@@ -14,6 +14,9 @@ This skill teaches an agent how to record its own execution—or convert an exis
 - **Do the task for real** with your normal tools (web search, files, shell, APIs). The loopocel tools only log what you do; they never perform the task.
 - **Record live.** Call `session_start` before your first real action, then `record_turn` right after each reasoning-and-tool cycle, while the task runs. Do not collect turns and record them at the end.
 - **Record what really happened.** An action's `name` is the tool you actually called (`search_web`, `read_file`, `run_command` ...), its `arguments` are what you passed, and its `result` comes from the real tool output (shortened is fine). Never invent tools, results, prices, IDs, or outcomes. Record failed steps with `"outcome": "failure"`.
+- **Steps you do yourself without a tool** (comparing options, checking constraints, deciding, committing a plan) are actions with `"internal": true`, a descriptive name such as `verify_constraints`, and your own conclusion as `result`, computed from data already recorded. Never present them as tool calls, and never invent external effects such as bookings, payments, or reference numbers.
+- **Only use IDs and values that appear in a tool output.** If a search returns price ranges or no exact item, record the range or a descriptive ID (`flight:lufthansa_fra_cph`) instead of inventing flight numbers or prices.
+- **Never edit `capture.jsonl`** or other session files. If a loopocel tool returns an error, report it to the user instead of working around it.
 - **Never write a script that imports `loopocel_mcp`** or replays prepared turns. If the loopocel MCP tools are not in your tool list, call each tool live from the shell after each step:
   ```sh
   python -m loopocel_mcp --sessions-root <sessions> call record_turn --args-json '<json>'

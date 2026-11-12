@@ -32,6 +32,15 @@ LIVE_RECORDING_RULES = (
     "read_file, run_command), its arguments are the arguments you passed, and its result is taken from the real "
     "tool output (shortened is fine). Never invent tools, results, prices, IDs or outcomes. If a step failed, "
     "record it with outcome \"failure\".\n"
+    "- Steps you do yourself without a tool (comparing options, checking constraints, deciding, committing a "
+    "plan) are recorded as actions with \"internal\": true, a descriptive name (for example verify_constraints), "
+    "and as result your own conclusion computed from data already recorded. Never present them as tool calls, "
+    "and never invent external effects such as bookings, payments or reference numbers that did not happen.\n"
+    "- Only use object IDs and values that appear in a tool output. If a search returns ranges or no exact item, "
+    "record the range or a descriptive ID (for example flight:lufthansa_fra_cph) instead of inventing flight "
+    "numbers or prices.\n"
+    "- Never edit capture.jsonl or other session files. If a loopocel tool returns an error, report it to the "
+    "user instead of working around it.\n"
     "- Never write a script that imports loopocel_mcp or replays prepared turns. If these MCP tools are not in your "
     "tool list, call each tool live from the shell instead: "
     "python -m loopocel_mcp --sessions-root <sessions> call <tool> --args-json '<json>'.\n"
@@ -376,6 +385,7 @@ class LoopOCELServer:
                 req_obs.targets,
                 dispatched=not rejected,
                 rejected=rejected,
+                internal=bool(act.get("internal", False)),
             )
             if rejected:
                 recorded_actions.append({"request_id": aid, "status": "rejected"})
@@ -628,7 +638,7 @@ class LoopOCELServer:
                         "response_message": {"type": ["string", "object"], "description": "Assistant response text or message object."},
                         "actions": {
                             "type": "array",
-                            "description": "Tools you actually called in this cycle: name (the real tool name), arguments, result (from the real output), outcome, targets, acted_on, describes, changes.",
+                            "description": "Tools you actually called in this cycle: name (the real tool name), arguments, result (from the real output), outcome, targets, acted_on, describes, changes. Steps done without a tool (checking, deciding, committing) carry \"internal\": true.",
                             "items": {"type": "object"},
                         },
                         "instruction": {"type": ["string", "array"], "description": "New user instruction introduced on this turn, if any."},

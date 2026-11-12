@@ -170,6 +170,14 @@ class MCPServerAndLiveCaptureTests(unittest.TestCase):
                         "changes": [{"id": "file:app.py", "state": {"status": "fixed"}, "created": False}],
                     },
                     {"name": "run_tests", "arguments": {}, "targets": ["file:app.py"]},
+                    {
+                        "name": "decide_done",
+                        "internal": True,
+                        "arguments": {},
+                        "result": {"done": True},
+                        "acted_on": ["file:app.py"],
+                        "changes": {"file:app.py": {"state": {"status": "fixed", "reviewed": True}, "created": True}},
+                    },
                 ],
             )
             end_res = server.session_end(sid)
@@ -179,8 +187,10 @@ class MCPServerAndLiveCaptureTests(unittest.TestCase):
 
             log = json.loads(Path(end_res["ocel_path"]).read_text(encoding="utf-8"))
             sem = discover_semantic_process([log])
-            self.assertEqual(sem["variants"], {"run_tests [failed] -> edit_file -> run_tests": 1})
+            self.assertEqual(sem["variants"], {"run_tests [failed] -> edit_file -> run_tests -> decide_done": 1})
             self.assertEqual(sem["activities"]["edit_file"]["kind"], "mutating")
+            self.assertTrue(sem["activities"]["decide_done"]["internal"])
+            self.assertFalse(sem["activities"]["edit_file"]["internal"])
             self.assertEqual(sem["objects"]["file"]["final_states"], {"fixed": 1})
             ocdfg = discover_ocdfg([log])
             self.assertIn("Turn.Started", ocdfg["activities"])
