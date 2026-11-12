@@ -44,11 +44,12 @@ You can invoke the MCP tools (`session_start`, `record_object`, `record_turn`, `
 
 2. **Query the Live Web (`search_web`) & Call `record_turn`**:
    - Perform live `search_web` queries for flights, rail connections, and hotels.
+   - Call `record_turn` right after each search or check, while the task runs. Never prepare turns in advance or in a script, and never reuse results from another run: every ID, time, and price in `result`, `targets`, and `changes` must come from the search output you just received. The values in angle brackets below are placeholders.
    - Record each turn via `record_turn`:
      ```json
      {
        "session_id": "tier1_direct_01",
-       "response_message": "Searched direct flights FRA-CPH and hotels near Kongens Lyngby/Copenhagen.",
+       "response_message": "<what you searched and what you found>",
        "actions": [
          {
            "name": "search_web",
@@ -58,12 +59,12 @@ You can invoke the MCP tools (`session_start`, `record_object`, `record_turn`, `
            },
            "outcome": "success",
            "result": {
-             "flight_ids": ["LH824", "SK676"],
-             "summary": "LH824 dep 08:40 arr 10:05 (245 EUR RT); SK676 dep 13:05 arr 14:30 (215 EUR RT)"
+             "flight_ids": ["<flight no. from results>", "<flight no. from results>"],
+             "summary": "<times and prices exactly as returned by the search>"
            },
-           "targets": ["trip:tier1_direct_01", "flight:LH824", "flight:SK676"],
-           "acted_on": ["trip:tier1_direct_01", "flight:LH824", "flight:SK676"],
-           "describes": ["trip:tier1_direct_01", "flight:LH824", "flight:SK676"]
+           "targets": ["trip:tier1_direct_01", "flight:<flight no.>", "flight:<flight no.>"],
+           "acted_on": ["trip:tier1_direct_01", "flight:<flight no.>", "flight:<flight no.>"],
+           "describes": ["trip:tier1_direct_01", "flight:<flight no.>", "flight:<flight no.>"]
          },
          {
            "name": "search_web",
@@ -73,12 +74,12 @@ You can invoke the MCP tools (`session_start`, `record_object`, `record_turn`, `
            },
            "outcome": "success",
            "result": {
-             "hotel_ids": ["scandic-eremitagen-lyngby", "wake-up-copenhagen"],
-             "summary": "Scandic Eremitagen Lyngby 145 EUR/night; Wakeup Copenhagen 105 EUR/night"
+             "hotel_ids": ["<hotel slug from results>", "<hotel slug from results>"],
+             "summary": "<names and nightly rates exactly as returned by the search>"
            },
-           "targets": ["hotel:scandic-eremitagen-lyngby", "hotel:wake-up-copenhagen"],
-           "acted_on": ["hotel:scandic-eremitagen-lyngby", "hotel:wake-up-copenhagen"],
-           "describes": ["hotel:scandic-eremitagen-lyngby", "hotel:wake-up-copenhagen"]
+           "targets": ["hotel:<hotel slug>", "hotel:<hotel slug>"],
+           "acted_on": ["hotel:<hotel slug>", "hotel:<hotel slug>"],
+           "describes": ["hotel:<hotel slug>", "hotel:<hotel slug>"]
          }
        ]
      }
@@ -92,7 +93,7 @@ You can invoke the MCP tools (`session_start`, `record_object`, `record_turn`, `
      "session_id": "tier1_direct_01"
    }
    ```
-   This converts `capture.jsonl` → `loopocel.json`, validates the OCEL 2.0 schema and LoopOCEL ontology reconstruction (`validation.passed == true`), and renders `figure.svg` and `figure.png`.
+   This converts `capture.jsonl` → `loopocel.json`, validates the OCEL 2.0 schema and LoopOCEL ontology reconstruction (`validation.passed == true`), and renders the coverage figure and both process graphs. Check that `provenance.live` is `true`; if it is `false`, the session was not recorded live and must be run again.
 
 ---
 
