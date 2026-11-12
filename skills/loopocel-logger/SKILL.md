@@ -13,6 +13,17 @@ This skill teaches an agent how to record its own execution—or convert an exis
 
 The server must be registered with the agent before a task starts. Its tools (`session_start`, `record_turn`, `session_end`, `get_process_graphs` ...) then appear in the agent's own tool list. If they are not there, set the server up with the steps below, or ask the user to, instead of driving the code another way.
 
+### When the user asks you to set it up
+
+If you can run shell commands and edit files (Claude Code, the Code tab of Claude Desktop, Codex, Cursor, Antigravity), do the setup yourself:
+
+1. Clone the repository where the user asks (default `~/loopocel-mcp`); if a clone already exists there, reuse it. Install it as in Step A.
+2. Register the server for the client the user names, as in Step B. When editing an existing JSON or TOML config, read it first, keep every existing key, add only the `loopocel` entry, and save a backup copy next to it (`<file>.bak`) before writing.
+3. Run the smoke test in Step C and confirm it lists 10 tools.
+4. Tell the user exactly what to restart, and that after the restart the client should show `loopocel` with 10 tools. A running client does not pick up a new server until it restarts.
+
+If you cannot run commands (for example a plain chat), give the user these steps with the paths filled in instead.
+
 ### Step A: Install
 
 ```sh

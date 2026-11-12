@@ -42,6 +42,14 @@ After updating the server, restart or reload the MCP server in your agent (Antig
 
 The same steps, with troubleshooting, are in [`skills/loopocel-logger/SKILL.md`](skills/loopocel-logger/SKILL.md#setup-first-time-only), so agents that load the skill can walk you through them.
 
+### Set Up by Prompt
+
+In an agent that can run shell commands (Claude Code, the Code tab of Claude Desktop, Codex, Cursor, Antigravity), paste:
+
+> Set up the loopocel MCP server for Claude Desktop: clone https://github.com/felipe-miamoto/loopocel-mcp into ~/loopocel-mcp and follow the "Setup (first time only)" section of skills/loopocel-logger/SKILL.md. Keep my existing Claude Desktop settings, run the smoke test, and tell me when to restart.
+
+Replace "Claude Desktop" with the client you use. The manual steps follow.
+
 ### 1. Install
 
 ```sh
