@@ -13,12 +13,10 @@ import json
 import math
 from pathlib import Path
 import re
-import shutil
-import subprocess
-import tempfile
 from typing import Any
 
-from .convert import BASELINE_EVENTS_BY_FAMILY, BASELINE_EVENT_SET, OBJECT_TYPES, RELATIONS, summarize_log
+from .raster import svg_to_png
+from .convert import BASELINE_EVENTS_BY_FAMILY, BASELINE_EVENT_SET, summarize_log
 
 
 PALETTE = {
@@ -679,237 +677,9 @@ def _render_matplotlib(cohorts: list[CohortData], output_path: Path, fmt: str = 
     return True
 
 
-def _render_pure_python_png(cohorts: list[CohortData], png_path: Path) -> bool:
-    """Standard-library-only PNG rasterizer fallback with built-in bitmap text."""
-    import struct
-    import zlib
-
-    width, height = 1605, 1140
-    bg = (255, 255, 255)
-    buf = bytearray(bg * (width * height))
-
-    font_5x7: dict[str, tuple[int, ...]] = {
-        "A": (0x0E, 0x11, 0x11, 0x1F, 0x11, 0x11, 0x11),
-        "B": (0x1E, 0x11, 0x11, 0x1E, 0x11, 0x11, 0x1E),
-        "C": (0x0E, 0x11, 0x10, 0x10, 0x10, 0x11, 0x0E),
-        "D": (0x1C, 0x12, 0x11, 0x11, 0x11, 0x12, 0x1C),
-        "E": (0x1F, 0x10, 0x10, 0x1E, 0x10, 0x10, 0x1F),
-        "F": (0x1F, 0x10, 0x10, 0x1E, 0x10, 0x10, 0x10),
-        "G": (0x0E, 0x11, 0x10, 0x17, 0x11, 0x11, 0x0F),
-        "H": (0x11, 0x11, 0x11, 0x1F, 0x11, 0x11, 0x11),
-        "I": (0x0E, 0x04, 0x04, 0x04, 0x04, 0x04, 0x0E),
-        "J": (0x07, 0x02, 0x02, 0x02, 0x12, 0x12, 0x0C),
-        "K": (0x11, 0x12, 0x14, 0x18, 0x14, 0x12, 0x11),
-        "L": (0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x1F),
-        "M": (0x11, 0x1B, 0x15, 0x15, 0x11, 0x11, 0x11),
-        "N": (0x11, 0x19, 0x15, 0x13, 0x11, 0x11, 0x11),
-        "O": (0x0E, 0x11, 0x11, 0x11, 0x11, 0x11, 0x0E),
-        "P": (0x1E, 0x11, 0x11, 0x1E, 0x10, 0x10, 0x10),
-        "Q": (0x0E, 0x11, 0x11, 0x11, 0x15, 0x12, 0x0D),
-        "R": (0x1E, 0x11, 0x11, 0x1E, 0x14, 0x12, 0x11),
-        "S": (0x0F, 0x10, 0x10, 0x0E, 0x01, 0x01, 0x1E),
-        "T": (0x1F, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04),
-        "U": (0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x0E),
-        "V": (0x11, 0x11, 0x11, 0x11, 0x11, 0x0A, 0x04),
-        "W": (0x11, 0x11, 0x11, 0x15, 0x15, 0x1B, 0x11),
-        "X": (0x11, 0x11, 0x0A, 0x04, 0x0A, 0x11, 0x11),
-        "Y": (0x11, 0x11, 0x0A, 0x04, 0x04, 0x04, 0x04),
-        "Z": (0x1F, 0x01, 0x02, 0x04, 0x08, 0x10, 0x1F),
-        "0": (0x0E, 0x11, 0x13, 0x15, 0x19, 0x11, 0x0E),
-        "1": (0x04, 0x0C, 0x04, 0x04, 0x04, 0x04, 0x0E),
-        "2": (0x0E, 0x11, 0x01, 0x06, 0x08, 0x10, 0x1F),
-        "3": (0x1F, 0x02, 0x04, 0x06, 0x01, 0x11, 0x0E),
-        "4": (0x02, 0x06, 0x0A, 0x12, 0x1F, 0x02, 0x02),
-        "5": (0x1F, 0x10, 0x1E, 0x01, 0x01, 0x11, 0x0E),
-        "6": (0x06, 0x08, 0x10, 0x1E, 0x11, 0x11, 0x0E),
-        "7": (0x1F, 0x01, 0x02, 0x04, 0x08, 0x08, 0x08),
-        "8": (0x0E, 0x11, 0x11, 0x0E, 0x11, 0x11, 0x0E),
-        "9": (0x0E, 0x11, 0x11, 0x0F, 0x01, 0x02, 0x0C),
-        ".": (0x00, 0x00, 0x00, 0x00, 0x00, 0x0C, 0x0C),
-        ",": (0x00, 0x00, 0x00, 0x00, 0x04, 0x04, 0x08),
-        ":": (0x00, 0x0C, 0x0C, 0x00, 0x0C, 0x0C, 0x00),
-        "|": (0x04, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04),
-        "/": (0x01, 0x02, 0x02, 0x04, 0x08, 0x08, 0x10),
-        "-": (0x00, 0x00, 0x00, 0x1F, 0x00, 0x00, 0x00),
-        "_": (0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1F),
-        "+": (0x00, 0x04, 0x04, 0x1F, 0x04, 0x04, 0x00),
-        "*": (0x00, 0x15, 0x0E, 0x1F, 0x0E, 0x15, 0x00),
-        "(": (0x02, 0x04, 0x08, 0x08, 0x08, 0x04, 0x02),
-        ")": (0x08, 0x04, 0x02, 0x02, 0x02, 0x04, 0x08),
-        "[": (0x0E, 0x08, 0x08, 0x08, 0x08, 0x08, 0x0E),
-        "]": (0x0E, 0x02, 0x02, 0x02, 0x02, 0x02, 0x0E),
-        "=": (0x00, 0x00, 0x1F, 0x00, 0x1F, 0x00, 0x00),
-        ">": (0x08, 0x04, 0x02, 0x01, 0x02, 0x04, 0x08),
-        " ": (0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00),
-    }
-
-    def to_px(x: float, y: float) -> tuple[int, int]:
-        px = int((x - (-220.0)) / 2140.0 * width)
-        py = int((y - (-220.0)) / 1520.0 * height)
-        return max(0, min(width - 1, px)), max(0, min(height - 1, py))
-
-    def parse_hex(color_hex: str) -> tuple[int, int, int]:
-        h = color_hex.lstrip("#")
-        return int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
-
-    def set_px(px: int, py: int, rgb: tuple[int, int, int]) -> None:
-        if 0 <= px < width and 0 <= py < height:
-            idx = (py * width + px) * 3
-            buf[idx : idx + 3] = bytes(rgb)
-
-    def draw_text(x: float, y: float, text_str: str, color: str, align: str = "center", scale: int = 1) -> None:
-        px, py = to_px(x, y)
-        rgb = parse_hex(color)
-        clean = text_str.replace("·", "-").replace("†", "+")
-        char_w = 6 * scale
-        total_w = len(clean) * char_w
-        if align == "center":
-            start_x = px - total_w // 2
-        elif align == "right":
-            start_x = px - total_w
-        else:
-            start_x = px
-        start_y = py - (7 * scale) // 2
-        for c_idx, ch in enumerate(clean):
-            glyph = font_5x7.get(ch.upper(), font_5x7[" "])
-            gx = start_x + c_idx * char_w
-            for row_i, row_bits in enumerate(glyph):
-                for col_i in range(5):
-                    if row_bits & (1 << (4 - col_i)):
-                        for sy in range(scale):
-                            for sx in range(scale):
-                                set_px(gx + col_i * scale + sx, start_y + row_i * scale + sy, rgb)
-
-    def draw_rect(x0: float, y0: float, w: float, h: float, fill: str, stroke: str) -> None:
-        px0, py0 = to_px(x0, y0)
-        px1, py1 = to_px(x0 + w, y0 + h)
-        frgb, srgb = parse_hex(fill), parse_hex(stroke)
-        for py in range(py0, py1 + 1):
-            for px in range(px0, px1 + 1):
-                if py in (py0, py0 + 1, py1 - 1, py1) or px in (px0, px0 + 1, px1 - 1, px1):
-                    set_px(px, py, srgb)
-                else:
-                    set_px(px, py, frgb)
-
-    def draw_line(x0: float, y0: float, x1: float, y1: float, stroke: str, dashed: bool = False) -> None:
-        px0, py0 = to_px(x0, y0)
-        px1, py1 = to_px(x1, y1)
-        srgb = parse_hex(stroke)
-        steps = max(abs(px1 - px0), abs(py1 - py0), 1)
-        for s in range(steps + 1):
-            if dashed and (s // 5) % 2 == 1:
-                continue
-            px = int(px0 + (px1 - px0) * s / steps)
-            py = int(py0 + (py1 - py0) * s / steps)
-            set_px(px, py, srgb)
-            set_px(px + 1, py, srgb)
-
-    col_x = [-150, 960, 1480] if len(cohorts) <= 2 else [-150, 560, 1270]
-    for idx, cohort in enumerate(cohorts[:3]):
-        hx = col_x[idx] if idx < len(col_x) else -150 + idx * 650
-        draw_text(hx, -172, cohort.title, "#1F2328", align="left", scale=2)
-        draw_text(hx, -145, _format_coverage_header(cohort.summary), "#1F2328", align="left", scale=1)
-        draw_text(hx, -121, cohort.subtitle, "#57606A", align="left", scale=1)
-        draw_text(hx, -97, cohort.totals_line, "#1F2328", align="left", scale=1)
-
-    for rel_name, (route, lx, ly, align) in ROUTES.items():
-        counts = [int(c.summary["relations"].get(rel_name, 0)) for c in cohorts]
-        stroke_color, _ = _element_stroke_and_fill(counts, cohorts, is_node=False)
-        dashed = rel_name.startswith("hasSource") or rel_name == "hasNextTurn"
-        verts = _parse_svg_vertices(route)
-        for (x0, y0), (x1, y1) in zip(verts, verts[1:]):
-            draw_line(x0, y0, x1, y1, stroke_color, dashed=dashed)
-        draw_text(lx, ly - 5, rel_name, stroke_color, align=align, scale=1)
-        draw_text(lx, ly + 10, " | ".join(f"{c:,}" for c in counts), cohorts[0].color if any(counts) else "#8C959F", align=align, scale=1)
-
-    for family, (cx, attach_y, w, direction, route) in EVENT_BOX_ANCHORS.items():
-        event_rows = _events_for_family(family, cohorts)
-        row_h = 33.0
-        h = max(56.0, len(event_rows) * row_h + 16.0)
-        cy = attach_y - h / 2.0 if direction == "up" else attach_y + h / 2.0
-        verts = _parse_svg_vertices(route)
-        for (x0, y0), (x1, y1) in zip(verts, verts[1:]):
-            draw_line(x0, y0, x1, y1, PALETTE["focal_dot"], dashed=True)
-        draw_rect(cx - w / 2, cy - h / 2, w, h, PALETTE["hex_fill"], PALETTE["hex_stroke"])
-        top_y = cy - (len(event_rows) * row_h) / 2.0 + 11.0
-        for r_idx, (_, display_name, e_counts) in enumerate(event_rows):
-            ey = top_y + r_idx * row_h
-            e_color, _ = _element_stroke_and_fill(e_counts, cohorts, is_node=False)
-            draw_text(cx, ey, display_name, e_color, align="center", scale=1)
-            draw_text(cx, ey + 13.5, " | ".join(f"{c:,}" for c in e_counts), cohorts[0].color if any(e_counts) else "#8C959F", align="center", scale=1)
-
-    for cls_name, (cx, cy, w) in NODES.items():
-        counts = [int(c.summary["classes"].get(cls_name, 0)) for c in cohorts]
-        stroke_color, fill_color = _element_stroke_and_fill(counts, cohorts, is_node=True)
-        marker = next((c.markers[cls_name] for c in cohorts if cls_name in c.markers), "")
-        draw_rect(cx - w / 2, cy - 32.0, w, 64.0, fill_color, stroke_color)
-        draw_text(cx, cy - 8, f"{cls_name}{marker}", stroke_color, align="center", scale=2)
-        draw_text(cx, cy + 15, " | ".join(f"{c:,}" for c in counts), cohorts[0].color if any(counts) else "#8C959F", align="center", scale=1)
-
-    draw_text(-150, 1215, "COUNT ORDER: " + " | ".join(c.label for c in cohorts) + "   EXACT OBJECT / EVENT / O2O INSTANCE COUNTS.", "#272727", align="left", scale=1)
-    draw_text(-150, 1240, "* PARTIAL PROMPT CAPTURE. [EXT] OUTSIDE 14 BASELINE EVENT TYPES.", "#272727", align="left", scale=1)
-
-    raw_rows = bytearray()
-    row_bytes = width * 3
-    for y in range(height):
-        raw_rows.append(0)
-        raw_rows.extend(buf[y * row_bytes : (y + 1) * row_bytes])
-
-    def chunk(tag: bytes, data: bytes) -> bytes:
-        return (
-            struct.pack(">I", len(data))
-            + tag
-            + data
-            + struct.pack(">I", zlib.crc32(tag + data) & 0xFFFFFFFF)
-        )
-
-    png_bytes = (
-        b"\x89PNG\r\n\x1a\n"
-        + chunk(b"IHDR", struct.pack(">IIBBBBB", width, height, 8, 2, 0, 0, 0))
-        + chunk(b"IDAT", zlib.compress(bytes(raw_rows), 6))
-        + chunk(b"IEND", b"")
-    )
-    png_path.parent.mkdir(parents=True, exist_ok=True)
-    png_path.write_bytes(png_bytes)
-    return True
-
-
-def _svg_to_png_fallback(svg_path: Path, png_path: Path, cohorts: list[CohortData] | None = None) -> bool:
-    """Convert an SVG file to PNG using system tools or pure-Python fallback."""
-    png_path.parent.mkdir(parents=True, exist_ok=True)
-    if shutil.which("sips"):
-        res = subprocess.run(
-            ["sips", "-Z", "3200", "-s", "format", "png", str(svg_path), "--out", str(png_path)],
-            capture_output=True,
-            timeout=25,
-        )
-        if res.returncode == 0 and png_path.is_file():
-            return True
-
-    for binary, cmd_builder in (
-        ("rsvg-convert", lambda s, p: ["rsvg-convert", "-o", str(p), str(s)]),
-        ("magick", lambda s, p: ["magick", str(s), str(p)]),
-    ):
-        if shutil.which(binary):
-            res = subprocess.run(cmd_builder(svg_path, png_path), capture_output=True, timeout=20)
-            if res.returncode == 0 and png_path.is_file():
-                return True
-
-    if shutil.which("qlmanage"):
-        with tempfile.TemporaryDirectory() as tmp:
-            res = subprocess.run(
-                ["qlmanage", "-t", "-s", "1600", "-o", tmp, str(svg_path)],
-                capture_output=True,
-                timeout=20,
-            )
-            candidate = Path(tmp) / (svg_path.name + ".png")
-            if res.returncode == 0 and candidate.is_file():
-                shutil.copy2(candidate, png_path)
-                return True
-
-    if cohorts is not None:
-        return _render_pure_python_png(cohorts, png_path)
-    return False
+def _svg_to_png_fallback(svg_path: Path, png_path: Path) -> bool:
+    """Rasterize the SVG with a vector renderer when Matplotlib is unavailable."""
+    return svg_to_png(svg_path, png_path, scale=2.0)
 
 
 def render_figure(
@@ -929,9 +699,7 @@ def render_figure(
     outputs: dict[str, str] = {"svg": str(svg_path.resolve())}
     if "png" in formats:
         png_path = output_dir / f"{stem}.png"
-        if _render_matplotlib(cohorts, png_path, fmt="png") or _svg_to_png_fallback(
-            svg_path, png_path, cohorts=cohorts
-        ):
+        if _render_matplotlib(cohorts, png_path, fmt="png") or _svg_to_png_fallback(svg_path, png_path):
             outputs["png"] = str(png_path.resolve())
     return {
         "outputs": outputs,

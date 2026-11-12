@@ -13,6 +13,7 @@ from ..capture import Capture, canonical
 from ..convert import convert
 from ..extractor import ProcessObjectExtractor
 from ..figure import render_session_figure
+from ..process_graphs import render_session_process_graphs
 
 
 class ToolCallProxy:
@@ -287,7 +288,13 @@ class MCPStdioWrapper:
             return None
         log = convert(self.session_dir)
         fig = render_session_figure(self.session_dir)
-        return {"objects": len(log["objects"]), "events": len(log["events"]), "figure": fig["outputs"]}
+        graphs = render_session_process_graphs(self.session_dir)
+        return {
+            "objects": len(log["objects"]),
+            "events": len(log["events"]),
+            "figure": fig["outputs"],
+            "process_graphs": graphs["outputs"],
+        }
 
     def run(self, *, stdin: TextIO = sys.stdin, stdout: TextIO = sys.stdout) -> int:
         """Spawn the downstream MCP server and pipe stdio while recording tool calls."""

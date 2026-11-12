@@ -85,13 +85,18 @@ After each reasoning step and tool execution cycle, call `record_turn`:
 - `describes`: List of `ProcessObject` IDs described in the tool's output (`ActionResult.describesObject`).
 - `changes`: Map of `ProcessObject` IDs whose state was created (`"created": true` on first discovery) or mutated (`"created": false` on state update, emitting `ProcessObject.StateChanged`).
 
-### Step 3: Finalize, Validate, and Render (`session_end` & `get_figure`)
+### Step 3: Finalize, Validate, and Render (`session_end`, `get_process_graphs`, `get_figure`)
 Once the task finishes:
 1. Call `session_end({"session_id": "my_task_01"})`:
    - Converts `capture.jsonl` $\to$ `loopocel.json`
    - Runs two-stage verification (OCEL 2.0 JSON Schema draft-07 + LoopOCEL relational cardinality check)
-   - Renders `figure.svg` and `figure.png`
-2. Call `get_figure({"session_id": "my_task_01", "format": "png"})` (or `"compare_with": ["other_session"]` for side-by-side cohort comparison).
+   - Renders `figure.svg`/`.png` (ontology coverage), `ocdfg_process_graph.svg`/`.png`, and `semantic_process_graph.svg`/`.png`
+2. Call `get_process_graphs({"session_id": "my_task_01"})` to show both process graphs (omit `session_id` for the most recent session; add `"include_sessions": [...]` to aggregate runs):
+   - **Agent-loop OC-DFG**: LoopOCEL event types with directly-follows edges per object type (how the agent loop ran).
+   - **Semantic process graph**: the domain steps (tool actions named by tool and by the business object kinds they touch), failed actions and their rework, plus the final state of each business object kind. Use meaningful tool names and `<kind>:<id>` object IDs, since they become the node labels.
+3. Optionally call `get_figure({"session_id": "my_task_01", "format": "png"})` (or `"compare_with": ["other_session"]`) for the ontology coverage figure.
+
+Shortcut: the `process-graphs` MCP prompt does all of this from one line. With a `task` argument it records the task and then shows both graphs; without one it shows the graphs of the most recent session.
 
 ---
 

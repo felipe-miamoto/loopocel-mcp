@@ -5,7 +5,7 @@ description = "MCP server and capture adapters for constructing LoopOCEL (OCEL 2
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "mcp>=1.2.0",
+    "mcp>=1.10,<2",
     "matplotlib>=3.8.0",
     "jsonschema>=4.23.0",
 ]

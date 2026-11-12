@@ -16,6 +16,7 @@ from .capture import Capture, SessionStore, canonical, content_hash, now, write_
 from .convert import convert, summarize_log
 from .extractor import ProcessObjectExtractor
 from .figure import render_session_figure
+from .process_graphs import render_session_process_graphs
 from .validate import validate_log
 
 
@@ -387,12 +388,14 @@ class LoopOCELServer:
         summary = summarize_log(log, meta=meta)
         write_json(sdir / "summary.json", summary)
         fig_info = render_session_figure(sdir, formats=("svg", "png"))
+        graphs = render_session_process_graphs(sdir, formats=("svg", "png"))
 
         return {
             "session_id": session_id,
             "status": "completed",
             "ocel_path": str(ocel_path.resolve()),
             "figure_outputs": fig_info["outputs"],
+            "process_graph_outputs": graphs["outputs"],
             "validation": validation,
             "summary": summary,
         }
@@ -447,6 +450,65 @@ class LoopOCELServer:
             "path": str(target_path.resolve()),
             "base64": base64.b64encode(raw_bytes).decode("ascii"),
             "cohorts": info["cohorts"],
+        }
+
+    def latest_session_id(self) -> str:
+        sessions = [s for s in self.store.list_sessions() if s.get("has_capture") or s.get("has_ocel")]
+        if not sessions:
+            raise FileNotFoundError("No recorded sessions found")
+        latest = max(sessions, key=lambda s: str(s.get("finished_at") or s.get("started_at") or ""))
+        return str(latest["session_id"])
+
+    def get_process_graphs(
+        self,
+        session_id: str | None = None,
+        format: str = "png",  # noqa: A002
+        include_sessions: list[str] | None = None,
+        view: str = "both",
+    ) -> dict[str, Any]:
+        """Render the agent-loop OC-DFG and the semantic process graph for a session."""
+        fmt = format.lower()
+        if fmt not in ("svg", "png"):
+            raise ValueError(f"Unsupported figure format: {format}")
+        if view not in ("both", "ocdfg", "semantic"):
+            raise ValueError(f"Unsupported view: {view}")
+        sid = session_id or self.latest_session_id()
+        sdir = self.store.session_dir(sid)
+        include_dirs = [self.store.session_dir(x) for x in (include_sessions or ()) if x != sid]
+        res = render_session_process_graphs(sdir, include_dirs=include_dirs, formats=("svg", "png"))
+        sem = res["semantic_process"]
+        graphs = []
+        for name in ("ocdfg", "semantic"):
+            if view not in ("both", name):
+                continue
+            outputs = res["outputs"][name]
+            path = Path(outputs.get(fmt) or outputs["svg"])
+            graphs.append(
+                {
+                    "view": name,
+                    "title": "Agent-loop OC-DFG" if name == "ocdfg" else "Semantic process graph",
+                    "format": path.suffix.lstrip("."),
+                    "mime_type": "image/png" if path.suffix == ".png" else "image/svg+xml",
+                    "path": str(path),
+                    "base64": base64.b64encode(path.read_bytes()).decode("ascii"),
+                }
+            )
+        return {
+            "session_id": sid,
+            "sessions": res["sessions"],
+            "graphs": graphs,
+            "ocdfg": {
+                "activities": res["ocdfg"]["activities"],
+                "edges": len(res["ocdfg"]["edges"]),
+            },
+            "semantic_process": {
+                "activities": {
+                    k: {kk: vv for kk, vv in v.items() if kk in ("count", "kind", "touched_kinds", "changed_kinds")}
+                    for k, v in sem["activities"].items()
+                },
+                "variants": sem["variants"],
+                "objects": sem["objects"],
+            },
         }
 
     def list_sessions(self) -> dict[str, Any]:
@@ -561,6 +623,23 @@ class LoopOCELServer:
                 },
             },
             {
+                "name": "get_process_graphs",
+                "description": "Discover and return two process graphs for a recorded session: the architectural agent-loop OC-DFG (event types, directly-follows per object type) and the semantic domain process graph (tool actions on business objects, failures, rework). Defaults to the most recent session.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "session_id": {"type": "string", "description": "Session to analyze (default: most recent)."},
+                        "format": {"type": "string", "enum": ["png", "svg"], "default": "png"},
+                        "include_sessions": {
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "Optional further session IDs to aggregate into the same graphs.",
+                        },
+                        "view": {"type": "string", "enum": ["both", "ocdfg", "semantic"], "default": "both"},
+                    },
+                },
+            },
+            {
                 "name": "get_summary",
                 "description": "Return instance counts per class, O2O relation, and event type, plus ontology coverage and validation status.",
                 "inputSchema": {
@@ -597,6 +676,8 @@ class LoopOCELServer:
             return self.get_log(**args)
         if name == "get_figure":
             return self.get_figure(**args)
+        if name == "get_process_graphs":
+            return self.get_process_graphs(**args)
         if name == "get_summary":
             return self.get_summary(**args)
         if name == "list_sessions":
@@ -624,6 +705,16 @@ class LoopOCELServer:
                         "name": f"LoopOCEL Summary ({sid})",
                         "mimeType": "application/json",
                     },
+                    {
+                        "uri": f"loopocel://sessions/{sid}/ocdfg",
+                        "name": f"Agent-loop OC-DFG ({sid})",
+                        "mimeType": "image/svg+xml",
+                    },
+                    {
+                        "uri": f"loopocel://sessions/{sid}/semantic",
+                        "name": f"Semantic Process Graph ({sid})",
+                        "mimeType": "image/svg+xml",
+                    },
                 ]
             )
         return resources
@@ -647,6 +738,10 @@ class LoopOCELServer:
             fig = self.get_figure(sid, format="svg")
             svg_text = Path(fig["path"]).read_text(encoding="utf-8")
             return {"contents": [{"uri": uri, "mimeType": "image/svg+xml", "text": svg_text}]}
+        if kind in ("ocdfg", "semantic"):
+            res = self.get_process_graphs(sid, format="svg", view=kind)
+            svg_text = Path(res["graphs"][0]["path"]).read_text(encoding="utf-8")
+            return {"contents": [{"uri": uri, "mimeType": "image/svg+xml", "text": svg_text}]}
         raise ValueError(f"Unknown resource kind: {kind}")
 
     def list_prompts(self) -> list[dict[str, Any]]:
@@ -668,6 +763,22 @@ class LoopOCELServer:
                     {
                         "name": "profile",
                         "description": "Optional domain profile label (e.g. travel, coding, general).",
+                        "required": False,
+                    },
+                ],
+            },
+            {
+                "name": "process-graphs",
+                "description": "One-line entry point: optionally run and record a task, then show the agent-loop OC-DFG and the semantic domain process graph of the run.",
+                "arguments": [
+                    {
+                        "name": "task",
+                        "description": "Task to execute and record first. Omit to analyze an existing session.",
+                        "required": False,
+                    },
+                    {
+                        "name": "session_id",
+                        "description": "Session to analyze (default: the one just recorded, else the most recent).",
                         "required": False,
                     },
                 ],
@@ -711,7 +822,7 @@ class LoopOCELServer:
                 f"   - `session_id`: the active session ID\n"
                 f"   - `response_message`: your reasoning summary for this turn\n"
                 f"   - `actions`: list of executed tools, each with `name`, `arguments`, `outcome` (`\"success\"` or `\"rejected\"`), `result`, `targets` (list of targeted `ProcessObject` IDs), `acted_on`, `describes`, and `changes` (`{{\"<kind>:<id>\": {{\"state\": {{...}}, \"created\": true/false}}}}`) for any domain entity created or mutated.\n"
-                f"3. **Finalize & Render**: When the task is complete, call `session_end(session_id=...)` to build and validate `loopocel.json` and render `figure.svg` / `figure.png`, then call `get_figure(session_id=...)` to return the ontology coverage diagram."
+                f"3. **Finalize & Render**: When the task is complete, call `session_end(session_id=...)` to build and validate `loopocel.json` and render the coverage figure and both process graphs, then call `get_process_graphs(session_id=...)` to show the agent-loop OC-DFG and the semantic process graph (and `get_figure(session_id=...)` if the ontology coverage diagram is wanted)."
             )
             return {
                 "description": f"Record LoopOCEL execution log for task: {task_text}",
@@ -722,6 +833,36 @@ class LoopOCELServer:
                     }
                 ],
             }
+        if name == "process-graphs":
+            task_text = str(args.get("task") or "").strip()
+            session_id = args.get("session_id")
+            show = (
+                f"call `get_process_graphs(session_id={json.dumps(session_id)})`"
+                if session_id
+                else "call `get_process_graphs` with that session_id"
+            )
+            explain = (
+                "Show both images and explain them briefly: from the OC-DFG, how the agent loop ran "
+                "(turns, tool calls, object updates, cycles); from the semantic graph, which domain steps "
+                "were taken in which order, which failed and were reworked, and the final state of the business objects."
+            )
+            if task_text:
+                record = self.get_prompt("record-task", {"task": task_text, "session_id": session_id})
+                body = (
+                    record["messages"][0]["content"]["text"].rsplit("3. **Finalize", 1)[0]
+                    + f"3. **Finalize**: call `session_end(session_id=...)`.\n"
+                    f"4. **Process graphs**: {show}. {explain}"
+                )
+            else:
+                target = (
+                    f"session `{session_id}`" if session_id else "the most recent recorded session (omit session_id)"
+                )
+                show = f"Call `get_process_graphs` for {target}."
+                body = f"{show} {explain}"
+            return {
+                "description": "Agent-loop OC-DFG and semantic process graph" + (f" for: {task_text}" if task_text else ""),
+                "messages": [{"role": "user", "content": {"type": "text", "text": body}}],
+            }
         if name == "ingest-and-analyze":
             tpath = str(args.get("transcript_path") or "")
             session_id = args.get("session_id") or "ingested_session"
@@ -730,7 +871,8 @@ class LoopOCELServer:
                 f"Ingest the transcript at `{tpath}` into `loopocel-mcp` and generate its validated LoopOCEL log and coverage figure:\n"
                 f"1. Call `session_start(session_id={json.dumps(session_id)}, task={json.dumps(task_text)}, mode=\"transcript\")`.\n"
                 f"2. Call `session_end(session_id={json.dumps(session_id)}, transcript_path={json.dumps(tpath)})`.\n"
-                f"3. Call `get_summary(session_id={json.dumps(session_id)})` and `get_figure(session_id={json.dumps(session_id)})` and summarize the ontology coverage and validation status."
+                f"3. Call `get_summary(session_id={json.dumps(session_id)})` and `get_figure(session_id={json.dumps(session_id)})` and summarize the ontology coverage and validation status.\n"
+                f"4. Call `get_process_graphs(session_id={json.dumps(session_id)})` and explain the agent-loop OC-DFG and the semantic process graph."
             )
             return {
                 "description": f"Ingest and analyze transcript: {tpath}",
@@ -767,7 +909,7 @@ def handle_jsonrpc(server: LoopOCELServer, request: dict[str, Any]) -> dict[str,
                     "prompts": {"listChanged": False},
                 },
                 "serverInfo": SERVER_INFO,
-                "instructions": "Record agent loops into LoopOCEL (OCEL 2.0) logs and render ontology coverage figures.",
+                "instructions": "Record agent loops into LoopOCEL (OCEL 2.0) logs, render ontology coverage figures, and show the agent-loop OC-DFG and semantic process graph (get_process_graphs, or the process-graphs prompt).",
             }
         elif method in ("notifications/initialized", "notifications/cancelled"):
             return None
@@ -782,7 +924,14 @@ def handle_jsonrpc(server: LoopOCELServer, request: dict[str, Any]) -> dict[str,
                 return None if is_notification else _error(request_id, -32602, "Invalid params")
             structured = server.call_tool(tname, targs)
             content: list[dict[str, Any]] = []
-            if tname == "get_figure" and "base64" in structured:
+            if tname == "get_process_graphs":
+                meta = {k: v for k, v in structured.items() if k != "graphs"}
+                meta["graphs"] = [{k: v for k, v in g.items() if k != "base64"} for g in structured["graphs"]]
+                content.append({"type": "text", "text": json.dumps(meta, indent=2)})
+                for g in structured["graphs"]:
+                    content.append({"type": "image", "data": g["base64"], "mimeType": g["mime_type"]})
+                structured = meta
+            elif tname == "get_figure" and "base64" in structured:
                 summary_meta = {k: v for k, v in structured.items() if k != "base64"}
                 content.append({"type": "text", "text": json.dumps(summary_meta, indent=2)})
                 content.append(
@@ -822,6 +971,16 @@ def handle_jsonrpc(server: LoopOCELServer, request: dict[str, Any]) -> dict[str,
                         "uriTemplate": "loopocel://sessions/{session_id}/summary",
                         "name": "LoopOCEL Summary",
                         "mimeType": "application/json",
+                    },
+                    {
+                        "uriTemplate": "loopocel://sessions/{session_id}/ocdfg",
+                        "name": "Agent-loop OC-DFG",
+                        "mimeType": "image/svg+xml",
+                    },
+                    {
+                        "uriTemplate": "loopocel://sessions/{session_id}/semantic",
+                        "name": "Semantic Process Graph",
+                        "mimeType": "image/svg+xml",
                     },
                 ]
             }
@@ -986,7 +1145,7 @@ def create_fastmcp_server(sessions_root: Path | str | None = None) -> Any:
     def get_log(session_id: str, format: str = "ocel-json") -> dict[str, Any]:  # noqa: A002
         return core.get_log(session_id=session_id, format=format)
 
-    @mcp.tool()
+    @mcp.tool(structured_output=False)
     def get_figure(
         session_id: str,
         format: str = "png",  # noqa: A002
@@ -996,6 +1155,24 @@ def create_fastmcp_server(sessions_root: Path | str | None = None) -> Any:
         meta = {k: v for k, v in info.items() if k != "base64"}
         img_bytes = Path(info["path"]).read_bytes()
         return [json.dumps(meta, indent=2), Image(data=img_bytes, format=info["format"])]
+
+    @mcp.tool(structured_output=False)
+    def get_process_graphs(
+        session_id: str | None = None,
+        format: str = "png",  # noqa: A002
+        include_sessions: list[str] | None = None,
+        view: str = "both",
+    ) -> list[Any]:
+        """Agent-loop OC-DFG and semantic domain process graph for a session (default: most recent)."""
+        info = core.get_process_graphs(
+            session_id=session_id, format=format, include_sessions=include_sessions, view=view
+        )
+        meta = {k: v for k, v in info.items() if k != "graphs"}
+        meta["graphs"] = [{k: v for k, v in g.items() if k != "base64"} for g in info["graphs"]]
+        out: list[Any] = [json.dumps(meta, indent=2)]
+        for g in info["graphs"]:
+            out.append(Image(data=Path(g["path"]).read_bytes(), format=g["format"]))
+        return out
 
     @mcp.tool()
     def get_summary(session_id: str) -> dict[str, Any]:
@@ -1008,6 +1185,11 @@ def create_fastmcp_server(sessions_root: Path | str | None = None) -> Any:
     @mcp.prompt(name="record-task")
     def prompt_record_task(task: str, session_id: str | None = None, profile: str = "general") -> str:
         res = core.get_prompt("record-task", {"task": task, "session_id": session_id, "profile": profile})
+        return res["messages"][0]["content"]["text"]
+
+    @mcp.prompt(name="process-graphs")
+    def prompt_process_graphs(task: str | None = None, session_id: str | None = None) -> str:
+        res = core.get_prompt("process-graphs", {"task": task, "session_id": session_id})
         return res["messages"][0]["content"]["text"]
 
     @mcp.prompt(name="ingest-and-analyze")

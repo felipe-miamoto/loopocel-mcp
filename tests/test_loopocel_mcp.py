@@ -15,6 +15,7 @@ from loopocel_mcp.adapters.llm_proxy import LLMRecordingRecorder, reassemble_sse
 from loopocel_mcp.adapters.tool_proxy import MCPStdioWrapper, ToolCallProxy
 from loopocel_mcp.convert import convert, summarize_log
 from loopocel_mcp.figure import cohort_from_log, render_figure, render_session_figure
+from loopocel_mcp.process_graphs import discover_ocdfg, discover_semantic_process
 from loopocel_mcp.server import LoopOCELServer, handle_jsonrpc, run_stdio
 from loopocel_mcp.validate import VerificationError, reconstruct, validate_log, validate_schema
 
@@ -148,6 +149,58 @@ class MCPServerAndLiveCaptureTests(unittest.TestCase):
             fig_content = responses[2]["result"]["content"]
             self.assertEqual(fig_content[1]["type"], "image")
             self.assertEqual(fig_content[1]["mimeType"], "image/png")
+
+    def test_process_graphs_tool_and_prompt(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            server = LoopOCELServer(sessions_root=Path(tmp))
+            sid = server.session_start(
+                task="fix failing test",
+                initial_objects={"file:app.py": {"status": "broken"}},
+                instruction="Fix app.py",
+            )["session_id"]
+            server.record_turn(
+                session_id=sid,
+                response_message="Run tests, then edit.",
+                actions=[
+                    {"name": "run_tests", "arguments": {}, "outcome": "failure", "targets": ["file:app.py"]},
+                    {
+                        "name": "edit_file",
+                        "arguments": {"path": "app.py"},
+                        "targets": ["file:app.py"],
+                        "changes": [{"id": "file:app.py", "state": {"status": "fixed"}, "created": False}],
+                    },
+                    {"name": "run_tests", "arguments": {}, "targets": ["file:app.py"]},
+                ],
+            )
+            end_res = server.session_end(sid)
+            for view in ("ocdfg", "semantic"):
+                self.assertTrue(Path(end_res["process_graph_outputs"][view]["svg"]).is_file())
+                self.assertTrue(Path(end_res["process_graph_outputs"][view]["png"]).is_file())
+
+            log = json.loads(Path(end_res["ocel_path"]).read_text(encoding="utf-8"))
+            sem = discover_semantic_process([log])
+            self.assertEqual(sem["variants"], {"run_tests [failed] -> edit_file -> run_tests": 1})
+            self.assertEqual(sem["activities"]["edit_file"]["kind"], "mutating")
+            self.assertEqual(sem["objects"]["file"]["final_states"], {"fixed": 1})
+            ocdfg = discover_ocdfg([log])
+            self.assertIn("Turn.Started", ocdfg["activities"])
+            self.assertTrue(any(e["object_type"] == "Turn" for e in ocdfg["edges"]))
+
+            # Default session is the most recent one; both graphs come back as images.
+            resp = handle_jsonrpc(
+                server,
+                {"jsonrpc": "2.0", "id": 1, "method": "tools/call", "params": {"name": "get_process_graphs", "arguments": {}}},
+            )
+            content = resp["result"]["content"]
+            self.assertEqual([c["type"] for c in content], ["text", "image", "image"])
+            self.assertNotIn("base64", content[0]["text"])
+
+            prompt = server.get_prompt("process-graphs", {"task": "Book a table"})
+            text = prompt["messages"][0]["content"]["text"]
+            self.assertIn("session_start", text)
+            self.assertIn("get_process_graphs", text)
+            short = server.get_prompt("process-graphs", {})["messages"][0]["content"]["text"]
+            self.assertIn("most recent", short)
 
 
 class AdaptersAndFigureTests(unittest.TestCase):
@@ -293,6 +346,7 @@ class AdaptersAndFigureTests(unittest.TestCase):
             prompt_names = {p["name"] for p in p_list["result"]["prompts"]}
             self.assertIn("record-task", prompt_names)
             self.assertIn("ingest-and-analyze", prompt_names)
+            self.assertIn("process-graphs", prompt_names)
 
             p_get = handle_jsonrpc(
                 server,

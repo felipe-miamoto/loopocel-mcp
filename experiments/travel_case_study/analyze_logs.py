@@ -2,14 +2,8 @@ from __future__ import annotations
 
 import json
 import math
-import re
-import shutil
 import statistics
-import struct
-import subprocess
 import sys
-import xml.etree.ElementTree as ET
-import zlib
 from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
@@ -33,6 +27,7 @@ from loopocel_mcp.figure import (  # noqa: E402
     cohort_from_log,
     render_figure,
 )
+from loopocel_mcp.raster import svg_to_png  # noqa: E402
 from loopocel_mcp.validate import pm4py_check, validate_log  # noqa: E402
 
 TASKS_FILE = HERE / "tasks.json"
@@ -41,241 +36,10 @@ RESULTS_DIR = HERE / "results"
 FIGURES_DIR = HERE / "figures"
 
 
-FONT_5X7: dict[str, tuple[int, ...]] = {
-    "A": (0x0E, 0x11, 0x11, 0x1F, 0x11, 0x11, 0x11),
-    "B": (0x1E, 0x11, 0x11, 0x1E, 0x11, 0x11, 0x1E),
-    "C": (0x0E, 0x11, 0x10, 0x10, 0x10, 0x11, 0x0E),
-    "D": (0x1C, 0x12, 0x11, 0x11, 0x11, 0x12, 0x1C),
-    "E": (0x1F, 0x10, 0x10, 0x1E, 0x10, 0x10, 0x1F),
-    "F": (0x1F, 0x10, 0x10, 0x1E, 0x10, 0x10, 0x10),
-    "G": (0x0E, 0x11, 0x10, 0x17, 0x11, 0x11, 0x0F),
-    "H": (0x11, 0x11, 0x11, 0x1F, 0x11, 0x11, 0x11),
-    "I": (0x0E, 0x04, 0x04, 0x04, 0x04, 0x04, 0x0E),
-    "J": (0x07, 0x02, 0x02, 0x02, 0x02, 0x12, 0x0C),
-    "K": (0x11, 0x12, 0x14, 0x18, 0x14, 0x12, 0x11),
-    "L": (0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x1F),
-    "M": (0x11, 0x1B, 0x15, 0x15, 0x11, 0x11, 0x11),
-    "N": (0x11, 0x19, 0x15, 0x13, 0x11, 0x11, 0x11),
-    "O": (0x0E, 0x11, 0x11, 0x11, 0x11, 0x11, 0x0E),
-    "P": (0x1E, 0x11, 0x11, 0x1E, 0x10, 0x10, 0x10),
-    "Q": (0x0E, 0x11, 0x11, 0x11, 0x15, 0x12, 0x0D),
-    "R": (0x1E, 0x11, 0x11, 0x1E, 0x14, 0x12, 0x11),
-    "S": (0x0F, 0x10, 0x10, 0x0E, 0x01, 0x01, 0x1E),
-    "T": (0x1F, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04),
-    "U": (0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x0E),
-    "V": (0x11, 0x11, 0x11, 0x11, 0x11, 0x0A, 0x04),
-    "W": (0x11, 0x11, 0x11, 0x15, 0x15, 0x15, 0x0A),
-    "X": (0x11, 0x11, 0x0A, 0x04, 0x0A, 0x11, 0x11),
-    "Y": (0x11, 0x11, 0x0A, 0x04, 0x04, 0x04, 0x04),
-    "Z": (0x1F, 0x01, 0x02, 0x04, 0x08, 0x10, 0x1F),
-    "0": (0x0E, 0x11, 0x13, 0x15, 0x19, 0x11, 0x0E),
-    "1": (0x04, 0x0C, 0x04, 0x04, 0x04, 0x04, 0x0E),
-    "2": (0x0E, 0x11, 0x01, 0x06, 0x08, 0x10, 0x1F),
-    "3": (0x1F, 0x02, 0x04, 0x06, 0x01, 0x11, 0x0E),
-    "4": (0x02, 0x06, 0x0A, 0x12, 0x1F, 0x02, 0x02),
-    "5": (0x1F, 0x10, 0x1E, 0x01, 0x01, 0x11, 0x0E),
-    "6": (0x06, 0x08, 0x10, 0x1E, 0x11, 0x11, 0x0E),
-    "7": (0x1F, 0x01, 0x02, 0x04, 0x08, 0x08, 0x08),
-    "8": (0x0E, 0x11, 0x11, 0x0E, 0x11, 0x11, 0x0E),
-    "9": (0x0E, 0x11, 0x11, 0x0F, 0x01, 0x02, 0x0C),
-    ".": (0x00, 0x00, 0x00, 0x00, 0x00, 0x0C, 0x0C),
-    ",": (0x00, 0x00, 0x00, 0x00, 0x04, 0x04, 0x08),
-    ":": (0x00, 0x0C, 0x0C, 0x00, 0x0C, 0x0C, 0x00),
-    ";": (0x00, 0x0C, 0x0C, 0x00, 0x0C, 0x04, 0x08),
-    "|": (0x04, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04),
-    "/": (0x01, 0x02, 0x02, 0x04, 0x08, 0x08, 0x10),
-    "-": (0x00, 0x00, 0x00, 0x1F, 0x00, 0x00, 0x00),
-    "_": (0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1F),
-    "+": (0x00, 0x04, 0x04, 0x1F, 0x04, 0x04, 0x00),
-    "*": (0x00, 0x15, 0x0E, 0x1F, 0x0E, 0x15, 0x00),
-    "(": (0x02, 0x04, 0x08, 0x08, 0x08, 0x04, 0x02),
-    ")": (0x08, 0x04, 0x02, 0x02, 0x02, 0x04, 0x08),
-    "[": (0x0E, 0x08, 0x08, 0x08, 0x08, 0x08, 0x0E),
-    "]": (0x0E, 0x02, 0x02, 0x02, 0x02, 0x02, 0x0E),
-    "=": (0x00, 0x00, 0x1F, 0x00, 0x1F, 0x00, 0x00),
-    ">": (0x08, 0x04, 0x02, 0x01, 0x02, 0x04, 0x08),
-    "<": (0x02, 0x04, 0x08, 0x10, 0x08, 0x04, 0x02),
-    "%": (0x19, 0x19, 0x02, 0x04, 0x08, 0x13, 0x13),
-    " ": (0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00),
-}
-
-
 def rasterize_svg_to_png(svg_path: Path, png_path: Path) -> None:
-    """Rasterize SVG to high-DPI anti-aliased PNG via Chrome headless, or pure-Python fallback."""
-    png_path.parent.mkdir(parents=True, exist_ok=True)
-    chrome_path = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-    if Path(chrome_path).is_file():
-        try:
-            tree = ET.parse(svg_path)
-            root = tree.getroot()
-            w = int(float(root.attrib.get("width", "1360")))
-            h = int(float(root.attrib.get("height", "325")))
-            html_content = f"<!DOCTYPE html><html><head><meta charset='utf-8'><style>*{{margin:0;padding:0;box-sizing:border-box;}}html,body{{width:{w}px;height:{h}px;margin:0;padding:0;overflow:hidden;background:#ffffff;}}svg{{width:{w}px;height:{h}px;display:block;}}</style></head><body>{svg_path.read_text(encoding='utf-8')}</body></html>"
-            tmp_html = svg_path.with_suffix(".render_tmp.html")
-            tmp_html.write_text(html_content, encoding="utf-8")
-            res = subprocess.run(
-                [
-                    chrome_path,
-                    "--headless=new",
-                    "--no-sandbox",
-                    "--hide-scrollbars",
-                    "--force-device-scale-factor=2",
-                    f"--window-size={w},{h}",
-                    f"--screenshot={png_path}",
-                    f"file://{tmp_html.resolve()}",
-                ],
-                capture_output=True,
-                timeout=30,
-            )
-            tmp_html.unlink(missing_ok=True)
-            if res.returncode == 0 and png_path.is_file() and png_path.stat().st_size > 20000:
-                return
-        except Exception:
-            pass
-
-    tree = ET.parse(svg_path)
-    root = tree.getroot()
-    width = int(float(root.attrib.get("width", "1320")))
-    height = int(float(root.attrib.get("height", "620")))
-    buf = bytearray(b"\xff\xff\xff" * (width * height))
-
-    def parse_hex(c: str) -> tuple[int, int, int]:
-        if not c or c == "none":
-            return (255, 255, 255)
-        h = c.lstrip("#")
-        if len(h) == 6:
-            return int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
-        return (30, 35, 45)
-
-    def set_px(px: int, py: int, rgb: tuple[int, int, int]) -> None:
-        if 0 <= px < width and 0 <= py < height:
-            idx = (py * width + px) * 3
-            buf[idx : idx + 3] = bytes(rgb)
-
-    def draw_line(
-        x0: float, y0: float, x1: float, y1: float, rgb: tuple[int, int, int], dashed: bool = False
-    ) -> None:
-        px0, py0, px1, py1 = int(x0), int(y0), int(x1), int(y1)
-        steps = max(abs(px1 - px0), abs(py1 - py0), 1)
-        for s in range(steps + 1):
-            if dashed and (s // 6) % 2 == 1:
-                continue
-            px = int(px0 + (px1 - px0) * s / steps)
-            py = int(py0 + (py1 - py0) * s / steps)
-            set_px(px, py, rgb)
-            set_px(px + 1, py, rgb)
-            set_px(px, py + 1, rgb)
-
-    def draw_text(x: float, y: float, text: str, rgb: tuple[int, int, int], anchor: str, fsize: float) -> None:
-        scale = 2 if fsize >= 14.5 else 1
-        clean = (
-            text.replace("→", "->")
-            .replace("≤", "<=")
-            .replace("≥", ">=")
-            .replace("±", "+/-")
-            .replace("€", "EUR ")
-            .replace("•", "*")
-            .replace("↺", "<-")
-            .replace("—", "-")
-            .replace("–", "-")
-            .replace("ä", "a")
-            .replace("ö", "o")
-            .replace("ü", "u")
-            .replace("ó", "o")
-            .replace("ń", "n")
-        )
-        char_w = 6 * scale
-        total_w = len(clean) * char_w
-        px, py = int(x), int(y)
-        if anchor == "middle":
-            sx0 = px - total_w // 2
-        elif anchor == "end":
-            sx0 = px - total_w
-        else:
-            sx0 = px
-        sy0 = py - (7 * scale)
-        for ci, ch in enumerate(clean):
-            glyph = FONT_5X7.get(ch.upper(), FONT_5X7[" "])
-            gx = sx0 + ci * char_w
-            for ri, rbits in enumerate(glyph):
-                for coli in range(5):
-                    if rbits & (1 << (4 - coli)):
-                        for dy in range(scale):
-                            for dx in range(scale):
-                                set_px(gx + coli * scale + dx, sy0 + ri * scale + dy, rgb)
-
-    for elem in root.iter():
-        tag = elem.tag.split("}")[-1]
-        if tag == "rect":
-            x = int(float(elem.attrib.get("x", "0")))
-            y = int(float(elem.attrib.get("y", "0")))
-            w = int(float(elem.attrib.get("width", "0")))
-            h = int(float(elem.attrib.get("height", "0")))
-            fill = elem.attrib.get("fill", "#FFFFFF")
-            stroke = elem.attrib.get("stroke", "none")
-            frgb = parse_hex(fill)
-            srgb = parse_hex(stroke) if stroke != "none" else frgb
-            for py in range(max(0, y), min(height, y + h + 1)):
-                for px in range(max(0, x), min(width, x + w + 1)):
-                    if stroke != "none" and (
-                        py in (y, y + 1, y + h - 1, y + h)
-                        or px in (x, x + 1, x + w - 1, x + w)
-                    ):
-                        set_px(px, py, srgb)
-                    elif fill != "none":
-                        set_px(px, py, frgb)
-        elif tag == "line":
-            x1 = float(elem.attrib.get("x1", "0"))
-            y1 = float(elem.attrib.get("y1", "0"))
-            x2 = float(elem.attrib.get("x2", "0"))
-            y2 = float(elem.attrib.get("y2", "0"))
-            srgb = parse_hex(elem.attrib.get("stroke", "#333333"))
-            dashed = "stroke-dasharray" in elem.attrib
-            draw_line(x1, y1, x2, y2, srgb, dashed=dashed)
-        elif tag == "path":
-            d = elem.attrib.get("d", "")
-            if "M 0 1" in d:
-                continue
-            pts = [
-                (float(m[0]), float(m[1]))
-                for m in re.findall(r"(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)", d)
-            ]
-            srgb = parse_hex(elem.attrib.get("stroke", "#333333"))
-            dashed = "stroke-dasharray" in elem.attrib
-            for (x0, y0), (x1, y1) in zip(pts, pts[1:]):
-                draw_line(x0, y0, x1, y1, srgb, dashed=dashed)
-        elif tag == "text":
-            x = float(elem.attrib.get("x", "0"))
-            y = float(elem.attrib.get("y", "0"))
-            anchor = elem.attrib.get("text-anchor", "start")
-            fsize = float(elem.attrib.get("font-size", "11"))
-            rgb = parse_hex(elem.attrib.get("fill", "#1B2430"))
-            txt = "".join(elem.itertext()).strip()
-            if txt:
-                draw_text(x, y, txt, rgb, anchor, fsize)
-
-    raw_rows = bytearray()
-    row_bytes = width * 3
-    for y in range(height):
-        raw_rows.append(0)
-        raw_rows.extend(buf[y * row_bytes : (y + 1) * row_bytes])
-
-    def chunk(ctag: bytes, data: bytes) -> bytes:
-        return (
-            struct.pack(">I", len(data))
-            + ctag
-            + data
-            + struct.pack(">I", zlib.crc32(ctag + data) & 0xFFFFFFFF)
-        )
-
-    png_bytes = (
-        b"\x89PNG\r\n\x1a\n"
-        + chunk(b"IHDR", struct.pack(">IIBBBBB", width, height, 8, 2, 0, 0, 0))
-        + chunk(b"IDAT", zlib.compress(bytes(raw_rows), 6))
-        + chunk(b"IEND", b"")
-    )
-    png_path.parent.mkdir(parents=True, exist_ok=True)
-    png_path.write_bytes(png_bytes)
+    """Rasterize an SVG figure to a 2x PNG with a vector renderer."""
+    if not svg_to_png(svg_path, png_path, scale=2.0):
+        print(f"warning: no SVG rasterizer available, kept {svg_path.name} only", file=sys.stderr)
 
 
 def _mean_std(values: list[float]) -> tuple[float, float]:

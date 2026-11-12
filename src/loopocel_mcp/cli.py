@@ -12,6 +12,7 @@ from .adapters.llm_proxy import LLMProxyServer
 from .adapters.tool_proxy import MCPStdioWrapper
 from .convert import convert, summarize_log
 from .figure import render_session_figure
+from .process_graphs import render_session_process_graphs
 from .server import LoopOCELServer, handle_jsonrpc, run_http, run_stdio
 from .validate import validate_log
 
@@ -47,6 +48,14 @@ def main(argv: list[str] | None = None) -> int:
     fig_p = sub.add_parser("figure", help="Render LoopOCEL coverage figure for a directory")
     fig_p.add_argument("directory", type=Path)
     fig_p.add_argument("--compare", type=Path, nargs="*", default=[])
+
+    graphs_p = sub.add_parser(
+        "graphs", help="Render the agent-loop OC-DFG and semantic process graph for a directory"
+    )
+    graphs_p.add_argument("directory", type=Path)
+    graphs_p.add_argument(
+        "--include", type=Path, nargs="*", default=[], help="Further session directories to aggregate"
+    )
 
     ing_p = sub.add_parser("ingest", help="Ingest an agent transcript into a session directory")
     ing_p.add_argument("session_dir", type=Path)
@@ -104,11 +113,17 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(info, indent=2))
         return 0
 
+    if args.subcommand == "graphs":
+        res = render_session_process_graphs(args.directory, include_dirs=args.include)
+        print(json.dumps({"sessions": res["sessions"], "outputs": res["outputs"]}, indent=2))
+        return 0
+
     if args.subcommand == "ingest":
         stats = ingest_transcript(args.session_dir, args.transcript, task_id=args.task)
         log = convert(args.session_dir)
         fig = render_session_figure(args.session_dir)
-        print(json.dumps({**stats, "objects": len(log["objects"]), "events": len(log["events"]), "figure": fig["outputs"]}, indent=2))
+        graphs = render_session_process_graphs(args.session_dir)
+        print(json.dumps({**stats, "objects": len(log["objects"]), "events": len(log["events"]), "figure": fig["outputs"], "process_graphs": graphs["outputs"]}, indent=2))
         return 0
 
     if args.subcommand == "proxy":
