@@ -151,7 +151,7 @@ def main(argv: list[str] | None = None) -> int:
         return wrapper.run()
 
     if args.subcommand == "call":
-        server = LoopOCELServer(sessions_root=args.sessions_root)
+        server = LoopOCELServer(sessions_root=args.sessions_root, transport="cli")
         if args.args_file is not None:
             tool_args = json.loads(args.args_file.read_text(encoding="utf-8"))
         else:

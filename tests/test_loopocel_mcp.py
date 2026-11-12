@@ -195,12 +195,33 @@ class MCPServerAndLiveCaptureTests(unittest.TestCase):
             self.assertEqual([c["type"] for c in content], ["text", "image", "image"])
             self.assertNotIn("base64", content[0]["text"])
 
+            # A script that imports the package and replays turns in one burst is flagged.
+            prov = end_res["provenance"]
+            self.assertEqual(prov["recorded_via"], "python-api")
+            self.assertFalse(prov["live"])
+            self.assertEqual(len(prov["warnings"]), 1)
+
             prompt = server.get_prompt("process-graphs", {"task": "Book a table"})
             text = prompt["messages"][0]["content"]["text"]
             self.assertIn("session_start", text)
             self.assertIn("get_process_graphs", text)
             short = server.get_prompt("process-graphs", {})["messages"][0]["content"]["text"]
             self.assertIn("most recent", short)
+
+    def test_provenance_flags_burst_replay_over_mcp(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            server = LoopOCELServer(sessions_root=Path(tmp), transport="mcp-stdio")
+            sid = server.session_start(task="t", instruction="do it")["session_id"]
+            for i in range(3):
+                server.record_turn(
+                    session_id=sid,
+                    response_message=f"step {i}",
+                    actions=[{"name": "search_web", "arguments": {"q": i}, "changes": {"item:1": {"n": i}}}],
+                )
+            prov = server.session_end(sid)["provenance"]
+            self.assertEqual(prov["recorded_via"], "mcp-stdio")
+            self.assertFalse(prov["live"])
+            self.assertIn("replayed", prov["warnings"][0])
 
 
 class AdaptersAndFigureTests(unittest.TestCase):

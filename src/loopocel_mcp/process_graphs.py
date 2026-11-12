@@ -891,7 +891,9 @@ def _edge_width(count: int, max_count: int) -> float:
 # --------------------------------------------------------------------------- #
 
 
-def ocdfg_scene(ocdfg: dict[str, Any], *, title: str, subtitle: str) -> Scene:
+def ocdfg_scene(
+    ocdfg: dict[str, Any], *, title: str, subtitle: str, notes: list[str] | None = None
+) -> Scene:
     acts = ocdfg["activities"]
     max_c = max((e["count"] for e in ocdfg["edges"]), default=1)
     node_lines, node_style = {}, {}
@@ -920,7 +922,7 @@ def ocdfg_scene(ocdfg: dict[str, Any], *, title: str, subtitle: str) -> Scene:
     footer = [
         [("Edges: directly-follows relations per object type (color = object type, label = count). ", MUTED)],
         [("Dashed edges close a cycle in the agent loop.", MUTED)],
-    ]
+    ] + [[(f"Warning: {n}", "#B3261E")] for n in notes or ()]
     return _draw_graph(
         title=title,
         subtitle=subtitle,
@@ -939,7 +941,9 @@ def _kinds_text(kinds: dict[str, int], limit: int = 3) -> str:
     return text + (f" +{len(names) - limit}" if len(names) > limit else "")
 
 
-def semantic_scene(sem: dict[str, Any], *, title: str, subtitle: str) -> Scene:
+def semantic_scene(
+    sem: dict[str, Any], *, title: str, subtitle: str, notes: list[str] | None = None
+) -> Scene:
     acts = sem["activities"]
     max_c = max((e["count"] for e in sem["edges"]), default=1)
     styles = {
@@ -994,6 +998,7 @@ def semantic_scene(sem: dict[str, Any], *, title: str, subtitle: str) -> Scene:
     table = (["kind", "objects", "changed", "final state"], rows) if rows else None
     variants = sem.get("variants", {})
     footer = [[(f"{len(variants)} distinct action sequence{'s' if len(variants) != 1 else ''} across {sem['n_runs']} run{'s' if sem['n_runs'] != 1 else ''}. Edge label = number of transitions.", MUTED)]]
+    footer += [[(f"Warning: {n}", "#B3261E")] for n in notes or ()]
     return _draw_graph(
         title=title,
         subtitle=subtitle,
@@ -1030,9 +1035,13 @@ def render_process_graphs(
     *,
     label: str = "session",
     task: str | None = None,
+    notes: list[str] | None = None,
     formats: tuple[str, ...] = ("svg", "png"),
 ) -> dict[str, Any]:
-    """Discover and render both process graphs for one or more LoopOCEL logs."""
+    """Discover and render both process graphs for one or more LoopOCEL logs.
+
+    `notes` are printed in red under both graphs (e.g. provenance warnings).
+    """
     out_dir = Path(out_dir)
     ocdfg = discover_ocdfg(logs)
     sem = discover_semantic_process(logs)
@@ -1047,12 +1056,14 @@ def render_process_graphs(
         ocdfg,
         title="Agent-loop OC-DFG",
         subtitle=f"{scope} · {n_events:,} events · {n_objects:,} objects",
+        notes=notes,
     )
     n_actions = sum(a["count"] for a in sem["activities"].values() if a["kind"] not in ("start", "end"))
     sem_scene = semantic_scene(
         sem,
         title="Semantic process graph",
         subtitle=f"{scope} · {n_actions} tool actions · {sum(s['objects'] for s in sem['objects'].values())} business objects",
+        notes=notes,
     )
     result = {
         "ocdfg": ocdfg,
@@ -1099,6 +1110,11 @@ def render_session_process_graphs(
         labels.append(other_meta.get("session_id", Path(other).name))
     label = labels[0] if len(labels) == 1 else f"{labels[0]} + {len(labels) - 1} more"
     task = meta.get("task") if len(labels) == 1 else None
-    res = render_process_graphs(logs, session_dir, label=label, task=task, formats=formats)
+    metas = [meta] + [_load_session(Path(o))[1] for o in include_dirs or ()]
+    notes = []
+    for lbl, m in zip(labels, metas):
+        for w in (m.get("provenance") or {}).get("warnings", []):
+            notes.append(w if len(labels) == 1 else f"{lbl}: {w}")
+    res = render_process_graphs(logs, session_dir, label=label, task=task, notes=notes, formats=formats)
     res["sessions"] = labels
     return res

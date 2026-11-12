@@ -1,11 +1,25 @@
 ---
 name: loopocel-logger
-description: Record autonomous AI agent executions into validated LoopOCEL (OCEL 2.0 JSON) logs and render ontology coverage diagrams using loopocel-mcp. Use when asked to log an agent task as OCEL 2.0 / LoopOCEL, ingest an agent transcript, wrap a downstream MCP server, or visualize LoopOCEL ontology coverage and instance cardinalities.
+description: Record autonomous AI agent executions live into validated LoopOCEL (OCEL 2.0 JSON) logs and show the agent-loop OC-DFG and semantic process graph using loopocel-mcp. Use whenever the loopocel MCP server is connected and the user gives a multi-step task (planning, searching, booking, coding, data work), when asked to log an agent task as OCEL 2.0 / LoopOCEL, ingest an agent transcript, wrap a downstream MCP server, or show process graphs or ontology coverage of a run.
 ---
 
 # LoopOCEL-MCP Instrumentation Skill
 
 This skill teaches an agent how to record its own execution—or convert an existing transcript/session—into a validated **LoopOCEL (OCEL 2.0 JSON)** object-centric event log and ontology coverage diagram using **`loopocel-mcp`**.
+
+---
+
+## 0. Recording Rules (read first)
+
+- **Do the task for real** with your normal tools (web search, files, shell, APIs). The loopocel tools only log what you do; they never perform the task.
+- **Record live.** Call `session_start` before your first real action, then `record_turn` right after each reasoning-and-tool cycle, while the task runs. Do not collect turns and record them at the end.
+- **Record what really happened.** An action's `name` is the tool you actually called (`search_web`, `read_file`, `run_command` ...), its `arguments` are what you passed, and its `result` comes from the real tool output (shortened is fine). Never invent tools, results, prices, IDs, or outcomes. Record failed steps with `"outcome": "failure"`.
+- **Never write a script that imports `loopocel_mcp`** or replays prepared turns. If the loopocel MCP tools are not in your tool list, call each tool live from the shell after each step:
+  ```sh
+  python -m loopocel_mcp --sessions-root <sessions> call record_turn --args-json '<json>'
+  ```
+- `session_end` reports `provenance`: runs recorded through a Python import, or whose turns all arrive within one second, are flagged as not live, and the graphs carry a red warning.
+- Finish with `session_end`, then `get_process_graphs`, and show both graphs to the user.
 
 ---
 

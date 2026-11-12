@@ -28,6 +28,14 @@ With the server connected, use the `process-graphs` MCP prompt (in Claude Code: 
 
 A plain request works too, for example *"Use loopocel to record this task, then show me the process graphs"*: the agent calls `get_process_graphs`, which returns both images.
 
+### Live recording only
+
+The server tells every connected agent (through its MCP `instructions`, tool descriptions, and prompts) to record any multi-step task while doing it with its normal tools: real tool names, real arguments, results taken from real tool output, one `record_turn` per cycle. A plain task such as *"Plan a round-trip from Frankfurt to Copenhagen under €800 with luggage and free cancellation"* is enough once the server is connected.
+
+`session_end` returns a `provenance` block (`recorded_via`, turn timing, `live`). Sessions written by a script that imports `loopocel_mcp`, or whose turns all arrive within one second, are flagged as not live, and both process graphs show the warning in red.
+
+After updating the server, restart or reload the MCP server in your agent (Antigravity caches tool schemas) so it picks up `get_process_graphs` and the new instructions.
+
 ---
 
 ## Quick Start: Plug In Your Agent

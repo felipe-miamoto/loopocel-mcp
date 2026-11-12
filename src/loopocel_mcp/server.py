@@ -24,6 +24,33 @@ MCP_PROTOCOL_VERSION = "2025-11-25"
 SUPPORTED_PROTOCOL_VERSIONS = ("2025-11-25", "2025-06-18", "2025-03-26", "2024-11-05")
 SERVER_INFO = {"name": "loopocel-mcp", "version": "0.1.0"}
 
+LIVE_RECORDING_RULES = (
+    "Recording rules:\n"
+    "- Record live. Call session_start before your first real action, then call record_turn right after "
+    "each reasoning-and-tool cycle, while the task is running. Do not collect turns and record them at the end.\n"
+    "- Record what really happened. Each action's name is the tool you actually called (for example search_web, "
+    "read_file, run_command), its arguments are the arguments you passed, and its result is taken from the real "
+    "tool output (shortened is fine). Never invent tools, results, prices, IDs or outcomes. If a step failed, "
+    "record it with outcome \"failure\".\n"
+    "- Never write a script that imports loopocel_mcp or replays prepared turns. If these MCP tools are not in your "
+    "tool list, call each tool live from the shell instead: "
+    "python -m loopocel_mcp --sessions-root <sessions> call <tool> --args-json '<json>'.\n"
+    "- Business entities the task works on (a trip, flight, hotel, file, ticket ...) are ProcessObjects with "
+    "<kind>:<id> IDs: register them in session_start.initial_objects or when first found, and report their "
+    "state updates in the action's changes.\n"
+    "- Finish with session_end, then get_process_graphs to show the agent-loop OC-DFG and the semantic process "
+    "graph to the user."
+)
+
+SERVER_INSTRUCTIONS = (
+    "loopocel-mcp records how you carry out a task as a LoopOCEL (OCEL 2.0) event log and draws two process "
+    "graphs from it: the agent-loop OC-DFG and the semantic (domain) process graph.\n\n"
+    "While this server is connected, record every multi-step task the user gives you (planning, searching, "
+    "booking, coding, data work ...), even when the user does not mention recording. Do the task itself with "
+    "your normal tools; these tools only log what you do.\n\n"
+    + LIVE_RECORDING_RULES
+)
+
 
 class _LiveSessionState:
     """Tracks in-memory turn, history, and object state for live MCP recording."""
@@ -95,13 +122,62 @@ class _LiveSessionState:
                     self.extractor.states[oid] = dict(st)
 
 
+BURST_SECONDS = 1.0
+
+
+def capture_provenance(session_dir: Path, meta: dict[str, Any]) -> dict[str, Any]:
+    """Describe how a session was recorded and flag runs that were not recorded live.
+
+    A live agent needs seconds per turn (model call plus real tool calls). When
+    every turn of a multi-turn MCP session lands within a fraction of a second,
+    the turns were written from prepared data, not recorded while the task ran.
+    """
+    turn_times: list[str] = []
+    cap_path = session_dir / "capture.jsonl"
+    if cap_path.is_file():
+        for line in cap_path.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            rec = json.loads(line)
+            if rec.get("kind") == "turn_start" and rec.get("time"):
+                turn_times.append(rec["time"])
+    span = None
+    if len(turn_times) >= 2:
+        from datetime import datetime
+
+        stamps = sorted(datetime.fromisoformat(t) for t in turn_times)
+        span = round((stamps[-1] - stamps[0]).total_seconds(), 3)
+
+    via = meta.get("recorded_via", "unknown")
+    warnings: list[str] = []
+    if via == "python-api":
+        warnings.append(
+            "Recorded by a script that imports loopocel_mcp, not through MCP tool calls made while the task ran."
+        )
+    if meta.get("mode", "mcp") == "mcp" and span is not None and span < BURST_SECONDS:
+        warnings.append(
+            f"All {len(turn_times)} turns were recorded within {span:.3f} s; a live agent run takes longer, "
+            "so the turns were most likely replayed from prepared data."
+        )
+    return {
+        "recorded_via": via,
+        "turns": len(turn_times),
+        "turn_span_seconds": span,
+        "live": not warnings,
+        "warnings": warnings,
+    }
+
+
 class LoopOCELServer:
     """Core MCP service managing LoopOCEL sessions, live capture, conversion, and figures."""
 
-    def __init__(self, sessions_root: Path | str | None = None) -> None:
+    def __init__(self, sessions_root: Path | str | None = None, *, transport: str = "python-api") -> None:
         default_root = Path.cwd() / "sessions"
         self.store = SessionStore(sessions_root or default_root)
         self._live: dict[str, _LiveSessionState] = {}
+        # How tool calls reach this instance: "mcp-stdio", "mcp-http", "mcp", "cli",
+        # or "python-api" when a script imports the package directly.
+        self.transport = transport
 
     def _get_live(self, session_id: str) -> _LiveSessionState:
         if session_id not in self._live:
@@ -129,6 +205,7 @@ class LoopOCELServer:
             id_fields=id_fields,
         )
         sid = meta["session_id"]
+        meta = self.store.update_meta(sid, recorded_via=self.transport)
         state = _LiveSessionState(self.store.session_dir(sid), meta)
         self._live[sid] = state
 
@@ -385,6 +462,8 @@ class LoopOCELServer:
             finished_at=now(),
             validation_passed=validation["passed"],
         )
+        provenance = capture_provenance(sdir, meta)
+        meta = self.store.update_meta(session_id, provenance=provenance)
         summary = summarize_log(log, meta=meta)
         write_json(sdir / "summary.json", summary)
         fig_info = render_session_figure(sdir, formats=("svg", "png"))
@@ -396,6 +475,7 @@ class LoopOCELServer:
             "ocel_path": str(ocel_path.resolve()),
             "figure_outputs": fig_info["outputs"],
             "process_graph_outputs": graphs["outputs"],
+            "provenance": provenance,
             "validation": validation,
             "summary": summary,
         }
@@ -426,7 +506,12 @@ class LoopOCELServer:
         meta = self.store.get_meta(session_id)
         summary = summarize_log(log, meta=meta)
         validation = validate_log(log, ocel_path=ocel_path)
-        return {"session_id": session_id, "summary": summary, "validation": validation}
+        return {
+            "session_id": session_id,
+            "summary": summary,
+            "validation": validation,
+            "provenance": capture_provenance(sdir, meta),
+        }
 
     def get_figure(
         self,
@@ -518,7 +603,7 @@ class LoopOCELServer:
         return [
             {
                 "name": "session_start",
-                "description": "Open a LoopOCEL recording session for an agent task. Optionally register initial ProcessObjects and base Instruction.",
+                "description": "Call before the first real action of any multi-step user task to start recording it live. Registers the task instruction and the initial business ProcessObjects (<kind>:<id> keys). Then do the task with your normal tools and call record_turn after each cycle.",
                 "inputSchema": {
                     "type": "object",
                     "properties": {
@@ -535,7 +620,7 @@ class LoopOCELServer:
             },
             {
                 "name": "record_turn",
-                "description": "Record one model interaction Turn (Prompt, Instruction/History, Response, and optional ActionRequest -> Execution -> ActionResult -> ProcessObject chains).",
+                "description": "Record the reasoning-and-tool cycle you just completed, immediately after it happened (one call per cycle, never batched at the end). Each action must be a tool you really called, with its real arguments and a result taken from the real tool output; use outcome \"failure\" for failed steps. Never invent results.",
                 "inputSchema": {
                     "type": "object",
                     "properties": {
@@ -543,7 +628,7 @@ class LoopOCELServer:
                         "response_message": {"type": ["string", "object"], "description": "Assistant response text or message object."},
                         "actions": {
                             "type": "array",
-                            "description": "List of tool/action dictionaries with name, arguments, result, outcome, targets, acted_on, describes, changes.",
+                            "description": "Tools you actually called in this cycle: name (the real tool name), arguments, result (from the real output), outcome, targets, acted_on, describes, changes.",
                             "items": {"type": "object"},
                         },
                         "instruction": {"type": ["string", "array"], "description": "New user instruction introduced on this turn, if any."},
@@ -816,12 +901,14 @@ class LoopOCELServer:
             prompt_body = (
                 f"Execute the following task while recording a complete LoopOCEL (OCEL 2.0) process log via `loopocel-mcp`:\n\n"
                 f"Task: {task_text}\n\n"
+                f"Do the task itself with your normal tools (web search, files, shell ...). The loopocel tools only log it.\n\n"
                 f"Follow this instrumentation protocol strictly:\n"
                 f"1. **Start Session**: Before taking action, call `session_start` with `task`={json.dumps(task_text)}, `profile`={json.dumps(profile)}, {sid_hint}, `instruction`={json.dumps(task_text)}, and `initial_objects` containing the initial domain `ProcessObject` instances (using `<kind>:<id>` keys such as `trip:01` or `file:app.py`).\n"
                 f"2. **Record Every Turn**: After each reasoning and tool-use cycle, call `record_turn` with:\n"
                 f"   - `session_id`: the active session ID\n"
                 f"   - `response_message`: your reasoning summary for this turn\n"
                 f"   - `actions`: list of executed tools, each with `name`, `arguments`, `outcome` (`\"success\"` or `\"rejected\"`), `result`, `targets` (list of targeted `ProcessObject` IDs), `acted_on`, `describes`, and `changes` (`{{\"<kind>:<id>\": {{\"state\": {{...}}, \"created\": true/false}}}}`) for any domain entity created or mutated.\n"
+                f"\n{LIVE_RECORDING_RULES}\n\n"
                 f"3. **Finalize & Render**: When the task is complete, call `session_end(session_id=...)` to build and validate `loopocel.json` and render the coverage figure and both process graphs, then call `get_process_graphs(session_id=...)` to show the agent-loop OC-DFG and the semantic process graph (and `get_figure(session_id=...)` if the ontology coverage diagram is wanted)."
             )
             return {
@@ -909,7 +996,7 @@ def handle_jsonrpc(server: LoopOCELServer, request: dict[str, Any]) -> dict[str,
                     "prompts": {"listChanged": False},
                 },
                 "serverInfo": SERVER_INFO,
-                "instructions": "Record agent loops into LoopOCEL (OCEL 2.0) logs, render ontology coverage figures, and show the agent-loop OC-DFG and semantic process graph (get_process_graphs, or the process-graphs prompt).",
+                "instructions": SERVER_INSTRUCTIONS,
             }
         elif method in ("notifications/initialized", "notifications/cancelled"):
             return None
@@ -1014,6 +1101,8 @@ def _error(request_id: Any, code: int, message: str) -> dict[str, Any]:
 
 def run_stdio(server: LoopOCELServer, *, stdin: TextIO = sys.stdin, stdout: TextIO = sys.stdout) -> None:
     """Serve MCP JSON-RPC messages over newline-delimited stdio."""
+    if server.transport == "python-api":
+        server.transport = "mcp-stdio"
     for line in stdin:
         if not line.strip():
             continue
@@ -1035,6 +1124,8 @@ def run_stdio(server: LoopOCELServer, *, stdin: TextIO = sys.stdin, stdout: Text
 
 def run_http(server: LoopOCELServer, *, host: str = "127.0.0.1", port: int = 8765) -> None:
     """Serve streamable HTTP MCP JSON-RPC requests on /mcp."""
+    if server.transport == "python-api":
+        server.transport = "mcp-http"
 
     class Handler(BaseHTTPRequestHandler):
         def do_POST(self) -> None:  # noqa: N802
@@ -1072,8 +1163,8 @@ def create_fastmcp_server(sessions_root: Path | str | None = None) -> Any:
         raise RuntimeError("Official 'mcp' package is not installed; use run_stdio or run_http directly")
     from mcp.server.fastmcp import FastMCP, Image
 
-    core = LoopOCELServer(sessions_root=sessions_root)
-    mcp = FastMCP("loopocel-mcp")
+    core = LoopOCELServer(sessions_root=sessions_root, transport="mcp")
+    mcp = FastMCP("loopocel-mcp", instructions=SERVER_INSTRUCTIONS)
 
     @mcp.tool()
     def session_start(

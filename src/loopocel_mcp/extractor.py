@@ -158,7 +158,7 @@ class ProcessObjectExtractor:
         outcome: str = "success",
         explicit_acted_on: list[str] | None = None,
         explicit_describes: list[str] | None = None,
-        explicit_changes: list[dict[str, Any]] | None = None,
+        explicit_changes: list[dict[str, Any]] | dict[str, Any] | None = None,
     ) -> ObjectObservation:
         obs = ObjectObservation()
 
@@ -209,6 +209,12 @@ class ProcessObjectExtractor:
             if oid not in obs.describes:
                 obs.describes.append(oid)
 
+        if isinstance(explicit_changes, dict):
+            # Map form: {"<kind>:<id>": {"state": {...}, "created": bool}} or {"<kind>:<id>": {...state}}
+            explicit_changes = [
+                {"id": k, **(v if isinstance(v, dict) and "state" in v else {"state": v})}
+                for k, v in explicit_changes.items()
+            ]
         for change in explicit_changes or ():
             cid = change["id"]
             cstate = change["state"]
