@@ -102,7 +102,7 @@ Give the agent a normal multi-step task, for example *"Using the loopocel MCP se
   python -m loopocel_mcp --sessions-root <sessions> call record_turn --args-json '<json>'
   ```
 - `session_end` reports `provenance`: runs recorded through a Python import, or whose turns all arrive within one second, are flagged as not live, and the graphs carry a red warning.
-- Finish with `session_end`, then `get_process_graphs`, and show both graphs to the user.
+- Finish with `session_end`, which writes only the validated log. Then ask the user whether they want to see the two process graphs; call `get_process_graphs` only if they say yes, then show both.
 
 ---
 
@@ -187,11 +187,11 @@ Once the task finishes:
 1. Call `session_end({"session_id": "my_task_01"})`:
    - Converts `capture.jsonl` $\to$ `loopocel.json`
    - Runs two-stage verification (OCEL 2.0 JSON Schema draft-07 + LoopOCEL relational cardinality check)
-   - Renders `figure.svg`/`.png` (ontology coverage), `ocdfg_process_graph.svg`/`.png`, and `semantic_process_graph.svg`/`.png`
-2. Call `get_process_graphs({"session_id": "my_task_01"})` to show both process graphs (omit `session_id` for the most recent session; add `"include_sessions": [...]` to aggregate runs):
+   - Renders no figures: the log is the only default output
+2. Ask the user whether they want to see the two process graphs. If yes, call `get_process_graphs({"session_id": "my_task_01"})`; it renders `ocdfg_process_graph.svg`/`.png` and `semantic_process_graph.svg`/`.png` right away and returns both (omit `session_id` for the most recent session; add `"include_sessions": [...]` to aggregate runs):
    - **Agent-loop OC-DFG**: LoopOCEL event types with directly-follows edges per object type (how the agent loop ran).
    - **Semantic process graph**: the domain steps (tool actions named by tool and by the business object kinds they touch), failed actions and their rework, plus the final state of each business object kind. Use meaningful tool names and `<kind>:<id>` object IDs, since they become the node labels.
-3. Optionally call `get_figure({"session_id": "my_task_01", "format": "png"})` (or `"compare_with": ["other_session"]`) for the ontology coverage figure.
+3. If the user asks for it, call `get_figure({"session_id": "my_task_01", "format": "png"})` (or `"compare_with": ["other_session"]`) for the ontology coverage figure.
 
 Shortcut: the `process-graphs` MCP prompt does all of this from one line. With a `task` argument it records the task and then shows both graphs; without one it shows the graphs of the most recent session.
 

@@ -126,8 +126,11 @@ class MCPServerAndLiveCaptureTests(unittest.TestCase):
             self.assertTrue(end_res["validation"]["passed"], end_res["validation"])
             self.assertEqual(end_res["summary"]["coverage"]["classes_covered"], 9)
             self.assertTrue(Path(end_res["ocel_path"]).is_file())
-            self.assertTrue(Path(end_res["figure_outputs"]["svg"]).is_file())
-            self.assertTrue(Path(end_res["figure_outputs"]["png"]).is_file())
+            # Closing a session writes only the log; figures are rendered on request.
+            self.assertNotIn("figure_outputs", end_res)
+            self.assertFalse((Path(tmp) / sid / "figure.svg").exists())
+            fig_res = server.get_figure(sid, format="svg")
+            self.assertTrue(Path(fig_res["path"]).is_file())
 
             # Test JSON-RPC stdio round-trip
             requests = [
@@ -181,9 +184,16 @@ class MCPServerAndLiveCaptureTests(unittest.TestCase):
                 ],
             )
             end_res = server.session_end(sid)
+            self.assertNotIn("process_graph_outputs", end_res)
+            self.assertIn("get_process_graphs", end_res["next_step"])
+            sdir = Path(end_res["ocel_path"]).parent
+            self.assertFalse(any(sdir.glob("*_process_graph.*")))
+            graphs_res = server.get_process_graphs(sid)
+            for g in graphs_res["graphs"]:
+                self.assertTrue(Path(g["path"]).is_file())
             for view in ("ocdfg", "semantic"):
-                self.assertTrue(Path(end_res["process_graph_outputs"][view]["svg"]).is_file())
-                self.assertTrue(Path(end_res["process_graph_outputs"][view]["png"]).is_file())
+                self.assertTrue((sdir / f"{view}_process_graph.svg").is_file())
+                self.assertTrue((sdir / f"{view}_process_graph.png").is_file())
 
             log = json.loads(Path(end_res["ocel_path"]).read_text(encoding="utf-8"))
             sem = discover_semantic_process([log])

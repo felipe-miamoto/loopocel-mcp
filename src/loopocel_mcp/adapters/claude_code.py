@@ -41,8 +41,8 @@ def hook_session_dir(root: Path | str, payload: dict[str, Any]) -> Path:
     return root
 
 
-def finalize_hook_session(session_dir: Path, transcript_path: Path, *, render: bool) -> dict[str, Any]:
-    """Ingest the transcript with the recorded hooks, convert and validate; optionally render."""
+def finalize_hook_session(session_dir: Path, transcript_path: Path) -> dict[str, Any]:
+    """Ingest the transcript with the recorded hooks, convert and validate."""
     from ..convert import convert
     from ..validate import validate_log
 
@@ -64,22 +64,14 @@ def finalize_hook_session(session_dir: Path, transcript_path: Path, *, render: b
     log = convert(session_dir)
     validation = validate_log(log, ocel_path=session_dir / "loopocel.json")
     write_json(session_dir / "validation.json", validation)
-    result = {**stats, "validation_passed": validation["passed"]}
-    if render:
-        from ..figure import render_session_figure
-        from ..process_graphs import render_session_process_graphs
-
-        result["figure"] = render_session_figure(session_dir)["outputs"]
-        result["process_graphs"] = render_session_process_graphs(session_dir)["outputs"]
-    return result
+    return {**stats, "validation_passed": validation["passed"]}
 
 
 def record_hook_event(session_dir: Path | str, payload: dict[str, Any]) -> dict[str, Any]:
     """Append a raw hook event from Claude Code or another hook-capable agent.
 
     `session_dir` is a root: each agent session (hook `session_id`) gets its own folder.
-    `Stop` re-ingests the transcript and validates it; `SessionEnd` also renders the
-    coverage figure and both process graphs.
+    `Stop` and `SessionEnd` re-ingest the transcript, convert and validate it.
     """
     session_dir = hook_session_dir(session_dir, payload)
     session_dir.mkdir(parents=True, exist_ok=True)
@@ -93,7 +85,7 @@ def record_hook_event(session_dir: Path | str, payload: dict[str, Any]) -> dict[
     transcript_path = payload.get("transcript_path")
     if event_name in ("Stop", "SessionEnd") and isinstance(transcript_path, str) and Path(transcript_path).is_file():
         try:
-            finalize_hook_session(session_dir, Path(transcript_path), render=event_name == "SessionEnd")
+            finalize_hook_session(session_dir, Path(transcript_path))
         except Exception as exc:  # a hook must never break the agent
             print(f"loopocel hook: could not process {session_dir}: {exc}", file=sys.stderr)
     return {"recorded": True, "hook_event_name": event_name, "time": stamp, "session_dir": str(session_dir)}

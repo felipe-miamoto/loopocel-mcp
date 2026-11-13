@@ -47,13 +47,15 @@ LIVE_RECORDING_RULES = (
     "- Business entities the task works on (a trip, flight, hotel, file, ticket ...) are ProcessObjects with "
     "<kind>:<id> IDs: register them in session_start.initial_objects or when first found, and report their "
     "state updates in the action's changes.\n"
-    "- Finish with session_end, then get_process_graphs to show the agent-loop OC-DFG and the semantic process "
-    "graph to the user."
+    "- Finish with session_end, which writes and validates the log. Then, as the last line of your answer, ask "
+    "the user whether they want to see the two process graphs of the run (the agent-loop OC-DFG and the "
+    "semantic process graph). Call get_process_graphs only if they say yes, or if they already asked for the "
+    "graphs, and then show both."
 )
 
 SERVER_INSTRUCTIONS = (
-    "loopocel-mcp records how you carry out a task as a LoopOCEL (OCEL 2.0) event log and draws two process "
-    "graphs from it: the agent-loop OC-DFG and the semantic (domain) process graph.\n\n"
+    "loopocel-mcp records how you carry out a task as a LoopOCEL (OCEL 2.0) event log. On request, it draws two "
+    "process graphs from the log: the agent-loop OC-DFG and the semantic (domain) process graph.\n\n"
     "While this server is connected, record every multi-step task the user gives you (planning, searching, "
     "booking, coding, data work ...), even when the user does not mention recording. Do the task itself with "
     "your normal tools; these tools only log what you do.\n\n"
@@ -476,15 +478,15 @@ class LoopOCELServer:
         meta = self.store.update_meta(session_id, provenance=provenance)
         summary = summarize_log(log, meta=meta)
         write_json(sdir / "summary.json", summary)
-        fig_info = render_session_figure(sdir, formats=("svg", "png"))
-        graphs = render_session_process_graphs(sdir, formats=("svg", "png"))
 
         return {
             "session_id": session_id,
             "status": "completed",
             "ocel_path": str(ocel_path.resolve()),
-            "figure_outputs": fig_info["outputs"],
-            "process_graph_outputs": graphs["outputs"],
+            "next_step": (
+                "Ask the user whether they want to see the agent-loop OC-DFG and the semantic process graph of "
+                f"this run. If yes (or if they already asked), call get_process_graphs(session_id={session_id!r})."
+            ),
             "provenance": provenance,
             "validation": validation,
             "summary": summary,
@@ -678,7 +680,7 @@ class LoopOCELServer:
             },
             {
                 "name": "session_end",
-                "description": "Close a recording session, convert capture.jsonl to loopocel.json, validate against the LoopOCEL ontology and OCEL 2.0 schema, and render coverage figures.",
+                "description": "Close a recording session, convert capture.jsonl to loopocel.json, and validate it against the LoopOCEL ontology and OCEL 2.0 schema. Renders no figures; use get_process_graphs or get_figure when the user asks for them.",
                 "inputSchema": {
                     "type": "object",
                     "properties": {
@@ -919,7 +921,7 @@ class LoopOCELServer:
                 f"   - `response_message`: your reasoning summary for this turn\n"
                 f"   - `actions`: list of executed tools, each with `name`, `arguments`, `outcome` (`\"success\"` or `\"rejected\"`), `result`, `targets` (list of targeted `ProcessObject` IDs), `acted_on`, `describes`, and `changes` (`{{\"<kind>:<id>\": {{\"state\": {{...}}, \"created\": true/false}}}}`) for any domain entity created or mutated.\n"
                 f"\n{LIVE_RECORDING_RULES}\n\n"
-                f"3. **Finalize & Render**: When the task is complete, call `session_end(session_id=...)` to build and validate `loopocel.json` and render the coverage figure and both process graphs, then call `get_process_graphs(session_id=...)` to show the agent-loop OC-DFG and the semantic process graph (and `get_figure(session_id=...)` if the ontology coverage diagram is wanted)."
+                f"3. **Finalize**: When the task is complete, call `session_end(session_id=...)` to build and validate `loopocel.json`. Then ask the user whether they want to see the agent-loop OC-DFG and the semantic process graph; call `get_process_graphs(session_id=...)` only if they say yes. Call `get_figure(session_id=...)` only if they ask for the ontology coverage diagram."
             )
             return {
                 "description": f"Record LoopOCEL execution log for task: {task_text}",
@@ -947,7 +949,7 @@ class LoopOCELServer:
                 record = self.get_prompt("record-task", {"task": task_text, "session_id": session_id})
                 body = (
                     record["messages"][0]["content"]["text"].rsplit("3. **Finalize", 1)[0]
-                    + f"3. **Finalize**: call `session_end(session_id=...)`.\n"
+                    + f"3. **Finalize**: call `session_end(session_id=...)`. The user already asked for the graphs, so do not ask again.\n"
                     f"4. **Process graphs**: {show}. {explain}"
                 )
             else:
@@ -965,11 +967,11 @@ class LoopOCELServer:
             session_id = args.get("session_id") or "ingested_session"
             task_text = str(args.get("task") or f"Ingested transcript {Path(tpath).name if tpath else ''}").strip()
             prompt_body = (
-                f"Ingest the transcript at `{tpath}` into `loopocel-mcp` and generate its validated LoopOCEL log and coverage figure:\n"
+                f"Ingest the transcript at `{tpath}` into `loopocel-mcp` and generate its validated LoopOCEL log:\n"
                 f"1. Call `session_start(session_id={json.dumps(session_id)}, task={json.dumps(task_text)}, mode=\"transcript\")`.\n"
                 f"2. Call `session_end(session_id={json.dumps(session_id)}, transcript_path={json.dumps(tpath)})`.\n"
-                f"3. Call `get_summary(session_id={json.dumps(session_id)})` and `get_figure(session_id={json.dumps(session_id)})` and summarize the ontology coverage and validation status.\n"
-                f"4. Call `get_process_graphs(session_id={json.dumps(session_id)})` and explain the agent-loop OC-DFG and the semantic process graph."
+                f"3. Call `get_summary(session_id={json.dumps(session_id)})` and summarize the ontology coverage and validation status.\n"
+                f"4. Only if the user asks for them, call `get_process_graphs(session_id={json.dumps(session_id)})` and explain the agent-loop OC-DFG and the semantic process graph, or `get_figure(session_id={json.dumps(session_id)})` for the coverage figure."
             )
             return {
                 "description": f"Ingest and analyze transcript: {tpath}",

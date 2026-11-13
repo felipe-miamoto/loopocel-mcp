@@ -12,8 +12,6 @@ from typing import Any, Callable, TextIO
 from ..capture import Capture, canonical, write_json
 from ..convert import convert
 from ..extractor import ProcessObjectExtractor
-from ..figure import render_session_figure
-from ..process_graphs import render_session_process_graphs
 from ..validate import validate_log
 
 
@@ -284,7 +282,7 @@ class MCPStdioWrapper:
         return res
 
     def finalize(self) -> dict[str, Any] | None:
-        """Convert captured JSONL into `loopocel.json` and render coverage figures if any calls were recorded."""
+        """Convert captured JSONL into a validated `loopocel.json` if any calls were recorded."""
         if self.proxy.sequence == 0:
             return None
         meta_path = self.session_dir / "session.json"
@@ -304,13 +302,10 @@ class MCPStdioWrapper:
         log = convert(self.session_dir)
         validation = validate_log(log, ocel_path=self.session_dir / "loopocel.json")
         write_json(self.session_dir / "validation.json", validation)
-        fig = render_session_figure(self.session_dir)
-        graphs = render_session_process_graphs(self.session_dir)
         return {
             "objects": len(log["objects"]),
             "events": len(log["events"]),
-            "figure": fig["outputs"],
-            "process_graphs": graphs["outputs"],
+            "validation_passed": validation["passed"],
         }
 
     def run(self, *, stdin: TextIO = sys.stdin, stdout: TextIO = sys.stdout) -> int:

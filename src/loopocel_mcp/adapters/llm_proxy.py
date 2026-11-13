@@ -487,12 +487,10 @@ class LLMProxyServer:
             self._httpd = None
 
     def finalize(self) -> dict[str, Any] | None:
-        """Convert, validate and render the recorded session (if any exchange was recorded)."""
+        """Convert and validate the recorded session (if any exchange was recorded)."""
         if not self.exchanges:
             return None
         from ..convert import convert
-        from ..figure import render_session_figure
-        from ..process_graphs import render_session_process_graphs
         from ..validate import validate_log
 
         sdir = self.recorder.session_dir
@@ -516,7 +514,5 @@ class LLMProxyServer:
         return {
             "exchanges": self.exchanges,
             "validation_passed": validation["passed"],
-            "figure": render_session_figure(sdir)["outputs"],
-            "process_graphs": render_session_process_graphs(sdir)["outputs"],
         }
 

@@ -21,6 +21,8 @@ It supports four capture modes for any agent:
 
 ## One Prompt: Both Process Graphs
 
+By default a recording produces only the validated `loopocel.json` log. The process graphs and the coverage figure are rendered only on request, from the log. When an interactive agent (Claude Code, Codex, Antigravity ...) records through the MCP server, it asks at the end whether you want to see the two graphs. The passive modes (API proxy, MCP wrapper, hooks, ingest) never ask; render their graphs with `loopocel-mcp graphs <session_dir>`.
+
 With the server connected, use the `process-graphs` MCP prompt (in Claude Code: `/mcp__loopocel__process-graphs`):
 
 - with a `task` argument, the agent executes and records the task, then shows both graphs;
@@ -110,7 +112,7 @@ To teach any skill-compatible agent (Claude Code, Antigravity, Cursor, Codex) ho
 
 ### 5. Wrap Any Existing MCP Server Passively (`loopocel-mcp wrap`)
 
-Wrap any third-party MCP server in your `mcp.json` to automatically record all tool executions into a validated `loopocel.json` and render the coverage figure and both process graphs when the session closes:
+Wrap any third-party MCP server in your `mcp.json` to automatically record all tool executions into a validated `loopocel.json` when the session closes (render the graphs afterwards with `loopocel-mcp graphs <session_dir>` or `get_process_graphs`):
 
 ```sh
 loopocel-mcp --sessions-root <REPO>/sessions wrap --task "Workspace edits" -- npx -y @modelcontextprotocol/server-filesystem /path/to/workspace
@@ -128,10 +130,10 @@ loopocel-mcp --sessions-root <REPO>/sessions wrap --task "Workspace edits" -- np
 | `record_turn` | Record a model interaction `Turn` (`Prompt`, `Instruction`/`History`, `Response`, and `ActionRequest -> Execution -> ActionResult -> ProcessObject` chains). |
 | `record_object` | Register or update a business `ProcessObject` (`Registered`, `Created`, or `StateChanged`). |
 | `ingest_transcript` | Ingest an agent transcript file into the session. |
-| `session_end` | Finalize the session, convert `capture.jsonl` to `loopocel.json`, validate against the OCEL 2.0 schema and LoopOCEL constraints, and render the coverage figure and both process graphs. |
+| `session_end` | Finalize the session, convert `capture.jsonl` to `loopocel.json`, and validate against the OCEL 2.0 schema and LoopOCEL constraints. Renders no figures. |
 | `get_log` | Return `loopocel.json` (`ocel-json`) or `capture.jsonl` (`capture-jsonl`). |
 | `get_figure` | Render and return the LoopOCEL coverage figure (`png` or `svg`, including an MCP image content block), with optional multi-session side-by-side comparison. |
-| `get_process_graphs` | Return the agent-loop OC-DFG and the semantic process graph as images plus their discovered structure (defaults to the most recent session; `include_sessions` aggregates runs; `view` selects `ocdfg`, `semantic`, or `both`). |
+| `get_process_graphs` | On request, render and return the agent-loop OC-DFG and the semantic process graph as images plus their discovered structure (defaults to the most recent session; `include_sessions` aggregates runs; `view` selects `ocdfg`, `semantic`, or `both`). |
 | `get_summary` | Return instance counts per class, O2O relation, and event type, plus coverage and validation status. |
 | `list_sessions` | List recorded and active sessions. |
 
@@ -141,7 +143,7 @@ loopocel-mcp --sessions-root <REPO>/sessions wrap --task "Workspace edits" -- np
 |---|---|
 | `record-task` | Injects step-by-step instructions guiding the connected agent to record every turn, tool execution, and `ProcessObject` mutation for a given `task`. |
 | `process-graphs` | One-line entry point: optionally record a `task`, then show the agent-loop OC-DFG and the semantic process graph. |
-| `ingest-and-analyze` | Guides the agent to ingest an existing transcript file, validate OCEL 2.0 compliance, and render the coverage figure. |
+| `ingest-and-analyze` | Guides the agent to ingest an existing transcript file, validate OCEL 2.0 compliance and summarize coverage; graphs and the coverage figure only if asked. |
 
 ### Resources
 

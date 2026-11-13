@@ -153,9 +153,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.subcommand == "ingest":
         stats = ingest_transcript(args.session_dir, args.transcript, task_id=args.task)
         log = convert(args.session_dir)
-        fig = render_session_figure(args.session_dir)
-        graphs = render_session_process_graphs(args.session_dir)
-        print(json.dumps({**stats, "objects": len(log["objects"]), "events": len(log["events"]), "figure": fig["outputs"], "process_graphs": graphs["outputs"]}, indent=2))
+        print(json.dumps({**stats, "objects": len(log["objects"]), "events": len(log["events"])}, indent=2))
         return 0
 
     if args.subcommand == "proxy":
