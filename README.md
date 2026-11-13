@@ -10,12 +10,13 @@ Plug-and-play Model Context Protocol (MCP) server, capture adapters, converter, 
 - **Semantic process graph**: the domain view, the tool actions the agent took on business objects, in order, with failed actions, rework loops, and the final state of each business object kind.
 - **Ontology coverage figure**: instance counts per LoopOCEL class, relation, and event type.
 
-It supports four capture modes for any agent:
+It supports five capture modes for any agent:
 
 1. **Direct MCP recording (`mode="mcp"`)**: Any MCP-connected agent calls `session_start`, `record_turn`, `record_object`, and `session_end` while executing a task (guided by the built-in `record-task` MCP Prompt or the bundled [`skills/loopocel-logger/SKILL.md`](skills/loopocel-logger/SKILL.md) skill).
 2. **Downstream MCP Server Wrapper (`loopocel-mcp wrap`)**: Transparent stdio middleware that wraps *any* existing MCP server and automatically logs every `tools/call` (`ActionRequest -> Execution -> ActionResult -> ProcessObject`) without spending LLM tokens. Each start of the wrapped server is recorded as its own session (a new timestamped folder under `--sessions-root`), so it can stay configured in `mcp.json` for every agent session.
-3. **Hooks + Transcript (`mode="transcript"` / `claude-code-hooks`)**: Hooks (`PreToolUse`, `PostToolUse`, `Stop`, etc.) and transcript files (Claude Code JSONL, Antigravity `transcript.jsonl`, or OpenAI/Anthropic chat JSON) are ingested into `capture.jsonl`. With hooks, `--session-dir` is a root: every Claude Code session gets its own folder, `Stop` keeps the log converted and validated, and `SessionEnd` also renders the figures.
-4. **LLM HTTP/SSE Recording Proxy (`mode="llm-proxy"`)**: Local HTTP reverse proxy (`ANTHROPIC_BASE_URL` or `OPENAI_BASE_URL`) for agentic workflows built directly on the model APIs: Anthropic Messages, OpenAI Chat Completions, and the OpenAI Responses API (used by the OpenAI Agents SDK), with JSON or streamed (SSE) responses passed through as they arrive. Stopping the proxy (Ctrl+C) converts, validates, and renders the session.
+3. **Hooks (`loopocel-mcp hook`)**: Claude Code, Codex and Antigravity call `loopocel-mcp hook` at each tool call and when the agent stops. The agent does not know it is recorded. On `Stop`, the agent's own transcript is converted and validated into `loopocel.json`. `--session-dir` is a root: every agent session gets its own folder. Print the configuration with `loopocel-mcp hooks-config --agent claude-code|codex|antigravity --session-dir sessions/hooks` and paste it into `.claude/settings.json`, `~/.codex/hooks.json` or `~/.gemini/config/hooks.json`.
+4. **Transcript ingestion (`loopocel-mcp ingest`)**: converts a run that already happened, from the transcript file the agent saved. Supported: Claude Code (`~/.claude/projects/<project>/<session>.jsonl`), Codex (`~/.codex/sessions/YYYY/MM/DD/rollout-*.jsonl`), Antigravity (`~/.gemini/antigravity*/brain/<conversation>/.system_generated/logs/transcript*.jsonl`) and OpenAI/Anthropic chat JSON. The format is detected from the file.
+5. **LLM HTTP/SSE Recording Proxy (`mode="llm-proxy"`)**: Local HTTP reverse proxy (`ANTHROPIC_BASE_URL` or `OPENAI_BASE_URL`) for agentic workflows built directly on the model APIs: Anthropic Messages, OpenAI Chat Completions, and the OpenAI Responses API (used by the OpenAI Agents SDK), with JSON or streamed (SSE) responses passed through as they arrive. Stopping the proxy (Ctrl+C) converts, validates, and renders the session.
 
 ---
 
@@ -171,8 +172,11 @@ PYTHONPATH=src python3 -m loopocel_mcp --sessions-root sessions wrap --task "<ta
 PYTHONPATH=src python3 -m loopocel_mcp --sessions-root sessions proxy --task "<task>" --upstream https://api.anthropic.com --port 18080
 # then: ANTHROPIC_BASE_URL=http://127.0.0.1:18080  (or OPENAI_BASE_URL=http://127.0.0.1:18080/v1 with --upstream https://api.openai.com)
 
-# Ingest an existing transcript file
+# Ingest an existing transcript file (Claude Code, Codex, Antigravity or chat JSON)
 PYTHONPATH=src python3 -m loopocel_mcp ingest sessions/ingested_01 /path/to/transcript.jsonl
+
+# Print the hook configuration for Claude Code, Codex or Antigravity
+PYTHONPATH=src python3 -m loopocel_mcp hooks-config --agent codex --session-dir sessions/hooks
 
 # Convert, validate, and render a session directory
 PYTHONPATH=src python3 -m loopocel_mcp convert sessions/<session_id>

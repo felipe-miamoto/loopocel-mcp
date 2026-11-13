@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 import time
 
-from .adapters.claude_code import ingest_transcript, main_hook_cli
+from .adapters.claude_code import HOOK_AGENTS, hooks_snippet, ingest_transcript, main_hook_cli
 from .adapters.llm_proxy import LLMProxyServer
 from .adapters.tool_proxy import MCPStdioWrapper
 from .convert import convert, summarize_log
@@ -63,6 +63,12 @@ def main(argv: list[str] | None = None) -> int:
 
     hook_p = sub.add_parser("hook", help="Record a hook event from stdin into a session directory")
     hook_p.add_argument("--session-dir", type=Path, required=True)
+    hook_p.add_argument("--event", help="Hook event name, for agents whose payload does not carry it (Antigravity)")
+
+    hcfg_p = sub.add_parser("hooks-config", help="Print the hook configuration for Claude Code, Codex or Antigravity")
+    hcfg_p.add_argument("--agent", choices=HOOK_AGENTS, default="claude-code")
+    hcfg_p.add_argument("--session-dir", type=Path, required=True)
+    hcfg_p.add_argument("--command", default="loopocel-mcp", help="Command that runs loopocel-mcp")
 
     conv_p = sub.add_parser("convert", help="Convert capture.jsonl in a directory to loopocel.json")
     conv_p.add_argument("directory", type=Path)
@@ -123,7 +129,11 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.subcommand == "hook":
-        return main_hook_cli(args.session_dir)
+        return main_hook_cli(args.session_dir, event=args.event)
+
+    if args.subcommand == "hooks-config":
+        print(json.dumps(hooks_snippet(args.agent, args.session_dir, args.command), indent=2))
+        return 0
 
     if args.subcommand == "convert":
         log = convert(args.directory)

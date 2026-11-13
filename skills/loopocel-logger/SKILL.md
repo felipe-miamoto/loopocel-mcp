@@ -113,7 +113,7 @@ Give the agent a normal multi-step task, for example *"Using the loopocel MCP se
 1. **Direct MCP Tool Recording (`mode="mcp"`)**:
    - Use when `loopocel-mcp` is connected as an MCP server and you want to actively record each turn and domain `ProcessObject` state change as you execute a task.
 2. **Post-Hoc Transcript Ingestion (`mode="transcript"`)**:
-   - Use when an agent has already completed a run (Claude Code JSONL, Antigravity `transcript.jsonl`, or OpenAI/Anthropic chat JSON) and you want to convert its transcript into `loopocel.json` + `figure.svg`/`figure.png`.
+   - Use when an agent has already completed a run (Claude Code JSONL, Codex `rollout-*.jsonl`, Antigravity `transcript*.jsonl`, or OpenAI/Anthropic chat JSON) and you want to convert its transcript into a validated `loopocel.json`.
 3. **Downstream MCP Server Wrapper (`loopocel-mcp wrap`)**:
    - Use when you want zero-token passive recording of all `tools/call` executions sent to another MCP server.
 4. **Streaming HTTP LLM Proxy (`loopocel-mcp proxy`)**:
@@ -208,6 +208,13 @@ To convert an existing agent transcript file without re-running the task:
    ```sh
    loopocel-mcp ingest sessions/run_01 /path/to/transcript.jsonl --task "Task name"
    ```
+
+Where agents save their transcripts:
+- Claude Code: `~/.claude/projects/<project>/<session>.jsonl`
+- Codex: `~/.codex/sessions/YYYY/MM/DD/rollout-*.jsonl`
+- Antigravity: `~/.gemini/antigravity*/brain/<conversation>/.system_generated/logs/transcript*.jsonl`
+
+To record live without the agent's help, use hooks instead: `loopocel-mcp hooks-config --agent claude-code|codex|antigravity --session-dir sessions/hooks` prints the configuration to paste into `.claude/settings.json`, `~/.codex/hooks.json` or `~/.gemini/config/hooks.json`.
 
 ---
 

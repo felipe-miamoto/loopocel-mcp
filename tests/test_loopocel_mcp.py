@@ -245,6 +245,54 @@ class MCPServerAndLiveCaptureTests(unittest.TestCase):
 
 
 class AdaptersAndFigureTests(unittest.TestCase):
+    def test_codex_rollout_and_antigravity_hooks(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            rollout = Path(tmp) / "rollout-2026-11-13T10-00-00-abc.jsonl"
+            rows = [
+                {"timestamp": "2026-11-13T10:00:00Z", "type": "session_meta", "payload": {"id": "abc"}},
+                {"timestamp": "2026-11-13T10:00:00Z", "type": "turn_context", "payload": {"model": "gpt-test"}},
+                {"timestamp": "2026-11-13T10:00:01Z", "type": "response_item", "payload": {
+                    "type": "message", "role": "user", "content": [{"type": "input_text", "text": "Check order:101"}]}},
+                {"timestamp": "2026-11-13T10:00:02Z", "type": "response_item", "payload": {
+                    "type": "function_call", "name": "lookup_order", "call_id": "call_1",
+                    "arguments": json.dumps({"order_id": "order:101"})}},
+                {"timestamp": "2026-11-13T10:00:03Z", "type": "response_item", "payload": {
+                    "type": "function_call_output", "call_id": "call_1",
+                    "output": json.dumps({"order_id": "order:101", "status": "shipped"})}},
+                {"timestamp": "2026-11-13T10:00:04Z", "type": "response_item", "payload": {
+                    "type": "message", "role": "assistant", "content": [{"type": "output_text", "text": "Shipped."}]}},
+            ]
+            rollout.write_text("\n".join(json.dumps(r) for r in rows) + "\n", encoding="utf-8")
+
+            # Codex Stop hook: session folder from session_id, transcript is the rollout.
+            root = Path(tmp) / "hooks"
+            res = record_hook_event(root, {"session_id": "cx", "hook_event_name": "Stop", "transcript_path": str(rollout)})
+            self.assertEqual(res["agent"], "codex")
+            log = json.loads((root / "cx" / "loopocel.json").read_text(encoding="utf-8"))
+            self.assertTrue(validate_log(log)["passed"])
+            summary = summarize_log(log)
+            self.assertEqual(summary["classes"]["Turn"], 2)
+            self.assertEqual(summary["classes"]["ActionRequest"], 1)
+            meta = json.loads((root / "cx" / "session.json").read_text(encoding="utf-8"))
+            self.assertEqual(meta["recorded_via"], "codex-hooks")
+
+            # Antigravity: camelCase payload without an event name; Stop is inferred from its fields.
+            ag = Path(tmp) / "transcript_full.jsonl"
+            ag_rows = [
+                {"step_index": 0, "type": "USER_INPUT", "status": "DONE", "created_at": "2026-11-13T10:00:00Z",
+                 "content": "List files"},
+                {"step_index": 1, "type": "PLANNER_RESPONSE", "status": "DONE", "created_at": "2026-11-13T10:00:01Z",
+                 "content": "Listing.", "tool_calls": [{"name": "run_command", "args": {"CommandLine": "\"ls\""}}]},
+                {"step_index": 2, "type": "RUN_COMMAND", "status": "DONE", "created_at": "2026-11-13T10:00:02Z",
+                 "content": "a.txt"},
+            ]
+            ag.write_text("\n".join(json.dumps(r) for r in ag_rows) + "\n", encoding="utf-8")
+            res = record_hook_event(root, {"conversationId": "ag-1", "transcriptPath": str(ag), "fullyIdle": True})
+            self.assertEqual((res["agent"], res["hook_event_name"]), ("antigravity", "Stop"))
+            ag_log = json.loads((root / "ag-1" / "loopocel.json").read_text(encoding="utf-8"))
+            self.assertTrue(validate_log(ag_log)["passed"])
+            self.assertEqual(summarize_log(ag_log)["classes"]["ActionRequest"], 1)
+
     def test_claude_code_hooks_and_transcript_adapter(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             sdir = Path(tmp) / "cc-session"

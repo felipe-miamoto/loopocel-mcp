@@ -1,4 +1,4 @@
-"""General hook and transcript adapters (Claude Code, Antigravity, OpenAI/Anthropic JSONL)."""
+"""Hook and transcript adapters for Claude Code, Codex, Antigravity and OpenAI/Anthropic chat JSON."""
 
 from __future__ import annotations
 
@@ -32,16 +32,49 @@ def _instruction_id(content: Any) -> str:
     return f"instruction:{digest}"
 
 
+HOOK_AGENTS = ("claude-code", "codex", "antigravity")
+
+
+def _first(payload: dict[str, Any], *keys: str) -> Any:
+    for key in keys:
+        val = payload.get(key)
+        if val not in (None, ""):
+            return val
+    return None
+
+
+def hook_agent(payload: dict[str, Any]) -> str:
+    """Which agent sent a hook payload: Antigravity uses camelCase, Codex writes rollout transcripts."""
+    if "conversationId" in payload or "transcriptPath" in payload:
+        return "antigravity"
+    tpath = str(payload.get("transcript_path") or "")
+    if "/.codex/" in tpath or Path(tpath).name.startswith("rollout-"):
+        return "codex"
+    return "claude-code"
+
+
+def hook_event_name(payload: dict[str, Any], event: str | None = None) -> str:
+    """Event name from the CLI flag, the payload, or (Antigravity Stop) the payload shape."""
+    name = event or _first(payload, "hook_event_name", "hookEventName", "event")
+    if name:
+        return str(name)
+    if "fullyIdle" in payload or "terminationReason" in payload:
+        return "Stop"
+    if "toolCall" in payload:
+        return "PostToolUse" if "error" in payload else "PreToolUse"
+    return ""
+
+
 def hook_session_dir(root: Path | str, payload: dict[str, Any]) -> Path:
     """Folder for one agent session: <root>/<session_id> when the hook payload names one."""
     root = Path(root)
-    sid = payload.get("session_id")
+    sid = _first(payload, "session_id", "conversationId", "conversation_id")
     if isinstance(sid, str) and sid.strip():
         return root / re.sub(r"[^A-Za-z0-9._-]+", "-", sid.strip())
     return root
 
 
-def finalize_hook_session(session_dir: Path, transcript_path: Path) -> dict[str, Any]:
+def finalize_hook_session(session_dir: Path, transcript_path: Path, agent: str = "claude-code") -> dict[str, Any]:
     """Ingest the transcript with the recorded hooks, convert and validate."""
     from ..convert import convert
     from ..validate import validate_log
@@ -53,9 +86,9 @@ def finalize_hook_session(session_dir: Path, transcript_path: Path) -> dict[str,
             {
                 "session_id": session_dir.name,
                 "task": session_dir.name,
-                "agent": "claude-code",
-                "mode": "claude-code-hooks",
-                "recorded_via": "claude-code-hooks",
+                "agent": agent,
+                "mode": f"{agent}-hooks",
+                "recorded_via": f"{agent}-hooks",
                 "capture_completeness": "partial",
                 "status": "recording",
             },
@@ -67,8 +100,8 @@ def finalize_hook_session(session_dir: Path, transcript_path: Path) -> dict[str,
     return {**stats, "validation_passed": validation["passed"]}
 
 
-def record_hook_event(session_dir: Path | str, payload: dict[str, Any]) -> dict[str, Any]:
-    """Append a raw hook event from Claude Code or another hook-capable agent.
+def record_hook_event(session_dir: Path | str, payload: dict[str, Any], event: str | None = None) -> dict[str, Any]:
+    """Append a raw hook event from Claude Code, Codex or Antigravity.
 
     `session_dir` is a root: each agent session (hook `session_id`) gets its own folder.
     `Stop` and `SessionEnd` re-ingest the transcript, convert and validate it.
@@ -81,14 +114,21 @@ def record_hook_event(session_dir: Path | str, payload: dict[str, Any]) -> dict[
     with hooks_file.open("a", encoding="utf-8") as stream:
         stream.write(canonical(entry) + "\n")
 
-    event_name = payload.get("hook_event_name") or payload.get("event") or ""
-    transcript_path = payload.get("transcript_path")
+    event_name = hook_event_name(payload, event)
+    agent = hook_agent(payload)
+    transcript_path = _first(payload, "transcript_path", "transcriptPath")
     if event_name in ("Stop", "SessionEnd") and isinstance(transcript_path, str) and Path(transcript_path).is_file():
         try:
-            finalize_hook_session(session_dir, Path(transcript_path))
+            finalize_hook_session(session_dir, Path(transcript_path), agent=agent)
         except Exception as exc:  # a hook must never break the agent
             print(f"loopocel hook: could not process {session_dir}: {exc}", file=sys.stderr)
-    return {"recorded": True, "hook_event_name": event_name, "time": stamp, "session_dir": str(session_dir)}
+    return {
+        "recorded": True,
+        "agent": agent,
+        "hook_event_name": event_name,
+        "time": stamp,
+        "session_dir": str(session_dir),
+    }
 
 
 def _load_hooks(session_dir: Path) -> list[dict[str, Any]]:
@@ -113,7 +153,7 @@ def ingest_transcript(
     task_id: str | None = None,
     id_fields: dict[str, str] | None = None,
 ) -> dict[str, Any]:
-    """Parse an agent transcript (Claude Code JSONL, Antigravity JSONL, or chat JSON) into capture.jsonl."""
+    """Parse an agent transcript (Claude Code, Codex or Antigravity JSONL, or chat JSON) into capture.jsonl."""
     session_dir = Path(session_dir)
     transcript_path = Path(transcript_path)
     meta_path = session_dir / "session.json"
@@ -144,7 +184,9 @@ def ingest_transcript(
         raise ValueError(f"No records in transcript: {transcript_path}")
 
     first = lines[0]
-    if "step_index" in first and "type" in first:
+    if first.get("type") in CODEX_LINE_TYPES and "payload" in first:
+        turns = _normalize_codex_rollout(lines)
+    elif "step_index" in first and "type" in first:
         turns = _normalize_antigravity_jsonl(lines)
     else:
         turns = _normalize_claude_code_jsonl(lines, _load_hooks(session_dir))
@@ -376,6 +418,96 @@ def _normalize_antigravity_jsonl(lines: list[dict[str, Any]]) -> list[dict[str, 
                 }
             )
             pending_user.clear()
+
+    return turns
+
+
+CODEX_LINE_TYPES = {"session_meta", "turn_context", "response_item", "event_msg", "world_state"}
+_CODEX_CALLS = {"function_call", "custom_tool_call", "local_shell_call", "web_search_call"}
+_CODEX_OUTPUTS = {"function_call_output", "custom_tool_call_output", "local_shell_call_output"}
+
+
+def _codex_text(content: Any) -> str:
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        return "\n".join(str(b.get("text", "")) for b in content if isinstance(b, dict) and "text" in b)
+    return "" if content is None else json.dumps(content)
+
+
+def _normalize_codex_rollout(lines: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Normalize a Codex rollout (~/.codex/sessions/.../rollout-*.jsonl) into ordered turn dicts.
+
+    One turn is one model response: the assistant message and tool calls that follow a user
+    message or a tool output. Tool outputs are matched to their calls by `call_id`.
+    """
+    pending_user: list[tuple[str, list[dict[str, Any]]]] = []
+    turns: list[dict[str, Any]] = []
+    calls: dict[str, dict[str, Any]] = {}
+    model = "codex"
+    current: dict[str, Any] | None = None
+
+    for row in lines:
+        rtype = row.get("type")
+        item = row.get("payload") if isinstance(row.get("payload"), dict) else {}
+        stamp = _ensure_iso_tz(row.get("timestamp"))
+        if rtype == "turn_context" and item.get("model"):
+            model = str(item["model"])
+            continue
+        if rtype != "response_item":
+            continue
+        itype = item.get("type")
+        if itype == "message" and item.get("role") == "user":
+            pending_user.append((stamp, [{"role": "user", "content": _codex_text(item.get("content"))}]))
+            current = None
+        elif itype in _CODEX_OUTPUTS:
+            out = item.get("output")
+            text = _codex_text(out.get("content") if isinstance(out, dict) and "content" in out else out)
+            exit_code = re.search(r"(?:exit code|exited with code)[:\s]+(-?\d+)", text, re.I)
+            tu = calls.get(str(item.get("call_id")))
+            if tu is not None:
+                tu["result"] = {
+                    "time": stamp,
+                    "content": text,
+                    "is_error": bool(exit_code and exit_code.group(1) != "0"),
+                    "raw": out,
+                }
+            current = None
+        elif (itype == "message" and item.get("role") == "assistant") or itype in _CODEX_CALLS:
+            if current is None:
+                current = {
+                    "time": stamp,
+                    "user_instructions": list(pending_user),
+                    "compacted": False,
+                    "model": model,
+                    "message": {"role": "assistant", "content": ""},
+                    "provider": {"response_id": item.get("id")},
+                    "tool_uses": [],
+                    "pre_hooks": {},
+                    "post_hooks": {},
+                    "rejected_ids": set(),
+                }
+                turns.append(current)
+                pending_user.clear()
+            if itype == "message":
+                text = _codex_text(item.get("content"))
+                prev = current["message"]["content"]
+                current["message"]["content"] = f"{prev}\n{text}" if prev else text
+                continue
+            raw_args = item.get("arguments", item.get("input", item.get("action", {})))
+            if isinstance(raw_args, str):
+                try:
+                    raw_args = json.loads(raw_args)
+                except json.JSONDecodeError:
+                    raw_args = {"input": raw_args}
+            cid = str(item.get("call_id") or item.get("id") or f"codex_call_{len(calls) + 1}")
+            tu = {
+                "id": cid,
+                "name": item.get("name") or itype.removesuffix("_call"),
+                "arguments": raw_args if isinstance(raw_args, dict) else {"input": raw_args},
+            }
+            calls[cid] = tu
+            current["tool_uses"].append(tu)
 
     return turns
 
@@ -678,16 +810,60 @@ def claude_code_settings_snippet(session_dir: Path | str, command: str = "loopoc
     }
 
 
-def main_hook_cli(session_dir: Path) -> int:
-    """Entry point invoked by Claude Code hooks (reads JSON from stdin)."""
+def codex_hooks_snippet(session_dir: Path | str, command: str = "loopocel-mcp") -> dict[str, Any]:
+    """Return a Codex ~/.codex/hooks.json snippet for live session capture."""
+    target = str(Path(session_dir).resolve())
+    hook_cmd = f'{command} hook --session-dir "{target}"'
+    tool_entry = [{"matcher": ".*", "hooks": [{"type": "command", "command": hook_cmd}]}]
+    plain_entry = [{"hooks": [{"type": "command", "command": hook_cmd}]}]
+    return {
+        "hooks": {
+            "SessionStart": plain_entry,
+            "UserPromptSubmit": plain_entry,
+            "PreToolUse": tool_entry,
+            "PostToolUse": tool_entry,
+            "Stop": plain_entry,
+        }
+    }
+
+
+def antigravity_hooks_snippet(session_dir: Path | str, command: str = "loopocel-mcp") -> dict[str, Any]:
+    """Return an Antigravity ~/.gemini/config/hooks.json snippet for live session capture.
+
+    Antigravity payloads carry no event name, so each command passes it with --event.
+    """
+    target = str(Path(session_dir).resolve())
+    hook_cmd = f'{command} hook --session-dir "{target}"'
+    return {
+        "loopocel": {
+            "PostToolUse": [
+                {"matcher": ".*", "hooks": [{"type": "command", "command": f"{hook_cmd} --event PostToolUse"}]}
+            ],
+            "Stop": [{"type": "command", "command": f"{hook_cmd} --event Stop"}],
+        }
+    }
+
+
+def hooks_snippet(agent: str, session_dir: Path | str, command: str = "loopocel-mcp") -> dict[str, Any]:
+    """Hook configuration for one of HOOK_AGENTS."""
+    if agent == "codex":
+        return codex_hooks_snippet(session_dir, command)
+    if agent == "antigravity":
+        return antigravity_hooks_snippet(session_dir, command)
+    return claude_code_settings_snippet(session_dir, command)
+
+
+def main_hook_cli(session_dir: Path, event: str | None = None) -> int:
+    """Entry point invoked by Claude Code, Codex or Antigravity hooks (reads JSON from stdin)."""
     raw = sys.stdin.read().strip()
-    if not raw:
-        return 0
     try:
-        payload = json.loads(raw)
+        payload = json.loads(raw) if raw else {}
     except json.JSONDecodeError:
-        return 0
-    if isinstance(payload, dict):
-        record_hook_event(session_dir, payload)
+        payload = {}
+    if isinstance(payload, dict) and payload:
+        res = record_hook_event(session_dir, payload, event=event)
+        if res["agent"] == "antigravity":
+            # Antigravity requires a JSON object on stdout; any Stop decision but "continue" lets the agent stop.
+            print(json.dumps({"decision": "stop"} if res["hook_event_name"] == "Stop" else {}))
     return 0
 
