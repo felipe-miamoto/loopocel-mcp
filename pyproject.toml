@@ -4,6 +4,8 @@ version = "0.1.0"
 description = "MCP server and capture adapters for constructing LoopOCEL (OCEL 2.0) agent execution logs and coverage figures"
 readme = "README.md"
 requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
 dependencies = [
     "mcp>=1.10,<2",
     "matplotlib>=3.8.0",

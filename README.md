@@ -181,3 +181,7 @@ PYTHONPATH=src python3 -m loopocel_mcp graphs sessions/<session_id> [--include s
 # Run test suite
 PYTHONPATH=src python3 -m unittest discover -s tests -v
 ```
+
+## License
+
+MIT. See [LICENSE](LICENSE).
