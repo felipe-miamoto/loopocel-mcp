@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2124 545" width="2124" height="545" font-family="Helvetica Neue, Helvetica, Arial, DejaVu Sans, sans-serif">
+<rect x="0" y="0" width="2124" height="545" fill="#FFFFFF"/>
+<text x="36.0" y="54.0" text-anchor="start" font-size="19" font-weight="700" fill="#1F2328">Semantic process graph</text>
+<text x="36.0" y="78.0" text-anchor="start" font-size="12.5" fill="#57606A">20261112-164357-a6289b37 · 1 run · Plan FRA-CPH round trip Dec 4-7 2026 under EUR 800 with checked luggage and free-cancellation hotel (plan only, … · 8 tool actions · 9 business objects</text>
+<path d="M 36.0 94.0 L 2087.1 94.0" fill="none" stroke="#D0D7DE" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 134.4 204.5 C 181.4 204.5 181.4 204.5 228.4 204.5" fill="none" stroke="#57606A" stroke-width="4.0" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.92"/>
+<polygon points="228.4,204.5 216.9,209.5 216.9,199.5" fill="#57606A"/>
+<path d="M 391.6 204.5 C 438.6 204.5 438.6 204.5 485.6 204.5" fill="none" stroke="#57606A" stroke-width="4.0" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.92"/>
+<polygon points="485.6,204.5 474.1,209.5 474.1,199.5" fill="#57606A"/>
+<path d="M 644.5 204.5 C 691.5 204.5 691.5 204.5 738.5 204.5" fill="none" stroke="#57606A" stroke-width="4.0" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.92"/>
+<polygon points="738.5,204.5 727.0,209.5 727.0,199.5" fill="#57606A"/>
+<path d="M 897.4 204.5 C 944.4 204.5 944.4 204.5 991.4 204.5" fill="none" stroke="#57606A" stroke-width="4.0" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.92"/>
+<polygon points="991.4,204.5 979.9,209.5 979.9,199.5" fill="#57606A"/>
+<path d="M 1102.4 204.5 C 1149.4 204.5 1149.4 204.5 1196.4 204.5" fill="none" stroke="#57606A" stroke-width="4.0" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.92"/>
+<polygon points="1196.4,204.5 1184.9,209.5 1184.9,199.5" fill="#57606A"/>
+<path d="M 1345.2 204.5 C 1392.2 204.5 1392.2 204.5 1439.2 204.5" fill="none" stroke="#57606A" stroke-width="4.0" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.92"/>
+<polygon points="1439.2,204.5 1427.7,209.5 1427.7,199.5" fill="#57606A"/>
+<path d="M 1599.0 204.5 C 1646.0 204.5 1646.0 204.5 1693.0 204.5" fill="none" stroke="#57606A" stroke-width="4.0" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.92"/>
+<polygon points="1693.0,204.5 1681.5,209.5 1681.5,199.5" fill="#57606A"/>
+<path d="M 1899.1 204.5 C 1946.1 204.5 1946.1 204.5 1993.1 204.5" fill="none" stroke="#57606A" stroke-width="4.0" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.92"/>
+<polygon points="1993.1,204.5 1981.6,209.5 1981.6,199.5" fill="#57606A"/>
+<path d="M 837.8 150.0 C 847.8 128.0 790.1 128.0 800.1 148.0" fill="none" stroke="#57606A" stroke-width="4.0" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.92"/>
+<polygon points="800.1,149.0 790.9,140.5 800.0,136.5" fill="#57606A"/>
+<rect x="36.0" y="150.0" width="98.4" height="109.0" rx="54.5" fill="#24292F" stroke="#24292F" stroke-width="1.8"/>
+<text x="85.2" y="202.0" text-anchor="middle" font-size="13.5" font-weight="700" fill="#FFFFFF">Task start</text>
+<text x="85.2" y="216.9" text-anchor="middle" font-size="11" fill="#D0D7DE">1 run</text>
+<rect x="230.4" y="150.0" width="161.1" height="109.0" rx="9.0" fill="#FFF5EB" stroke="#B85D19" stroke-width="1.8"/>
+<text x="311.0" y="186.9" text-anchor="middle" font-size="14" font-weight="700" fill="#1F2328">WebSearch → flight</text>
+<text x="311.0" y="202.3" text-anchor="middle" font-size="11.5" fill="#57606A">on flight, trip</text>
+<text x="311.0" y="217.1" text-anchor="middle" font-size="11.5" fill="#B85D19">changes flight ×4</text>
+<text x="311.0" y="232.3" text-anchor="middle" font-size="12" font-weight="700" fill="#B85D19">1×</text>
+<rect x="487.6" y="150.0" width="156.9" height="109.0" rx="9.0" fill="#FFF5EB" stroke="#B85D19" stroke-width="1.8"/>
+<text x="566.0" y="186.9" text-anchor="middle" font-size="14" font-weight="700" fill="#1F2328">WebSearch → train</text>
+<text x="566.0" y="202.3" text-anchor="middle" font-size="11.5" fill="#57606A">on train, trip</text>
+<text x="566.0" y="217.1" text-anchor="middle" font-size="11.5" fill="#B85D19">changes train ×1</text>
+<text x="566.0" y="232.3" text-anchor="middle" font-size="12" font-weight="700" fill="#B85D19">1×</text>
+<rect x="740.5" y="150.0" width="156.9" height="109.0" rx="9.0" fill="#FFF5EB" stroke="#B85D19" stroke-width="1.8"/>
+<text x="819.0" y="186.9" text-anchor="middle" font-size="14" font-weight="700" fill="#1F2328">WebSearch → hotel</text>
+<text x="819.0" y="202.3" text-anchor="middle" font-size="11.5" fill="#57606A">on hotel, trip</text>
+<text x="819.0" y="217.1" text-anchor="middle" font-size="11.5" fill="#B85D19">changes hotel ×3</text>
+<text x="819.0" y="232.3" text-anchor="middle" font-size="12" font-weight="700" fill="#B85D19">2×</text>
+<rect x="993.4" y="150.0" width="109.0" height="109.0" rx="9.0" fill="#EEF4FB" stroke="#1F5F9E" stroke-width="1.8"/>
+<text x="1047.9" y="194.2" text-anchor="middle" font-size="14" font-weight="700" fill="#1F2328">WebSearch</text>
+<text x="1047.9" y="209.7" text-anchor="middle" font-size="11.5" fill="#57606A">on trip</text>
+<text x="1047.9" y="224.9" text-anchor="middle" font-size="12" font-weight="700" fill="#1F5F9E">1×</text>
+<rect x="1198.4" y="150.0" width="146.7" height="109.0" rx="9.0" fill="#EEF4FB" stroke="#1F5F9E" stroke-width="1.8"/>
+<text x="1271.8" y="187.2" text-anchor="middle" font-size="14" font-weight="700" fill="#1F2328">compare_options</text>
+<text x="1271.8" y="202.2" text-anchor="middle" font-size="11" fill="#8C959F">agent step, no tool</text>
+<text x="1271.8" y="216.7" text-anchor="middle" font-size="11.5" fill="#57606A">on train, flight, hotel</text>
+<text x="1271.8" y="231.9" text-anchor="middle" font-size="12" font-weight="700" fill="#1F5F9E">1×</text>
+<rect x="1441.2" y="150.0" width="157.8" height="109.0" rx="9.0" fill="#FFF5EB" stroke="#B85D19" stroke-width="1.8"/>
+<text x="1520.1" y="179.8" text-anchor="middle" font-size="14" font-weight="700" fill="#1F2328">verify_constraints</text>
+<text x="1520.1" y="194.8" text-anchor="middle" font-size="11" fill="#8C959F">agent step, no tool</text>
+<text x="1520.1" y="209.4" text-anchor="middle" font-size="11.5" fill="#57606A">on flight, trip</text>
+<text x="1520.1" y="224.1" text-anchor="middle" font-size="11.5" fill="#B85D19">changes flight ×2</text>
+<text x="1520.1" y="239.3" text-anchor="middle" font-size="12" font-weight="700" fill="#B85D19">1×</text>
+<rect x="1695.0" y="150.0" width="204.0" height="109.0" rx="9.0" fill="#FFF5EB" stroke="#B85D19" stroke-width="1.8"/>
+<text x="1797.0" y="179.8" text-anchor="middle" font-size="14" font-weight="700" fill="#1F2328">commit_plan</text>
+<text x="1797.0" y="194.8" text-anchor="middle" font-size="11" fill="#8C959F">agent step, no tool</text>
+<text x="1797.0" y="209.4" text-anchor="middle" font-size="11.5" fill="#57606A">on trip, train, hotel</text>
+<text x="1797.0" y="224.1" text-anchor="middle" font-size="11.5" fill="#B85D19">changes trip ×1, train ×1, hotel ×1</text>
+<text x="1797.0" y="239.3" text-anchor="middle" font-size="12" font-weight="700" fill="#B85D19">1×</text>
+<rect x="1995.1" y="150.0" width="92.0" height="109.0" rx="54.5" fill="#24292F" stroke="#24292F" stroke-width="1.8"/>
+<text x="2041.1" y="202.0" text-anchor="middle" font-size="13.5" font-weight="700" fill="#FFFFFF">Task end</text>
+<text x="2041.1" y="216.9" text-anchor="middle" font-size="11" fill="#D0D7DE">1 run</text>
+<rect x="174.2" y="195.5" width="14.6" height="14.3" rx="3.0" fill="#FFFFFF" stroke="none" stroke-width="1.0"/>
+<text x="181.4" y="208.0" text-anchor="middle" font-size="11" font-weight="700" fill="#57606A">1</text>
+<rect x="431.3" y="195.5" width="14.6" height="14.3" rx="3.0" fill="#FFFFFF" stroke="none" stroke-width="1.0"/>
+<text x="438.6" y="208.0" text-anchor="middle" font-size="11" font-weight="700" fill="#57606A">1</text>
+<rect x="684.2" y="195.5" width="14.6" height="14.3" rx="3.0" fill="#FFFFFF" stroke="none" stroke-width="1.0"/>
+<text x="691.5" y="208.0" text-anchor="middle" font-size="11" font-weight="700" fill="#57606A">1</text>
+<rect x="937.1" y="195.5" width="14.6" height="14.3" rx="3.0" fill="#FFFFFF" stroke="none" stroke-width="1.0"/>
+<text x="944.4" y="208.0" text-anchor="middle" font-size="11" font-weight="700" fill="#57606A">1</text>
+<rect x="1142.1" y="195.5" width="14.6" height="14.3" rx="3.0" fill="#FFFFFF" stroke="none" stroke-width="1.0"/>
+<text x="1149.4" y="208.0" text-anchor="middle" font-size="11" font-weight="700" fill="#57606A">1</text>
+<rect x="1384.9" y="195.5" width="14.6" height="14.3" rx="3.0" fill="#FFFFFF" stroke="none" stroke-width="1.0"/>
+<text x="1392.2" y="208.0" text-anchor="middle" font-size="11" font-weight="700" fill="#57606A">1</text>
+<rect x="1638.7" y="195.5" width="14.6" height="14.3" rx="3.0" fill="#FFFFFF" stroke="none" stroke-width="1.0"/>
+<text x="1646.0" y="208.0" text-anchor="middle" font-size="11" font-weight="700" fill="#57606A">1</text>
+<rect x="1938.8" y="195.5" width="14.6" height="14.3" rx="3.0" fill="#FFFFFF" stroke="none" stroke-width="1.0"/>
+<text x="1946.1" y="208.0" text-anchor="middle" font-size="11" font-weight="700" fill="#57606A">1</text>
+<rect x="811.7" y="123.8" width="14.6" height="14.3" rx="3.0" fill="#FFFFFF" stroke="none" stroke-width="1.0"/>
+<text x="819.0" y="136.3" text-anchor="middle" font-size="11" font-weight="700" fill="#57606A">1</text>
+<path d="M 36.0 285.0 L 58.0 285.0" fill="none" stroke="#1F5F9E" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="64.0" y="289.0" text-anchor="start" font-size="11.5" fill="#1F2328">read / query action</text>
+<path d="M 185.8 285.0 L 207.8 285.0" fill="none" stroke="#B85D19" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="213.8" y="289.0" text-anchor="start" font-size="11.5" fill="#1F2328">action that changes business objects</text>
+<path d="M 420.7 285.0 L 442.7 285.0" fill="none" stroke="#B3261E" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="448.7" y="289.0" text-anchor="start" font-size="11.5" fill="#1F2328">failed or rejected action</text>
+<path d="M 595.4 285.0 L 617.4 285.0" fill="none" stroke="#2E7D4F" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="5,3"/>
+<text x="623.4" y="289.0" text-anchor="start" font-size="11.5" fill="#1F2328">recovery after a failure</text>
+<text x="36.0" y="323.0" text-anchor="start" font-size="13" font-weight="700" fill="#1F2328">Business objects (ProcessObject)</text>
+<rect x="36.0" y="333.0" width="330.7" height="22.0" rx="0.0" fill="#F6F8FA" stroke="none" stroke-width="1.0"/>
+<text x="46.0" y="348.5" text-anchor="start" font-size="11.5" font-weight="700" fill="#57606A">kind</text>
+<text x="104.8" y="348.5" text-anchor="start" font-size="11.5" font-weight="700" fill="#57606A">objects</text>
+<text x="172.7" y="348.5" text-anchor="start" font-size="11.5" font-weight="700" fill="#57606A">changed</text>
+<text x="246.4" y="348.5" text-anchor="start" font-size="11.5" font-weight="700" fill="#57606A">final state</text>
+<path d="M 36.0 355.0 L 366.7 355.0" fill="none" stroke="#D0D7DE" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="46.0" y="370.5" text-anchor="start" font-size="12" font-weight="700" fill="#1F2328">flight</text>
+<text x="104.8" y="370.5" text-anchor="start" font-size="12" fill="#1F2328">4</text>
+<text x="172.7" y="370.5" text-anchor="start" font-size="12" fill="#1F2328">4</text>
+<text x="246.4" y="370.5" text-anchor="start" font-size="12" fill="#1F2328">rejected ×2</text>
+<path d="M 36.0 377.0 L 366.7 377.0" fill="none" stroke="#D0D7DE" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="46.0" y="392.5" text-anchor="start" font-size="12" font-weight="700" fill="#1F2328">hotel</text>
+<text x="104.8" y="392.5" text-anchor="start" font-size="12" fill="#1F2328">3</text>
+<text x="172.7" y="392.5" text-anchor="start" font-size="12" fill="#1F2328">3</text>
+<text x="246.4" y="392.5" text-anchor="start" font-size="12" fill="#1F2328">selected ×1</text>
+<path d="M 36.0 399.0 L 366.7 399.0" fill="none" stroke="#D0D7DE" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="46.0" y="414.5" text-anchor="start" font-size="12" font-weight="700" fill="#1F2328">train</text>
+<text x="104.8" y="414.5" text-anchor="start" font-size="12" fill="#1F2328">1</text>
+<text x="172.7" y="414.5" text-anchor="start" font-size="12" fill="#1F2328">1</text>
+<text x="246.4" y="414.5" text-anchor="start" font-size="12" fill="#1F2328">selected ×1</text>
+<path d="M 36.0 421.0 L 366.7 421.0" fill="none" stroke="#D0D7DE" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="46.0" y="436.5" text-anchor="start" font-size="12" font-weight="700" fill="#1F2328">trip</text>
+<text x="104.8" y="436.5" text-anchor="start" font-size="12" fill="#1F2328">1</text>
+<text x="172.7" y="436.5" text-anchor="start" font-size="12" fill="#1F2328">1</text>
+<text x="246.4" y="436.5" text-anchor="start" font-size="12" fill="#1F2328">plan_committed ×1</text>
+<text x="36.0" y="469.0" text-anchor="start" font-size="11.5" fill="#57606A">1 distinct action sequence across 1 run. Edge label = number of transitions.</text>
+<text x="36.0" y="489.0" text-anchor="start" font-size="11.5" fill="#57606A">Steps marked 'agent step, no tool' were done by the agent itself (checking, deciding), not by a tool.</text>
+</svg>

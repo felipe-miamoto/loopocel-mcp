@@ -1,0 +1,21 @@
+{
+  "session_id": "rail_first_multicity_01",
+  "task": "Rail-first round trip Frankfurt-Copenhagen-Stockholm-Frankfurt, Dec 4-9 2026, under EUR 1200",
+  "agent": "claude-code",
+  "profile": "travel",
+  "mode": "mcp",
+  "capture_completeness": "complete",
+  "status": "completed",
+  "started_at": "2026-11-13T11:15:20.065743+00:00",
+  "finished_at": "2026-11-13T11:18:25.413347+00:00",
+  "directory": "sessions/rail_first_multicity_01",
+  "recorded_via": "cli",
+  "validation_passed": true,
+  "provenance": {
+    "recorded_via": "cli",
+    "turns": 9,
+    "turn_span_seconds": 163.01,
+    "live": true,
+    "warnings": []
+  }
+}

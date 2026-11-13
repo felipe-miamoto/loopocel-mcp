@@ -1,0 +1,110 @@
+{
+  "total_objects": 113,
+  "total_events": 167,
+  "total_o2o": 336,
+  "total_e2o": 402,
+  "classes": {
+    "Turn": 9,
+    "ProcessObject": 17,
+    "Prompt": 9,
+    "Response": 9,
+    "Instruction": 1,
+    "History": 8,
+    "ActionRequest": 20,
+    "Execution": 20,
+    "ActionResult": 20
+  },
+  "relations": {
+    "hasPrompt": 9,
+    "hasResponse": 9,
+    "hasNextTurn": 8,
+    "hasInstruction": 9,
+    "hasHistory": 8,
+    "hasActionResult": 18,
+    "hasActionRequest": 20,
+    "hasExecution": 20,
+    "targetsObject": 20,
+    "actOn": 53,
+    "producesResult": 20,
+    "resultOf": 20,
+    "describesObject": 29,
+    "hasSourcePrompt": 0,
+    "hasSourceResponse": 36,
+    "hasSourceActionResult": 57
+  },
+  "events": {
+    "ActionRequest.Dispatched": 20,
+    "ActionResult.Received": 20,
+    "Execution.Finished": 20,
+    "Execution.Started": 20,
+    "History.Assembled": 8,
+    "Instruction.Registered": 1,
+    "ProcessObject.Created": 13,
+    "ProcessObject.Registered": 4,
+    "ProcessObject.StateChanged": 25,
+    "Prompt.Submitted": 9,
+    "Response.Received": 9,
+    "Turn.Finished": 9,
+    "Turn.Started": 9
+  },
+  "baseline_events": {
+    "Turn.Started": 9,
+    "Turn.Finished": 9,
+    "Turn.Failed": 0,
+    "ProcessObject.Created": 13,
+    "ProcessObject.StateChanged": 25,
+    "Prompt.Submitted": 9,
+    "Response.Received": 9,
+    "Instruction.Registered": 1,
+    "History.Assembled": 8,
+    "ActionRequest.Dispatched": 20,
+    "ActionRequest.Rejected": 0,
+    "Execution.Started": 20,
+    "Execution.Finished": 20,
+    "ActionResult.Received": 20
+  },
+  "extension_events": {
+    "ProcessObject.Registered": 4
+  },
+  "e2o_roles": {
+    "execution": 58,
+    "process_object": 53,
+    "prompt": 17,
+    "request": 60,
+    "response": 9,
+    "subject": 167,
+    "turn": 38
+  },
+  "coverage": {
+    "classes_covered": 9,
+    "classes_total": 9,
+    "relations_covered": 15,
+    "relations_total": 16,
+    "baseline_events_covered": 12,
+    "baseline_events_total": 14,
+    "extension_event_types": 1
+  },
+  "capture_completeness": "complete",
+  "partial_prompts": false,
+  "session": {
+    "session_id": "rail_first_multicity_01",
+    "task": "Rail-first round trip Frankfurt-Copenhagen-Stockholm-Frankfurt, Dec 4-9 2026, under EUR 1200",
+    "agent": "claude-code",
+    "profile": "travel",
+    "mode": "mcp",
+    "capture_completeness": "complete",
+    "status": "completed",
+    "started_at": "2026-11-13T11:15:20.065743+00:00",
+    "finished_at": "2026-11-13T11:18:25.413347+00:00",
+    "directory": "sessions/rail_first_multicity_01",
+    "recorded_via": "cli",
+    "validation_passed": true,
+    "provenance": {
+      "recorded_via": "cli",
+      "turns": 9,
+      "turn_span_seconds": 163.01,
+      "live": true,
+      "warnings": []
+    }
+  }
+}

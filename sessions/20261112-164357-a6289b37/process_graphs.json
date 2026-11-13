@@ -1,0 +1,350 @@
+{
+  "ocdfg": {
+    "n_logs": 1,
+    "activities": {
+      "Instruction.Registered": 1,
+      "History.Assembled": 5,
+      "Turn.Started": 6,
+      "Prompt.Submitted": 6,
+      "Response.Received": 6,
+      "Turn.Finished": 6,
+      "ActionRequest.Dispatched": 8,
+      "Execution.Started": 8,
+      "ProcessObject.Registered": 9,
+      "ProcessObject.StateChanged": 13,
+      "Execution.Finished": 8,
+      "ActionResult.Received": 8
+    },
+    "objects_per_type": {
+      "ProcessObject": 9,
+      "Instruction": 1,
+      "Turn": 6,
+      "Prompt": 6,
+      "Response": 6,
+      "ActionRequest": 8,
+      "Execution": 8,
+      "ActionResult": 8,
+      "History": 5
+    },
+    "edges": [
+      {
+        "source": "ProcessObject.Registered",
+        "target": "Execution.Finished",
+        "object_type": "ProcessObject",
+        "count": 1
+      },
+      {
+        "source": "Execution.Finished",
+        "target": "Execution.Finished",
+        "object_type": "ProcessObject",
+        "count": 9
+      },
+      {
+        "source": "Execution.Finished",
+        "target": "ProcessObject.StateChanged",
+        "object_type": "ProcessObject",
+        "count": 5
+      },
+      {
+        "source": "ProcessObject.StateChanged",
+        "target": "Execution.Finished",
+        "object_type": "Execution",
+        "count": 6
+      },
+      {
+        "source": "ProcessObject.StateChanged",
+        "target": "Execution.Finished",
+        "object_type": "ProcessObject",
+        "count": 13
+      },
+      {
+        "source": "Turn.Started",
+        "target": "Prompt.Submitted",
+        "object_type": "Prompt",
+        "count": 6
+      },
+      {
+        "source": "Turn.Started",
+        "target": "Prompt.Submitted",
+        "object_type": "Turn",
+        "count": 6
+      },
+      {
+        "source": "Prompt.Submitted",
+        "target": "Response.Received",
+        "object_type": "Turn",
+        "count": 6
+      },
+      {
+        "source": "Response.Received",
+        "target": "Turn.Finished",
+        "object_type": "Response",
+        "count": 6
+      },
+      {
+        "source": "Response.Received",
+        "target": "Turn.Finished",
+        "object_type": "Turn",
+        "count": 6
+      },
+      {
+        "source": "Turn.Finished",
+        "target": "ActionRequest.Dispatched",
+        "object_type": "Turn",
+        "count": 6
+      },
+      {
+        "source": "ProcessObject.Registered",
+        "target": "ProcessObject.StateChanged",
+        "object_type": "ProcessObject",
+        "count": 8
+      },
+      {
+        "source": "ActionRequest.Dispatched",
+        "target": "Execution.Started",
+        "object_type": "ActionRequest",
+        "count": 8
+      },
+      {
+        "source": "Execution.Started",
+        "target": "Execution.Finished",
+        "object_type": "ActionRequest",
+        "count": 8
+      },
+      {
+        "source": "Execution.Started",
+        "target": "Execution.Finished",
+        "object_type": "Execution",
+        "count": 2
+      },
+      {
+        "source": "Execution.Finished",
+        "target": "ActionResult.Received",
+        "object_type": "ActionRequest",
+        "count": 8
+      },
+      {
+        "source": "Execution.Finished",
+        "target": "ActionResult.Received",
+        "object_type": "Execution",
+        "count": 8
+      },
+      {
+        "source": "Execution.Started",
+        "target": "ProcessObject.StateChanged",
+        "object_type": "Execution",
+        "count": 6
+      },
+      {
+        "source": "ProcessObject.StateChanged",
+        "target": "ProcessObject.StateChanged",
+        "object_type": "Execution",
+        "count": 7
+      },
+      {
+        "source": "History.Assembled",
+        "target": "Turn.Started",
+        "object_type": "Prompt",
+        "count": 5
+      },
+      {
+        "source": "ActionRequest.Dispatched",
+        "target": "ActionRequest.Dispatched",
+        "object_type": "Turn",
+        "count": 2
+      }
+    ]
+  },
+  "semantic_process": {
+    "n_runs": 1,
+    "start": "Task start",
+    "end": "Task end",
+    "activities": {
+      "Task start": {
+        "count": 1,
+        "kind": "start"
+      },
+      "WebSearch → flight": {
+        "count": 1,
+        "tool": "WebSearch → flight",
+        "kind": "mutating",
+        "internal": false,
+        "outcome": "success",
+        "touched_kinds": {
+          "flight": 1,
+          "trip": 1
+        },
+        "changed_kinds": {
+          "flight": 4
+        }
+      },
+      "WebSearch → train": {
+        "count": 1,
+        "tool": "WebSearch → train",
+        "kind": "mutating",
+        "internal": false,
+        "outcome": "success",
+        "touched_kinds": {
+          "train": 1,
+          "trip": 1
+        },
+        "changed_kinds": {
+          "train": 1
+        }
+      },
+      "WebSearch → hotel": {
+        "count": 2,
+        "tool": "WebSearch → hotel",
+        "kind": "mutating",
+        "internal": false,
+        "outcome": "success",
+        "touched_kinds": {
+          "hotel": 2,
+          "trip": 2
+        },
+        "changed_kinds": {
+          "hotel": 3
+        }
+      },
+      "WebSearch": {
+        "count": 1,
+        "tool": "WebSearch",
+        "kind": "action",
+        "internal": false,
+        "outcome": "success",
+        "touched_kinds": {
+          "trip": 1
+        },
+        "changed_kinds": {}
+      },
+      "compare_options": {
+        "count": 1,
+        "tool": "compare_options",
+        "kind": "action",
+        "internal": true,
+        "outcome": "success",
+        "touched_kinds": {
+          "train": 1,
+          "flight": 1,
+          "hotel": 1
+        },
+        "changed_kinds": {}
+      },
+      "verify_constraints": {
+        "count": 1,
+        "tool": "verify_constraints",
+        "kind": "mutating",
+        "internal": true,
+        "outcome": "success",
+        "touched_kinds": {
+          "flight": 1,
+          "trip": 1
+        },
+        "changed_kinds": {
+          "flight": 2
+        }
+      },
+      "commit_plan": {
+        "count": 1,
+        "tool": "commit_plan",
+        "kind": "mutating",
+        "internal": true,
+        "outcome": "success",
+        "touched_kinds": {
+          "trip": 1,
+          "train": 1,
+          "hotel": 1
+        },
+        "changed_kinds": {
+          "trip": 1,
+          "train": 1,
+          "hotel": 1
+        }
+      },
+      "Task end": {
+        "count": 1,
+        "kind": "end"
+      }
+    },
+    "edges": [
+      {
+        "source": "Task start",
+        "target": "WebSearch → flight",
+        "count": 1
+      },
+      {
+        "source": "WebSearch → flight",
+        "target": "WebSearch → train",
+        "count": 1
+      },
+      {
+        "source": "WebSearch → train",
+        "target": "WebSearch → hotel",
+        "count": 1
+      },
+      {
+        "source": "WebSearch → hotel",
+        "target": "WebSearch → hotel",
+        "count": 1
+      },
+      {
+        "source": "WebSearch → hotel",
+        "target": "WebSearch",
+        "count": 1
+      },
+      {
+        "source": "WebSearch",
+        "target": "compare_options",
+        "count": 1
+      },
+      {
+        "source": "compare_options",
+        "target": "verify_constraints",
+        "count": 1
+      },
+      {
+        "source": "verify_constraints",
+        "target": "commit_plan",
+        "count": 1
+      },
+      {
+        "source": "commit_plan",
+        "target": "Task end",
+        "count": 1
+      }
+    ],
+    "variants": {
+      "WebSearch → flight -> WebSearch → train -> WebSearch → hotel -> WebSearch → hotel -> WebSearch -> compare_options -> verify_constraints -> commit_plan": 1
+    },
+    "objects": {
+      "flight": {
+        "objects": 4,
+        "changed": 4,
+        "final_states": {
+          "rejected": 2
+        }
+      },
+      "hotel": {
+        "objects": 3,
+        "changed": 3,
+        "final_states": {
+          "selected": 1
+        }
+      },
+      "train": {
+        "objects": 1,
+        "changed": 1,
+        "final_states": {
+          "selected": 1
+        }
+      },
+      "trip": {
+        "objects": 1,
+        "changed": 1,
+        "final_states": {
+          "plan_committed": 1
+        }
+      }
+    }
+  }
+}

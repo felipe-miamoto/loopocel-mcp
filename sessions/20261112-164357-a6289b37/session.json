@@ -1,0 +1,21 @@
+{
+  "session_id": "20261112-164357-a6289b37",
+  "task": "Plan FRA-CPH round trip Dec 4-7 2026 under EUR 800 with checked luggage and free-cancellation hotel (plan only, no booking)",
+  "agent": "claude-code",
+  "profile": "travel",
+  "mode": "mcp",
+  "capture_completeness": "complete",
+  "status": "completed",
+  "started_at": "2026-11-12T16:43:57.784430+00:00",
+  "finished_at": "2026-11-12T16:45:26.759126+00:00",
+  "directory": "sessions/20261112-164357-a6289b37",
+  "recorded_via": "mcp-stdio",
+  "validation_passed": true,
+  "provenance": {
+    "recorded_via": "mcp-stdio",
+    "turns": 6,
+    "turn_span_seconds": 68.204,
+    "live": true,
+    "warnings": []
+  }
+}

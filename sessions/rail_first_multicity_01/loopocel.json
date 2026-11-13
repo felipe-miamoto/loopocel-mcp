@@ -1,0 +1,6196 @@
+{
+  "objectTypes": [
+    {
+      "name": "Turn",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        },
+        {
+          "name": "state",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Prompt",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Response",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Instruction",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "History",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "eventTypes": [
+    {
+      "name": "ProcessObject.Registered",
+      "attributes": []
+    },
+    {
+      "name": "Instruction.Registered",
+      "attributes": []
+    },
+    {
+      "name": "Turn.Started",
+      "attributes": []
+    },
+    {
+      "name": "Prompt.Submitted",
+      "attributes": []
+    },
+    {
+      "name": "Response.Received",
+      "attributes": []
+    },
+    {
+      "name": "Turn.Finished",
+      "attributes": []
+    },
+    {
+      "name": "ActionRequest.Dispatched",
+      "attributes": []
+    },
+    {
+      "name": "Execution.Started",
+      "attributes": []
+    },
+    {
+      "name": "ProcessObject.Created",
+      "attributes": []
+    },
+    {
+      "name": "Execution.Finished",
+      "attributes": []
+    },
+    {
+      "name": "ActionResult.Received",
+      "attributes": []
+    },
+    {
+      "name": "ProcessObject.StateChanged",
+      "attributes": []
+    },
+    {
+      "name": "History.Assembled",
+      "attributes": []
+    }
+  ],
+  "objects": [
+    {
+      "id": "leg:cph-sto",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:15:20.066482+00:00",
+          "value": "{\"date\":\"2026-12-06\",\"from\":\"Copenhagen\",\"status\":\"open\",\"to\":\"Stockholm\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:15:20.066482+00:00",
+          "value": "{\"date\":\"2026-12-06\",\"from\":\"Copenhagen\",\"status\":\"open\",\"to\":\"Stockholm\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:16:49.264130+00:00",
+          "value": "{\"choice\":\"train:ot1030-sj530\",\"cost_eur\":120,\"mode\":\"train\",\"status\":\"verified\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:18:25.353039+00:00",
+          "value": "{\"status\":\"planned\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "leg:fra-cph",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:15:20.066482+00:00",
+          "value": "{\"date\":\"2026-12-04\",\"from\":\"Frankfurt\",\"status\":\"open\",\"to\":\"Copenhagen\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:15:20.066482+00:00",
+          "value": "{\"date\":\"2026-12-04\",\"from\":\"Frankfurt\",\"status\":\"open\",\"to\":\"Copenhagen\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:15:42.343171+00:00",
+          "value": "{\"mode\":\"flight_required\",\"status\":\"open\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:16:27.097639+00:00",
+          "value": "{\"choice\":\"flight:sas-fra-cph\",\"cost_eur\":162,\"mode\":\"flight\",\"status\":\"verified\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:18:25.352980+00:00",
+          "value": "{\"status\":\"planned\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "leg:sto-fra",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:15:20.066482+00:00",
+          "value": "{\"date\":\"2026-12-09\",\"from\":\"Stockholm\",\"status\":\"open\",\"to\":\"Frankfurt\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:15:20.066482+00:00",
+          "value": "{\"date\":\"2026-12-09\",\"from\":\"Stockholm\",\"status\":\"open\",\"to\":\"Frankfurt\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:17:06.521845+00:00",
+          "value": "{\"mode\":\"flight_required\",\"status\":\"open\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:17:27.602689+00:00",
+          "value": "{\"choice\":\"flight:sas-arn-fra\",\"cost_eur\":150,\"mode\":\"flight\",\"status\":\"verified\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:18:25.353092+00:00",
+          "value": "{\"status\":\"planned\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "trip:fra-cph-sto",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:15:20.066482+00:00",
+          "value": "{\"budget_eur\":1200,\"dates\":\"2026-12-04..2026-12-09\",\"status\":\"requested\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:15:20.066482+00:00",
+          "value": "{\"budget_eur\":1200,\"dates\":\"2026-12-04..2026-12-09\",\"status\":\"requested\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:18:25.352558+00:00",
+          "value": "{\"status\":\"within_budget\",\"total_eur\":883}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:18:25.352927+00:00",
+          "value": "{\"status\":\"plan_committed\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "instruction:base",
+      "type": "Instruction",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:15:20.066666+00:00",
+          "value": "{\"messages\":[{\"content\":\"Plan a rail-first round trip Frankfurt → Copenhagen → Stockholm → Frankfurt, December 4–9, 2026 (2 nights in Copenhagen, 3 nights in Stockholm), under €1,200 in total for transport and hotels. Take the train for a leg if the fastest train takes at most 6 hours; otherwise fly with checked luggage. Hotels must offer free cancellation and be within 1 km of the central station. Verify every leg and hotel against these rules, replace anything that fails, then commit the plan (no booking).\",\"role\":\"user\"}]}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "turn:1",
+      "type": "Turn",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:15:42.342177+00:00",
+          "value": "{\"index\":1,\"task_id\":\"Rail-first round trip Frankfurt-Copenhagen-Stockholm-Frankfurt, Dec 4-9 2026, under EUR 1200\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "prompt:1",
+          "qualifier": "hasPrompt"
+        },
+        {
+          "objectId": "response:1",
+          "qualifier": "hasResponse"
+        },
+        {
+          "objectId": "turn:2",
+          "qualifier": "hasNextTurn"
+        }
+      ]
+    },
+    {
+      "id": "prompt:1",
+      "type": "Prompt",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:15:42.342177+00:00",
+          "value": "{\"parameters\":{\"model\":\"claude-code\"},\"layout\":[\"instruction:base\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "instruction:base",
+          "qualifier": "hasInstruction"
+        }
+      ]
+    },
+    {
+      "id": "response:1",
+      "type": "Response",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:15:42.342488+00:00",
+          "value": "{\"provider\":{\"status\":\"completed\",\"turn\":1},\"message\":{\"content\":\"Searched trains Frankfurt to Copenhagen; the fastest connection is ICE 772 + ECE 394 at 8h47 with 2 changes, which breaks the 6-hour rail rule.\",\"role\":\"assistant\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:1",
+          "qualifier": "hasActionRequest"
+        },
+        {
+          "objectId": "request:2",
+          "qualifier": "hasActionRequest"
+        }
+      ]
+    },
+    {
+      "id": "request:1",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:15:42.342608+00:00",
+          "value": "{\"name\":\"WebSearch\",\"arguments\":{\"query\":\"Frankfurt to Copenhagen train fastest journey time hours\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "leg:fra-cph",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:1",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:1",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:15:42.342675+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:15:42.342833+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "train:ice772-ece394",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "leg:fra-cph",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:1",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "train:ice772-ece394",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:15:42.342770+00:00",
+          "value": "{\"changes\":2,\"duration_min\":527,\"price_from_eur\":44,\"route\":\"FRA-CPH\",\"status\":\"candidate\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:15:42.342770+00:00",
+          "value": "{\"changes\":2,\"duration_min\":527,\"price_from_eur\":44,\"route\":\"FRA-CPH\",\"status\":\"candidate\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:15:42.343112+00:00",
+          "value": "{\"status\":\"rejected_over_6h\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "result:1",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:15:42.342900+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"WebSearch\\\",\\\"request_id\\\":\\\"request:1\\\",\\\"result\\\":{\\\"fastest\\\":\\\"ICE 772 + ECE 394, Frankfurt Hbf 10:51 -> Copenhagen Central 19:38, 8h47, 2 changes\\\",\\\"price_from_eur\\\":44,\\\"sources\\\":[\\\"omio.co.uk\\\",\\\"thetrainline.com\\\",\\\"raileurope.com\\\"]}}}\",\"role\":\"user\"},\"data\":{\"fastest\":\"ICE 772 + ECE 394, Frankfurt Hbf 10:51 -> Copenhagen Central 19:38, 8h47, 2 changes\",\"price_from_eur\":44,\"sources\":[\"omio.co.uk\",\"thetrainline.com\",\"raileurope.com\"]}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:1",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "leg:fra-cph",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "train:ice772-ece394",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "request:2",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:15:42.342988+00:00",
+          "value": "{\"name\":\"verify_leg\",\"arguments\":{\"leg\":\"leg:fra-cph\",\"rule\":\"train if fastest <= 6h\"},\"internal\":true}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "leg:fra-cph",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:2",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:2",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:15:42.343050+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:15:42.343240+00:00",
+          "value": "{\"outcome\":\"failure\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "train:ice772-ece394",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "leg:fra-cph",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:2",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:2",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:15:42.343312+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"verify_leg\\\",\\\"request_id\\\":\\\"request:2\\\",\\\"result\\\":{\\\"passed\\\":false,\\\"reason\\\":\\\"fastest train 8h47 > 6h; fly with checked luggage instead\\\"}}}\",\"role\":\"user\"},\"data\":{\"passed\":false,\"reason\":\"fastest train 8h47 > 6h; fly with checked luggage instead\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:2",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "leg:fra-cph",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "turn:2",
+      "type": "Turn",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:05.157991+00:00",
+          "value": "{\"index\":2,\"task_id\":\"Rail-first round trip Frankfurt-Copenhagen-Stockholm-Frankfurt, Dec 4-9 2026, under EUR 1200\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "prompt:2",
+          "qualifier": "hasPrompt"
+        },
+        {
+          "objectId": "response:2",
+          "qualifier": "hasResponse"
+        },
+        {
+          "objectId": "turn:3",
+          "qualifier": "hasNextTurn"
+        }
+      ]
+    },
+    {
+      "id": "prompt:2",
+      "type": "Prompt",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:05.157991+00:00",
+          "value": "{\"parameters\":{\"model\":\"claude-code\"},\"layout\":[\"instruction:base\",\"history:2\",\"result:1\",\"result:2\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "instruction:base",
+          "qualifier": "hasInstruction"
+        },
+        {
+          "objectId": "history:2",
+          "qualifier": "hasHistory"
+        },
+        {
+          "objectId": "result:1",
+          "qualifier": "hasActionResult"
+        },
+        {
+          "objectId": "result:2",
+          "qualifier": "hasActionResult"
+        }
+      ]
+    },
+    {
+      "id": "history:2",
+      "type": "History",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:05.157991+00:00",
+          "value": "{\"sources\":[\"response:1\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "response:1",
+          "qualifier": "hasSourceResponse"
+        }
+      ]
+    },
+    {
+      "id": "response:2",
+      "type": "Response",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:05.158322+00:00",
+          "value": "{\"provider\":{\"status\":\"completed\",\"turn\":2},\"message\":{\"content\":\"Searched FRA-CPH flights. SAS from EUR 122 one-way in December, Lufthansa from EUR 177; both base fares exclude a checked bag, so the bag fee is still unknown.\",\"role\":\"assistant\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:3",
+          "qualifier": "hasActionRequest"
+        },
+        {
+          "objectId": "request:4",
+          "qualifier": "hasActionRequest"
+        }
+      ]
+    },
+    {
+      "id": "request:3",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:05.158434+00:00",
+          "value": "{\"name\":\"WebSearch\",\"arguments\":{\"query\":\"Frankfurt to Copenhagen flight December 2026 price checked bag Lufthansa SAS\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "leg:fra-cph",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:3",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:3",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:05.158501+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:05.158723+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "flight:sas-fra-cph",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "flight:lh-fra-cph",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "leg:fra-cph",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:3",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "flight:sas-fra-cph",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:05.158572+00:00",
+          "value": "{\"carrier\":\"SAS\",\"checked_bag_included\":false,\"fare_eur\":122,\"route\":\"FRA-CPH\",\"status\":\"candidate\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:16:05.158572+00:00",
+          "value": "{\"carrier\":\"SAS\",\"checked_bag_included\":false,\"fare_eur\":122,\"route\":\"FRA-CPH\",\"status\":\"candidate\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:16:05.159037+00:00",
+          "value": "{\"status\":\"bag_fee_missing\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:16:27.097190+00:00",
+          "value": "{\"bag_fee_eur\":40,\"status\":\"candidate\",\"total_eur\":162}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:16:27.097535+00:00",
+          "value": "{\"status\":\"selected\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "flight:lh-fra-cph",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:05.158655+00:00",
+          "value": "{\"carrier\":\"Lufthansa\",\"checked_bag_included\":false,\"fare_eur\":177,\"route\":\"FRA-CPH\",\"status\":\"candidate\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:16:05.158655+00:00",
+          "value": "{\"carrier\":\"Lufthansa\",\"checked_bag_included\":false,\"fare_eur\":177,\"route\":\"FRA-CPH\",\"status\":\"candidate\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:16:27.097587+00:00",
+          "value": "{\"status\":\"not_chosen_more_expensive\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "result:3",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:05.158802+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"WebSearch\\\",\\\"request_id\\\":\\\"request:3\\\",\\\"result\\\":{\\\"Lufthansa\\\":{\\\"checked_bag\\\":\\\"not in Economy Light\\\",\\\"one_way_from_eur\\\":177},\\\"SAS\\\":{\\\"checked_bag\\\":\\\"not included, purchasable 23 kg\\\",\\\"month\\\":\\\"2026-12\\\",\\\"one_way_from_eur\\\":122},\\\"nonstop_duration\\\":\\\"1h25\\\",\\\"sources\\\":[\\\"flysas.com\\\",\\\"lufthansa.com\\\",\\\"omio.com\\\"]}}}\",\"role\":\"user\"},\"data\":{\"Lufthansa\":{\"checked_bag\":\"not in Economy Light\",\"one_way_from_eur\":177},\"SAS\":{\"checked_bag\":\"not included, purchasable 23 kg\",\"month\":\"2026-12\",\"one_way_from_eur\":122},\"nonstop_duration\":\"1h25\",\"sources\":[\"flysas.com\",\"lufthansa.com\",\"omio.com\"]}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:3",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "flight:sas-fra-cph",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "flight:lh-fra-cph",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "request:4",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:05.158897+00:00",
+          "value": "{\"name\":\"verify_leg\",\"arguments\":{\"leg\":\"leg:fra-cph\",\"rule\":\"flight with checked luggage, price known\"},\"internal\":true}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "leg:fra-cph",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:4",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:4",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:05.158969+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:05.159121+00:00",
+          "value": "{\"outcome\":\"failure\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "flight:sas-fra-cph",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "leg:fra-cph",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:4",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:4",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:05.159181+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"verify_leg\\\",\\\"request_id\\\":\\\"request:4\\\",\\\"result\\\":{\\\"passed\\\":false,\\\"reason\\\":\\\"neither fare includes a checked bag and the bag fee is unknown\\\"}}}\",\"role\":\"user\"},\"data\":{\"passed\":false,\"reason\":\"neither fare includes a checked bag and the bag fee is unknown\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:4",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "leg:fra-cph",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "turn:3",
+      "type": "Turn",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:27.096066+00:00",
+          "value": "{\"index\":3,\"task_id\":\"Rail-first round trip Frankfurt-Copenhagen-Stockholm-Frankfurt, Dec 4-9 2026, under EUR 1200\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "prompt:3",
+          "qualifier": "hasPrompt"
+        },
+        {
+          "objectId": "response:3",
+          "qualifier": "hasResponse"
+        },
+        {
+          "objectId": "turn:4",
+          "qualifier": "hasNextTurn"
+        }
+      ]
+    },
+    {
+      "id": "prompt:3",
+      "type": "Prompt",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:27.096066+00:00",
+          "value": "{\"parameters\":{\"model\":\"claude-code\"},\"layout\":[\"instruction:base\",\"history:3\",\"result:3\",\"result:4\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "instruction:base",
+          "qualifier": "hasInstruction"
+        },
+        {
+          "objectId": "history:3",
+          "qualifier": "hasHistory"
+        },
+        {
+          "objectId": "result:3",
+          "qualifier": "hasActionResult"
+        },
+        {
+          "objectId": "result:4",
+          "qualifier": "hasActionResult"
+        }
+      ]
+    },
+    {
+      "id": "history:3",
+      "type": "History",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:27.096066+00:00",
+          "value": "{\"sources\":[\"response:1\",\"result:1\",\"result:2\",\"response:2\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "response:1",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:1",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:2",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:2",
+          "qualifier": "hasSourceResponse"
+        }
+      ]
+    },
+    {
+      "id": "response:3",
+      "type": "Response",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:27.096912+00:00",
+          "value": "{\"provider\":{\"status\":\"completed\",\"turn\":3},\"message\":{\"content\":\"Looked up the SAS checked-bag fee: a 23 kg bag added online on European routes costs about EUR 20-40 (third-party sources). Using the upper value, SAS FRA-CPH costs EUR 122 + 40 = 162, which passes the leg rule.\",\"role\":\"assistant\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:5",
+          "qualifier": "hasActionRequest"
+        },
+        {
+          "objectId": "request:6",
+          "qualifier": "hasActionRequest"
+        }
+      ]
+    },
+    {
+      "id": "request:5",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:27.097026+00:00",
+          "value": "{\"name\":\"WebSearch\",\"arguments\":{\"query\":\"SAS checked bag fee Europe 23kg price SAS Go Light vs SAS Go Smart\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "flight:sas-fra-cph",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:5",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:5",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:27.097100+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:27.097250+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "flight:sas-fra-cph",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:5",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:5",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:27.097318+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"WebSearch\\\",\\\"request_id\\\":\\\"request:5\\\",\\\"result\\\":{\\\"bag_23kg_online_europe_eur\\\":\\\"20-40\\\",\\\"late_or_airport_eur\\\":\\\"55-105\\\",\\\"light_fare_checked_bag\\\":\\\"0 kg\\\",\\\"sources\\\":[\\\"airlinebaggagepolicy.com\\\",\\\"baggagepolicies.com\\\",\\\"aifly.one\\\"]}}}\",\"role\":\"user\"},\"data\":{\"bag_23kg_online_europe_eur\":\"20-40\",\"late_or_airport_eur\":\"55-105\",\"light_fare_checked_bag\":\"0 kg\",\"sources\":[\"airlinebaggagepolicy.com\",\"baggagepolicies.com\",\"aifly.one\"]}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:5",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "flight:sas-fra-cph",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "request:6",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:27.097399+00:00",
+          "value": "{\"name\":\"verify_leg\",\"arguments\":{\"leg\":\"leg:fra-cph\",\"rule\":\"flight with checked luggage, price known\"},\"internal\":true}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "leg:fra-cph",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:6",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:6",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:27.097456+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:27.097711+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "flight:sas-fra-cph",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "flight:lh-fra-cph",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "leg:fra-cph",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:6",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:6",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:27.097780+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"verify_leg\\\",\\\"request_id\\\":\\\"request:6\\\",\\\"result\\\":{\\\"choice\\\":\\\"flight:sas-fra-cph\\\",\\\"passed\\\":true,\\\"total_eur\\\":162}}}\",\"role\":\"user\"},\"data\":{\"choice\":\"flight:sas-fra-cph\",\"passed\":true,\"total_eur\":162}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:6",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "leg:fra-cph",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "turn:4",
+      "type": "Turn",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:49.263127+00:00",
+          "value": "{\"index\":4,\"task_id\":\"Rail-first round trip Frankfurt-Copenhagen-Stockholm-Frankfurt, Dec 4-9 2026, under EUR 1200\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "prompt:4",
+          "qualifier": "hasPrompt"
+        },
+        {
+          "objectId": "response:4",
+          "qualifier": "hasResponse"
+        },
+        {
+          "objectId": "turn:5",
+          "qualifier": "hasNextTurn"
+        }
+      ]
+    },
+    {
+      "id": "prompt:4",
+      "type": "Prompt",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:49.263127+00:00",
+          "value": "{\"parameters\":{\"model\":\"claude-code\"},\"layout\":[\"instruction:base\",\"history:4\",\"result:5\",\"result:6\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "instruction:base",
+          "qualifier": "hasInstruction"
+        },
+        {
+          "objectId": "history:4",
+          "qualifier": "hasHistory"
+        },
+        {
+          "objectId": "result:5",
+          "qualifier": "hasActionResult"
+        },
+        {
+          "objectId": "result:6",
+          "qualifier": "hasActionResult"
+        }
+      ]
+    },
+    {
+      "id": "history:4",
+      "type": "History",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:49.263127+00:00",
+          "value": "{\"sources\":[\"response:1\",\"result:1\",\"result:2\",\"response:2\",\"result:3\",\"result:4\",\"response:3\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "response:1",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:1",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:2",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:2",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:3",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:4",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:3",
+          "qualifier": "hasSourceResponse"
+        }
+      ]
+    },
+    {
+      "id": "response:4",
+      "type": "Response",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:49.263441+00:00",
+          "value": "{\"provider\":{\"status\":\"completed\",\"turn\":4},\"message\":{\"content\":\"Searched trains Copenhagen to Stockholm. Oresundstag 1030 + SJ Snabbtag 530 leaves 07:59 and arrives 13:32 (5h33, 1 change); standard fares EUR 80-120. The leg passes the 6-hour rule, so it stays by train.\",\"role\":\"assistant\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:7",
+          "qualifier": "hasActionRequest"
+        },
+        {
+          "objectId": "request:8",
+          "qualifier": "hasActionRequest"
+        }
+      ]
+    },
+    {
+      "id": "request:7",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:49.263556+00:00",
+          "value": "{\"name\":\"WebSearch\",\"arguments\":{\"query\":\"Copenhagen to Stockholm train fastest journey time SJ price\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "leg:cph-sto",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:7",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:7",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:49.263624+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:49.263786+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "train:ot1030-sj530",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "leg:cph-sto",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:7",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "train:ot1030-sj530",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:49.263716+00:00",
+          "value": "{\"changes\":1,\"duration_min\":333,\"fare_eur\":120,\"route\":\"CPH-STO\",\"status\":\"candidate\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:16:49.263716+00:00",
+          "value": "{\"changes\":1,\"duration_min\":333,\"fare_eur\":120,\"route\":\"CPH-STO\",\"status\":\"candidate\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:16:49.264074+00:00",
+          "value": "{\"status\":\"selected\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "result:7",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:49.263857+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"WebSearch\\\",\\\"request_id\\\":\\\"request:7\\\",\\\"result\\\":{\\\"advance_fare_eur\\\":\\\"17-31\\\",\\\"sample\\\":\\\"Oresundstag 1030 + SJ Snabbtag 530, Copenhagen C 07:59 -> Stockholm C 13:32, 5h33, 1 change\\\",\\\"sources\\\":[\\\"omio.co.uk\\\",\\\"get-me-there.com\\\",\\\"swedentrains.com\\\"],\\\"standard_fare_eur\\\":\\\"80-120\\\"}}}\",\"role\":\"user\"},\"data\":{\"advance_fare_eur\":\"17-31\",\"sample\":\"Oresundstag 1030 + SJ Snabbtag 530, Copenhagen C 07:59 -> Stockholm C 13:32, 5h33, 1 change\",\"sources\":[\"omio.co.uk\",\"get-me-there.com\",\"swedentrains.com\"],\"standard_fare_eur\":\"80-120\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:7",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "leg:cph-sto",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "train:ot1030-sj530",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "request:8",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:49.263951+00:00",
+          "value": "{\"name\":\"verify_leg\",\"arguments\":{\"leg\":\"leg:cph-sto\",\"rule\":\"train if fastest <= 6h\"},\"internal\":true}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "leg:cph-sto",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:8",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:8",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:49.264012+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:49.264202+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "train:ot1030-sj530",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "leg:cph-sto",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:8",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:8",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:16:49.264259+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"verify_leg\\\",\\\"request_id\\\":\\\"request:8\\\",\\\"result\\\":{\\\"cost_eur_upper\\\":120,\\\"duration\\\":\\\"5h33\\\",\\\"passed\\\":true}}}\",\"role\":\"user\"},\"data\":{\"cost_eur_upper\":120,\"duration\":\"5h33\",\"passed\":true}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:8",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "leg:cph-sto",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "turn:5",
+      "type": "Turn",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:06.520896+00:00",
+          "value": "{\"index\":5,\"task_id\":\"Rail-first round trip Frankfurt-Copenhagen-Stockholm-Frankfurt, Dec 4-9 2026, under EUR 1200\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "prompt:5",
+          "qualifier": "hasPrompt"
+        },
+        {
+          "objectId": "response:5",
+          "qualifier": "hasResponse"
+        },
+        {
+          "objectId": "turn:6",
+          "qualifier": "hasNextTurn"
+        }
+      ]
+    },
+    {
+      "id": "prompt:5",
+      "type": "Prompt",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:06.520896+00:00",
+          "value": "{\"parameters\":{\"model\":\"claude-code\"},\"layout\":[\"instruction:base\",\"history:5\",\"result:7\",\"result:8\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "instruction:base",
+          "qualifier": "hasInstruction"
+        },
+        {
+          "objectId": "history:5",
+          "qualifier": "hasHistory"
+        },
+        {
+          "objectId": "result:7",
+          "qualifier": "hasActionResult"
+        },
+        {
+          "objectId": "result:8",
+          "qualifier": "hasActionResult"
+        }
+      ]
+    },
+    {
+      "id": "history:5",
+      "type": "History",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:06.520896+00:00",
+          "value": "{\"sources\":[\"response:1\",\"result:1\",\"result:2\",\"response:2\",\"result:3\",\"result:4\",\"response:3\",\"result:5\",\"result:6\",\"response:4\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "response:1",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:1",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:2",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:2",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:3",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:4",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:3",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:5",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:6",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:4",
+          "qualifier": "hasSourceResponse"
+        }
+      ]
+    },
+    {
+      "id": "response:5",
+      "type": "Response",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:06.521209+00:00",
+          "value": "{\"provider\":{\"status\":\"completed\",\"turn\":5},\"message\":{\"content\":\"Searched trains Stockholm to Frankfurt. The fastest is SJ X2 + R 1075 + ECE 397 + ICE 777 at 14h51 with 3 changes, far above 6 hours, so this leg must fly.\",\"role\":\"assistant\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:9",
+          "qualifier": "hasActionRequest"
+        },
+        {
+          "objectId": "request:10",
+          "qualifier": "hasActionRequest"
+        }
+      ]
+    },
+    {
+      "id": "request:9",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:06.521317+00:00",
+          "value": "{\"name\":\"WebSearch\",\"arguments\":{\"query\":\"Stockholm to Frankfurt train fastest journey time hours\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "leg:sto-fra",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:9",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:9",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:06.521383+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:06.521533+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "train:sjx2-ice777",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "leg:sto-fra",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:9",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "train:sjx2-ice777",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:06.521471+00:00",
+          "value": "{\"changes\":3,\"duration_min\":891,\"price_from_eur\":57,\"route\":\"STO-FRA\",\"status\":\"candidate\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:17:06.521471+00:00",
+          "value": "{\"changes\":3,\"duration_min\":891,\"price_from_eur\":57,\"route\":\"STO-FRA\",\"status\":\"candidate\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:17:06.521790+00:00",
+          "value": "{\"status\":\"rejected_over_6h\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "result:9",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:06.521595+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"WebSearch\\\",\\\"request_id\\\":\\\"request:9\\\",\\\"result\\\":{\\\"fastest\\\":\\\"SJ X2 + R 1075 + ECE 397 + ICE 777, Stockholm C 08:23 -> Frankfurt Hbf 23:14, 14h51, 3 changes\\\",\\\"price_from_eur\\\":57,\\\"sources\\\":[\\\"omio.co.uk\\\",\\\"thetrainline.com\\\",\\\"raileurope.com\\\"]}}}\",\"role\":\"user\"},\"data\":{\"fastest\":\"SJ X2 + R 1075 + ECE 397 + ICE 777, Stockholm C 08:23 -> Frankfurt Hbf 23:14, 14h51, 3 changes\",\"price_from_eur\":57,\"sources\":[\"omio.co.uk\",\"thetrainline.com\",\"raileurope.com\"]}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:9",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "leg:sto-fra",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "train:sjx2-ice777",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "request:10",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:06.521674+00:00",
+          "value": "{\"name\":\"verify_leg\",\"arguments\":{\"leg\":\"leg:sto-fra\",\"rule\":\"train if fastest <= 6h\"},\"internal\":true}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "leg:sto-fra",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:10",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:10",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:06.521731+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:06.521905+00:00",
+          "value": "{\"outcome\":\"failure\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "train:sjx2-ice777",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "leg:sto-fra",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:10",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:10",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:06.521984+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"verify_leg\\\",\\\"request_id\\\":\\\"request:10\\\",\\\"result\\\":{\\\"passed\\\":false,\\\"reason\\\":\\\"fastest train 14h51 > 6h; fly with checked luggage instead\\\"}}}\",\"role\":\"user\"},\"data\":{\"passed\":false,\"reason\":\"fastest train 14h51 > 6h; fly with checked luggage instead\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:10",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "leg:sto-fra",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "turn:6",
+      "type": "Turn",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:27.601560+00:00",
+          "value": "{\"index\":6,\"task_id\":\"Rail-first round trip Frankfurt-Copenhagen-Stockholm-Frankfurt, Dec 4-9 2026, under EUR 1200\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "prompt:6",
+          "qualifier": "hasPrompt"
+        },
+        {
+          "objectId": "response:6",
+          "qualifier": "hasResponse"
+        },
+        {
+          "objectId": "turn:7",
+          "qualifier": "hasNextTurn"
+        }
+      ]
+    },
+    {
+      "id": "prompt:6",
+      "type": "Prompt",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:27.601560+00:00",
+          "value": "{\"parameters\":{\"model\":\"claude-code\"},\"layout\":[\"instruction:base\",\"history:6\",\"result:9\",\"result:10\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "instruction:base",
+          "qualifier": "hasInstruction"
+        },
+        {
+          "objectId": "history:6",
+          "qualifier": "hasHistory"
+        },
+        {
+          "objectId": "result:9",
+          "qualifier": "hasActionResult"
+        },
+        {
+          "objectId": "result:10",
+          "qualifier": "hasActionResult"
+        }
+      ]
+    },
+    {
+      "id": "history:6",
+      "type": "History",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:27.601560+00:00",
+          "value": "{\"sources\":[\"response:1\",\"result:1\",\"result:2\",\"response:2\",\"result:3\",\"result:4\",\"response:3\",\"result:5\",\"result:6\",\"response:4\",\"result:7\",\"result:8\",\"response:5\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "response:1",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:1",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:2",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:2",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:3",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:4",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:3",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:5",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:6",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:4",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:7",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:8",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:5",
+          "qualifier": "hasSourceResponse"
+        }
+      ]
+    },
+    {
+      "id": "response:6",
+      "type": "Response",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:27.601868+00:00",
+          "value": "{\"provider\":{\"status\":\"completed\",\"turn\":6},\"message\":{\"content\":\"Searched ARN-FRA flights. SAS from EUR 110 one-way in December; Lufthansa direct LH811/LH805/LH807 at about USD 226. Adding the SAS checked-bag fee already found (EUR 40), SAS costs EUR 150 and passes the leg rule.\",\"role\":\"assistant\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:11",
+          "qualifier": "hasActionRequest"
+        },
+        {
+          "objectId": "request:12",
+          "qualifier": "hasActionRequest"
+        }
+      ]
+    },
+    {
+      "id": "request:11",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:27.601986+00:00",
+          "value": "{\"name\":\"WebSearch\",\"arguments\":{\"query\":\"Stockholm Arlanda to Frankfurt flight December 2026 one-way price Lufthansa SAS checked baggage\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "leg:sto-fra",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:11",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:11",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:27.602056+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:27.602283+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "flight:sas-arn-fra",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "flight:lh805-arn-fra",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "leg:sto-fra",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:11",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "flight:sas-arn-fra",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:27.602153+00:00",
+          "value": "{\"carrier\":\"SAS\",\"checked_bag_included\":false,\"fare_eur\":110,\"route\":\"ARN-FRA\",\"status\":\"candidate\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:17:27.602153+00:00",
+          "value": "{\"carrier\":\"SAS\",\"checked_bag_included\":false,\"fare_eur\":110,\"route\":\"ARN-FRA\",\"status\":\"candidate\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:17:27.602566+00:00",
+          "value": "{\"bag_fee_eur\":40,\"status\":\"selected\",\"total_eur\":150}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "flight:lh805-arn-fra",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:27.602223+00:00",
+          "value": "{\"carrier\":\"Lufthansa\",\"fare_usd\":226,\"route\":\"ARN-FRA\",\"status\":\"candidate\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:17:27.602223+00:00",
+          "value": "{\"carrier\":\"Lufthansa\",\"fare_usd\":226,\"route\":\"ARN-FRA\",\"status\":\"candidate\"}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:17:27.602640+00:00",
+          "value": "{\"status\":\"not_chosen_more_expensive\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "result:11",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:27.602353+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"WebSearch\\\",\\\"request_id\\\":\\\"request:11\\\",\\\"result\\\":{\\\"Lufthansa\\\":{\\\"duration\\\":\\\"2h15\\\",\\\"flights\\\":[\\\"LH811 06:30\\\",\\\"LH805 17:10\\\",\\\"LH807 19:15\\\"],\\\"one_way_usd\\\":226},\\\"SAS\\\":{\\\"month\\\":\\\"2026-12\\\",\\\"one_way_from_eur\\\":110},\\\"sources\\\":[\\\"flysas.com\\\",\\\"omio.com\\\",\\\"lufthansa.com\\\"]}}}\",\"role\":\"user\"},\"data\":{\"Lufthansa\":{\"duration\":\"2h15\",\"flights\":[\"LH811 06:30\",\"LH805 17:10\",\"LH807 19:15\"],\"one_way_usd\":226},\"SAS\":{\"month\":\"2026-12\",\"one_way_from_eur\":110},\"sources\":[\"flysas.com\",\"omio.com\",\"lufthansa.com\"]}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:11",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "flight:sas-arn-fra",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "flight:lh805-arn-fra",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "request:12",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:27.602439+00:00",
+          "value": "{\"name\":\"verify_leg\",\"arguments\":{\"leg\":\"leg:sto-fra\",\"rule\":\"flight with checked luggage, price known\"},\"internal\":true}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "leg:sto-fra",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:12",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:12",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:27.602503+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:27.602738+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "flight:sas-arn-fra",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "flight:lh805-arn-fra",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "leg:sto-fra",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:12",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:12",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:27.602796+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"verify_leg\\\",\\\"request_id\\\":\\\"request:12\\\",\\\"result\\\":{\\\"bag_fee_source\\\":\\\"SAS bag fee from turn 3\\\",\\\"choice\\\":\\\"flight:sas-arn-fra\\\",\\\"passed\\\":true,\\\"total_eur\\\":150}}}\",\"role\":\"user\"},\"data\":{\"bag_fee_source\":\"SAS bag fee from turn 3\",\"choice\":\"flight:sas-arn-fra\",\"passed\":true,\"total_eur\":150}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:12",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "leg:sto-fra",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "turn:7",
+      "type": "Turn",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:53.523364+00:00",
+          "value": "{\"index\":7,\"task_id\":\"Rail-first round trip Frankfurt-Copenhagen-Stockholm-Frankfurt, Dec 4-9 2026, under EUR 1200\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "prompt:7",
+          "qualifier": "hasPrompt"
+        },
+        {
+          "objectId": "response:7",
+          "qualifier": "hasResponse"
+        },
+        {
+          "objectId": "turn:8",
+          "qualifier": "hasNextTurn"
+        }
+      ]
+    },
+    {
+      "id": "prompt:7",
+      "type": "Prompt",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:53.523364+00:00",
+          "value": "{\"parameters\":{\"model\":\"claude-code\"},\"layout\":[\"instruction:base\",\"history:7\",\"result:11\",\"result:12\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "instruction:base",
+          "qualifier": "hasInstruction"
+        },
+        {
+          "objectId": "history:7",
+          "qualifier": "hasHistory"
+        },
+        {
+          "objectId": "result:11",
+          "qualifier": "hasActionResult"
+        },
+        {
+          "objectId": "result:12",
+          "qualifier": "hasActionResult"
+        }
+      ]
+    },
+    {
+      "id": "history:7",
+      "type": "History",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:53.523364+00:00",
+          "value": "{\"sources\":[\"response:1\",\"result:1\",\"result:2\",\"response:2\",\"result:3\",\"result:4\",\"response:3\",\"result:5\",\"result:6\",\"response:4\",\"result:7\",\"result:8\",\"response:5\",\"result:9\",\"result:10\",\"response:6\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "response:1",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:1",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:2",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:2",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:3",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:4",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:3",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:5",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:6",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:4",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:7",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:8",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:5",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:9",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:10",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:6",
+          "qualifier": "hasSourceResponse"
+        }
+      ]
+    },
+    {
+      "id": "response:7",
+      "type": "Response",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:53.523686+00:00",
+          "value": "{\"provider\":{\"status\":\"completed\",\"turn\":7},\"message\":{\"content\":\"Searched Copenhagen hotels near the central station. Hotel Motel One Kobenhavn (USD 90, free cancellation) has no stated distance to the station, so it fails the 1 km check; Cabinn City (5-minute walk, about USD 74, free cancellation on Wotif) passes. Prices are USD, which I treat as an upper bound in EUR.\",\"role\":\"assistant\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:13",
+          "qualifier": "hasActionRequest"
+        },
+        {
+          "objectId": "request:14",
+          "qualifier": "hasActionRequest"
+        },
+        {
+          "objectId": "request:15",
+          "qualifier": "hasActionRequest"
+        }
+      ]
+    },
+    {
+      "id": "request:13",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:53.523822+00:00",
+          "value": "{\"name\":\"WebSearch\",\"arguments\":{\"query\":\"hotel near Copenhagen Central Station free cancellation price per night December\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:fra-cph-sto",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:13",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:13",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:53.523889+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:53.524145+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "hotel:motel-one-cph",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "hotel:cabinn-city",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "hotel:profil-plaza-cph",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "trip:fra-cph-sto",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:13",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "hotel:motel-one-cph",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:53.523960+00:00",
+          "value": "{\"city\":\"Copenhagen\",\"distance_km\":null,\"free_cancellation\":true,\"status\":\"candidate\",\"usd_per_night\":90}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:17:53.523960+00:00",
+          "value": "{\"city\":\"Copenhagen\",\"distance_km\":null,\"free_cancellation\":true,\"status\":\"candidate\",\"usd_per_night\":90}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:17:53.524451+00:00",
+          "value": "{\"status\":\"rejected_distance_unverified\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "hotel:cabinn-city",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:53.524023+00:00",
+          "value": "{\"city\":\"Copenhagen\",\"distance\":\"5 min walk\",\"free_cancellation\":true,\"status\":\"candidate\",\"usd_per_night\":74}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:17:53.524023+00:00",
+          "value": "{\"city\":\"Copenhagen\",\"distance\":\"5 min walk\",\"free_cancellation\":true,\"status\":\"candidate\",\"usd_per_night\":74}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:17:53.524811+00:00",
+          "value": "{\"cost_upper_eur\":148,\"nights\":2,\"status\":\"selected\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "hotel:profil-plaza-cph",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:53.524084+00:00",
+          "value": "{\"city\":\"Copenhagen\",\"distance\":\"opposite station\",\"free_cancellation\":\"unknown\",\"status\":\"candidate\",\"usd_per_night\":150.11}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:17:53.524084+00:00",
+          "value": "{\"city\":\"Copenhagen\",\"distance\":\"opposite station\",\"free_cancellation\":\"unknown\",\"status\":\"candidate\",\"usd_per_night\":150.11}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:17:53.524876+00:00",
+          "value": "{\"status\":\"not_chosen_more_expensive\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "result:13",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:53.524222+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"WebSearch\\\",\\\"request_id\\\":\\\"request:13\\\",\\\"result\\\":{\\\"Cabinn City\\\":{\\\"distance\\\":\\\"5 minute walk\\\",\\\"free_cancellation\\\":true,\\\"usd_per_night\\\":74},\\\"Hotel Motel One Kobenhavn\\\":{\\\"distance\\\":\\\"not stated\\\",\\\"free_cancellation\\\":true,\\\"usd_per_night\\\":90},\\\"ProfilHotels Copenhagen Plaza\\\":{\\\"distance\\\":\\\"opposite the station\\\",\\\"usd_per_night\\\":150.11},\\\"sources\\\":[\\\"google.com/travel/hotels\\\",\\\"wotif.com\\\",\\\"booking.com\\\"]}}}\",\"role\":\"user\"},\"data\":{\"Cabinn City\":{\"distance\":\"5 minute walk\",\"free_cancellation\":true,\"usd_per_night\":74},\"Hotel Motel One Kobenhavn\":{\"distance\":\"not stated\",\"free_cancellation\":true,\"usd_per_night\":90},\"ProfilHotels Copenhagen Plaza\":{\"distance\":\"opposite the station\",\"usd_per_night\":150.11},\"sources\":[\"google.com/travel/hotels\",\"wotif.com\",\"booking.com\"]}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:13",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "hotel:motel-one-cph",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "hotel:cabinn-city",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "hotel:profil-plaza-cph",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "request:14",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:53.524324+00:00",
+          "value": "{\"name\":\"verify_hotel\",\"arguments\":{\"hotel\":\"hotel:motel-one-cph\",\"rules\":[\"free cancellation\",\"<= 1 km from central station\"]},\"internal\":true}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "hotel:motel-one-cph",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:14",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:14",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:53.524388+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:53.524511+00:00",
+          "value": "{\"outcome\":\"failure\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "hotel:motel-one-cph",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:14",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:14",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:53.524578+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"verify_hotel\\\",\\\"request_id\\\":\\\"request:14\\\",\\\"result\\\":{\\\"passed\\\":false,\\\"reason\\\":\\\"distance to the central station not stated in the results\\\"}}}\",\"role\":\"user\"},\"data\":{\"passed\":false,\"reason\":\"distance to the central station not stated in the results\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:14",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "hotel:motel-one-cph",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "request:15",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:53.524655+00:00",
+          "value": "{\"name\":\"verify_hotel\",\"arguments\":{\"hotel\":\"hotel:cabinn-city\",\"rules\":[\"free cancellation\",\"<= 1 km from central station\"]},\"internal\":true}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "hotel:cabinn-city",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:15",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:15",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:53.524738+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:53.524941+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "hotel:cabinn-city",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "hotel:profil-plaza-cph",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "trip:fra-cph-sto",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:15",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:15",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:17:53.525017+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"verify_hotel\\\",\\\"request_id\\\":\\\"request:15\\\",\\\"result\\\":{\\\"cost_upper_eur\\\":148,\\\"nights\\\":2,\\\"passed\\\":true}}}\",\"role\":\"user\"},\"data\":{\"cost_upper_eur\":148,\"nights\":2,\"passed\":true}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:15",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "hotel:cabinn-city",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "turn:8",
+      "type": "Turn",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:18:25.301139+00:00",
+          "value": "{\"index\":8,\"task_id\":\"Rail-first round trip Frankfurt-Copenhagen-Stockholm-Frankfurt, Dec 4-9 2026, under EUR 1200\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "prompt:8",
+          "qualifier": "hasPrompt"
+        },
+        {
+          "objectId": "response:8",
+          "qualifier": "hasResponse"
+        },
+        {
+          "objectId": "turn:9",
+          "qualifier": "hasNextTurn"
+        }
+      ]
+    },
+    {
+      "id": "prompt:8",
+      "type": "Prompt",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:18:25.301139+00:00",
+          "value": "{\"parameters\":{\"model\":\"claude-code\"},\"layout\":[\"instruction:base\",\"history:8\",\"result:13\",\"result:14\",\"result:15\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "instruction:base",
+          "qualifier": "hasInstruction"
+        },
+        {
+          "objectId": "history:8",
+          "qualifier": "hasHistory"
+        },
+        {
+          "objectId": "result:13",
+          "qualifier": "hasActionResult"
+        },
+        {
+          "objectId": "result:14",
+          "qualifier": "hasActionResult"
+        },
+        {
+          "objectId": "result:15",
+          "qualifier": "hasActionResult"
+        }
+      ]
+    },
+    {
+      "id": "history:8",
+      "type": "History",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:18:25.301139+00:00",
+          "value": "{\"sources\":[\"response:1\",\"result:1\",\"result:2\",\"response:2\",\"result:3\",\"result:4\",\"response:3\",\"result:5\",\"result:6\",\"response:4\",\"result:7\",\"result:8\",\"response:5\",\"result:9\",\"result:10\",\"response:6\",\"result:11\",\"result:12\",\"response:7\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "response:1",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:1",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:2",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:2",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:3",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:4",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:3",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:5",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:6",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:4",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:7",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:8",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:5",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:9",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:10",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:6",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:11",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:12",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:7",
+          "qualifier": "hasSourceResponse"
+        }
+      ]
+    },
+    {
+      "id": "response:8",
+      "type": "Response",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:18:25.301512+00:00",
+          "value": "{\"provider\":{\"status\":\"completed\",\"turn\":8},\"message\":{\"content\":\"Searched Stockholm hotels near the central station. The cheapest, Rygerfjord Hotel & Hostel (USD 55, free cancellation), has no stated distance and fails the 1 km check; Scandic Go Upplandsgatan 4 (680 m, USD 101, free cancellation) passes.\",\"role\":\"assistant\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:16",
+          "qualifier": "hasActionRequest"
+        },
+        {
+          "objectId": "request:17",
+          "qualifier": "hasActionRequest"
+        },
+        {
+          "objectId": "request:18",
+          "qualifier": "hasActionRequest"
+        }
+      ]
+    },
+    {
+      "id": "request:16",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:18:25.301620+00:00",
+          "value": "{\"name\":\"WebSearch\",\"arguments\":{\"query\":\"hotel near Stockholm Central Station free cancellation price per night\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:fra-cph-sto",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:16",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:16",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:18:25.301682+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:18:25.301911+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "hotel:rygerfjord-sto",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "hotel:scandic-go-upplandsgatan",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "hotel:comfort-xpress-sto",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "trip:fra-cph-sto",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:16",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "hotel:rygerfjord-sto",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:18:25.301750+00:00",
+          "value": "{\"city\":\"Stockholm\",\"distance_km\":null,\"free_cancellation\":true,\"status\":\"candidate\",\"usd_per_night\":55}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:18:25.301750+00:00",
+          "value": "{\"city\":\"Stockholm\",\"distance_km\":null,\"free_cancellation\":true,\"status\":\"candidate\",\"usd_per_night\":55}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:18:25.302198+00:00",
+          "value": "{\"status\":\"rejected_distance_unverified\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "hotel:scandic-go-upplandsgatan",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:18:25.301808+00:00",
+          "value": "{\"city\":\"Stockholm\",\"distance_km\":0.68,\"free_cancellation\":true,\"status\":\"candidate\",\"usd_per_night\":101}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:18:25.301808+00:00",
+          "value": "{\"city\":\"Stockholm\",\"distance_km\":0.68,\"free_cancellation\":true,\"status\":\"candidate\",\"usd_per_night\":101}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:18:25.302486+00:00",
+          "value": "{\"cost_upper_eur\":303,\"nights\":3,\"status\":\"selected\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "hotel:comfort-xpress-sto",
+      "type": "ProcessObject",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:18:25.301861+00:00",
+          "value": "{\"city\":\"Stockholm\",\"distance_km\":0.84,\"free_cancellation\":true,\"status\":\"candidate\",\"usd_per_night\":116}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:18:25.301861+00:00",
+          "value": "{\"city\":\"Stockholm\",\"distance_km\":0.84,\"free_cancellation\":true,\"status\":\"candidate\",\"usd_per_night\":116}"
+        },
+        {
+          "name": "state",
+          "time": "2026-11-13T11:18:25.302539+00:00",
+          "value": "{\"status\":\"not_chosen_more_expensive\"}"
+        }
+      ],
+      "relationships": []
+    },
+    {
+      "id": "result:16",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:18:25.301996+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"WebSearch\\\",\\\"request_id\\\":\\\"request:16\\\",\\\"result\\\":{\\\"Comfort Hotel Xpress Stockholm Central\\\":{\\\"distance_km_from_center\\\":0.84,\\\"free_cancellation\\\":true,\\\"usd_per_night\\\":\\\"77-116\\\"},\\\"Rygerfjord Hotel & Hostel\\\":{\\\"distance\\\":\\\"not stated\\\",\\\"free_cancellation\\\":true,\\\"usd_per_night\\\":55},\\\"Scandic Go Upplandsgatan 4\\\":{\\\"distance_m\\\":680,\\\"free_cancellation\\\":true,\\\"usd_per_night\\\":101},\\\"sources\\\":[\\\"skyscanner.co.in\\\",\\\"hotels.com\\\",\\\"wotif.com\\\"]}}}\",\"role\":\"user\"},\"data\":{\"Comfort Hotel Xpress Stockholm Central\":{\"distance_km_from_center\":0.84,\"free_cancellation\":true,\"usd_per_night\":\"77-116\"},\"Rygerfjord Hotel & Hostel\":{\"distance\":\"not stated\",\"free_cancellation\":true,\"usd_per_night\":55},\"Scandic Go Upplandsgatan 4\":{\"distance_m\":680,\"free_cancellation\":true,\"usd_per_night\":101},\"sources\":[\"skyscanner.co.in\",\"hotels.com\",\"wotif.com\"]}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:16",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "hotel:rygerfjord-sto",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "hotel:scandic-go-upplandsgatan",
+          "qualifier": "describesObject"
+        },
+        {
+          "objectId": "hotel:comfort-xpress-sto",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "request:17",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:18:25.302085+00:00",
+          "value": "{\"name\":\"verify_hotel\",\"arguments\":{\"hotel\":\"hotel:rygerfjord-sto\",\"rules\":[\"free cancellation\",\"<= 1 km from central station\"]},\"internal\":true}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "hotel:rygerfjord-sto",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:17",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:17",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:18:25.302143+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:18:25.302250+00:00",
+          "value": "{\"outcome\":\"failure\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "hotel:rygerfjord-sto",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:17",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:17",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:18:25.302306+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"verify_hotel\\\",\\\"request_id\\\":\\\"request:17\\\",\\\"result\\\":{\\\"passed\\\":false,\\\"reason\\\":\\\"distance to the central station not stated in the results\\\"}}}\",\"role\":\"user\"},\"data\":{\"passed\":false,\"reason\":\"distance to the central station not stated in the results\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:17",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "hotel:rygerfjord-sto",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "request:18",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:18:25.302374+00:00",
+          "value": "{\"name\":\"verify_hotel\",\"arguments\":{\"hotel\":\"hotel:scandic-go-upplandsgatan\",\"rules\":[\"free cancellation\",\"<= 1 km from central station\"]},\"internal\":true}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "hotel:scandic-go-upplandsgatan",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:18",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:18",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:18:25.302431+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:18:25.302589+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "hotel:scandic-go-upplandsgatan",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "hotel:comfort-xpress-sto",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "trip:fra-cph-sto",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:18",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:18",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:18:25.302650+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"verify_hotel\\\",\\\"request_id\\\":\\\"request:18\\\",\\\"result\\\":{\\\"cost_upper_eur\\\":303,\\\"nights\\\":3,\\\"passed\\\":true}}}\",\"role\":\"user\"},\"data\":{\"cost_upper_eur\":303,\"nights\":3,\"passed\":true}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:18",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "hotel:scandic-go-upplandsgatan",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "turn:9",
+      "type": "Turn",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:18:25.351860+00:00",
+          "value": "{\"index\":9,\"task_id\":\"Rail-first round trip Frankfurt-Copenhagen-Stockholm-Frankfurt, Dec 4-9 2026, under EUR 1200\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "prompt:9",
+          "qualifier": "hasPrompt"
+        },
+        {
+          "objectId": "response:9",
+          "qualifier": "hasResponse"
+        }
+      ]
+    },
+    {
+      "id": "prompt:9",
+      "type": "Prompt",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:18:25.351860+00:00",
+          "value": "{\"parameters\":{\"model\":\"claude-code\"},\"layout\":[\"instruction:base\",\"history:9\",\"result:16\",\"result:17\",\"result:18\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "instruction:base",
+          "qualifier": "hasInstruction"
+        },
+        {
+          "objectId": "history:9",
+          "qualifier": "hasHistory"
+        },
+        {
+          "objectId": "result:16",
+          "qualifier": "hasActionResult"
+        },
+        {
+          "objectId": "result:17",
+          "qualifier": "hasActionResult"
+        },
+        {
+          "objectId": "result:18",
+          "qualifier": "hasActionResult"
+        }
+      ]
+    },
+    {
+      "id": "history:9",
+      "type": "History",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:18:25.351860+00:00",
+          "value": "{\"sources\":[\"response:1\",\"result:1\",\"result:2\",\"response:2\",\"result:3\",\"result:4\",\"response:3\",\"result:5\",\"result:6\",\"response:4\",\"result:7\",\"result:8\",\"response:5\",\"result:9\",\"result:10\",\"response:6\",\"result:11\",\"result:12\",\"response:7\",\"result:13\",\"result:14\",\"result:15\",\"response:8\"]}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "response:1",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:1",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:2",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:2",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:3",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:4",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:3",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:5",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:6",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:4",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:7",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:8",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:5",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:9",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:10",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:6",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:11",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:12",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:7",
+          "qualifier": "hasSourceResponse"
+        },
+        {
+          "objectId": "result:13",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:14",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "result:15",
+          "qualifier": "hasSourceActionResult"
+        },
+        {
+          "objectId": "response:8",
+          "qualifier": "hasSourceResponse"
+        }
+      ]
+    },
+    {
+      "id": "response:9",
+      "type": "Response",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:18:25.352279+00:00",
+          "value": "{\"provider\":{\"status\":\"completed\",\"turn\":9},\"message\":{\"content\":\"Checked the budget and committed the plan (no booking): SAS FRA-CPH EUR 162, train CPH-STO EUR 120, SAS ARN-FRA EUR 150, Cabinn City 2 nights EUR 148, Scandic Go 3 nights EUR 303; total EUR 883 of EUR 1,200 (hotel USD prices counted 1:1 as an upper bound).\",\"role\":\"assistant\"}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:19",
+          "qualifier": "hasActionRequest"
+        },
+        {
+          "objectId": "request:20",
+          "qualifier": "hasActionRequest"
+        }
+      ]
+    },
+    {
+      "id": "request:19",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:18:25.352411+00:00",
+          "value": "{\"name\":\"verify_budget\",\"arguments\":{\"budget_eur\":1200,\"trip\":\"trip:fra-cph-sto\"},\"internal\":true}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:fra-cph-sto",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:19",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:19",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:18:25.352481+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:18:25.352619+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:fra-cph-sto",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "leg:fra-cph",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "leg:cph-sto",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "leg:sto-fra",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "hotel:cabinn-city",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "hotel:scandic-go-upplandsgatan",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:19",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:19",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:18:25.352706+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"verify_budget\\\",\\\"request_id\\\":\\\"request:19\\\",\\\"result\\\":{\\\"items_eur\\\":{\\\"hotel:cabinn-city\\\":148,\\\"hotel:scandic-go-upplandsgatan\\\":303,\\\"leg:cph-sto\\\":120,\\\"leg:fra-cph\\\":162,\\\"leg:sto-fra\\\":150},\\\"passed\\\":true,\\\"total_eur\\\":883}}}\",\"role\":\"user\"},\"data\":{\"items_eur\":{\"hotel:cabinn-city\":148,\"hotel:scandic-go-upplandsgatan\":303,\"leg:cph-sto\":120,\"leg:fra-cph\":162,\"leg:sto-fra\":150},\"passed\":true,\"total_eur\":883}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:19",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "trip:fra-cph-sto",
+          "qualifier": "describesObject"
+        }
+      ]
+    },
+    {
+      "id": "request:20",
+      "type": "ActionRequest",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:18:25.352797+00:00",
+          "value": "{\"name\":\"commit_plan\",\"arguments\":{\"booking\":false,\"trip\":\"trip:fra-cph-sto\"},\"internal\":true}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:fra-cph-sto",
+          "qualifier": "targetsObject"
+        },
+        {
+          "objectId": "execution:20",
+          "qualifier": "hasExecution"
+        }
+      ]
+    },
+    {
+      "id": "execution:20",
+      "type": "Execution",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:18:25.352860+00:00",
+          "value": "{\"outcome\":\"pending\"}"
+        },
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:18:25.353148+00:00",
+          "value": "{\"outcome\":\"success\"}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "trip:fra-cph-sto",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "leg:fra-cph",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "leg:cph-sto",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "leg:sto-fra",
+          "qualifier": "actOn"
+        },
+        {
+          "objectId": "result:20",
+          "qualifier": "producesResult"
+        }
+      ]
+    },
+    {
+      "id": "result:20",
+      "type": "ActionResult",
+      "attributes": [
+        {
+          "name": "payload",
+          "time": "2026-11-13T11:18:25.353221+00:00",
+          "value": "{\"message\":{\"content\":\"{\\\"tool_result\\\":{\\\"name\\\":\\\"commit_plan\\\",\\\"request_id\\\":\\\"request:20\\\",\\\"result\\\":{\\\"plan\\\":[\\\"2026-12-04 SAS FRA-CPH\\\",\\\"2026-12-04..06 Cabinn City\\\",\\\"2026-12-06 Oresundstag 1030 + SJ 530 CPH-STO\\\",\\\"2026-12-06..09 Scandic Go Upplandsgatan 4\\\",\\\"2026-12-09 SAS ARN-FRA\\\"],\\\"total_eur\\\":883}}}\",\"role\":\"user\"},\"data\":{\"plan\":[\"2026-12-04 SAS FRA-CPH\",\"2026-12-04..06 Cabinn City\",\"2026-12-06 Oresundstag 1030 + SJ 530 CPH-STO\",\"2026-12-06..09 Scandic Go Upplandsgatan 4\",\"2026-12-09 SAS ARN-FRA\"],\"total_eur\":883}}"
+        }
+      ],
+      "relationships": [
+        {
+          "objectId": "request:20",
+          "qualifier": "resultOf"
+        },
+        {
+          "objectId": "trip:fra-cph-sto",
+          "qualifier": "describesObject"
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "event:1",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-13T11:15:20.066482+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "trip:fra-cph-sto",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:2",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-13T11:15:20.066482+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "leg:fra-cph",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:3",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-13T11:15:20.066482+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "leg:cph-sto",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:4",
+      "type": "ProcessObject.Registered",
+      "time": "2026-11-13T11:15:20.066482+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "leg:sto-fra",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:5",
+      "type": "Instruction.Registered",
+      "time": "2026-11-13T11:15:20.066666+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "instruction:base",
+          "qualifier": "subject"
+        }
+      ]
+    },
+    {
+      "id": "event:6",
+      "type": "Turn.Started",
+      "time": "2026-11-13T11:15:42.342177+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:1",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:7",
+      "type": "Prompt.Submitted",
+      "time": "2026-11-13T11:15:42.342177+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "prompt:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:1",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:8",
+      "type": "Response.Received",
+      "time": "2026-11-13T11:15:42.342488+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "response:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:1",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:9",
+      "type": "Turn.Finished",
+      "time": "2026-11-13T11:15:42.342488+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "response:1",
+          "qualifier": "response"
+        }
+      ]
+    },
+    {
+      "id": "event:10",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-13T11:15:42.342608+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:1",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:11",
+      "type": "Execution.Started",
+      "time": "2026-11-13T11:15:42.342675+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:1",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:12",
+      "type": "ProcessObject.Created",
+      "time": "2026-11-13T11:15:42.342770+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "train:ice772-ece394",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:1",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:13",
+      "type": "Execution.Finished",
+      "time": "2026-11-13T11:15:42.342833+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:1",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "train:ice772-ece394",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "leg:fra-cph",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:14",
+      "type": "ActionResult.Received",
+      "time": "2026-11-13T11:15:42.342900+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:1",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:1",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:1",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:15",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-13T11:15:42.342988+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:1",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:16",
+      "type": "Execution.Started",
+      "time": "2026-11-13T11:15:42.343050+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:2",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:17",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-13T11:15:42.343112+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "train:ice772-ece394",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:2",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:18",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-13T11:15:42.343171+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "leg:fra-cph",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:2",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:19",
+      "type": "Execution.Finished",
+      "time": "2026-11-13T11:15:42.343240+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:2",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "train:ice772-ece394",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "leg:fra-cph",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:20",
+      "type": "ActionResult.Received",
+      "time": "2026-11-13T11:15:42.343312+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:2",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:2",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:21",
+      "type": "History.Assembled",
+      "time": "2026-11-13T11:16:05.157991+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "history:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:2",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:22",
+      "type": "Turn.Started",
+      "time": "2026-11-13T11:16:05.157991+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:2",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:23",
+      "type": "Prompt.Submitted",
+      "time": "2026-11-13T11:16:05.157991+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "prompt:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:2",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:24",
+      "type": "Response.Received",
+      "time": "2026-11-13T11:16:05.158322+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "response:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:2",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:25",
+      "type": "Turn.Finished",
+      "time": "2026-11-13T11:16:05.158322+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:2",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "response:2",
+          "qualifier": "response"
+        }
+      ]
+    },
+    {
+      "id": "event:26",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-13T11:16:05.158434+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:2",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:27",
+      "type": "Execution.Started",
+      "time": "2026-11-13T11:16:05.158501+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:3",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:28",
+      "type": "ProcessObject.Created",
+      "time": "2026-11-13T11:16:05.158572+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:sas-fra-cph",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:3",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:29",
+      "type": "ProcessObject.Created",
+      "time": "2026-11-13T11:16:05.158655+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:lh-fra-cph",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:3",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:30",
+      "type": "Execution.Finished",
+      "time": "2026-11-13T11:16:05.158723+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:3",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "flight:sas-fra-cph",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "flight:lh-fra-cph",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "leg:fra-cph",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:31",
+      "type": "ActionResult.Received",
+      "time": "2026-11-13T11:16:05.158802+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:3",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:3",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:32",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-13T11:16:05.158897+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:4",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:2",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:33",
+      "type": "Execution.Started",
+      "time": "2026-11-13T11:16:05.158969+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:4",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:4",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:34",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-13T11:16:05.159037+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:sas-fra-cph",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:4",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:35",
+      "type": "Execution.Finished",
+      "time": "2026-11-13T11:16:05.159121+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:4",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:4",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "flight:sas-fra-cph",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "leg:fra-cph",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:36",
+      "type": "ActionResult.Received",
+      "time": "2026-11-13T11:16:05.159181+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:4",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:4",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:4",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:37",
+      "type": "History.Assembled",
+      "time": "2026-11-13T11:16:27.096066+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "history:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:3",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:38",
+      "type": "Turn.Started",
+      "time": "2026-11-13T11:16:27.096066+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:3",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:39",
+      "type": "Prompt.Submitted",
+      "time": "2026-11-13T11:16:27.096066+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "prompt:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:3",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:40",
+      "type": "Response.Received",
+      "time": "2026-11-13T11:16:27.096912+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "response:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:3",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:41",
+      "type": "Turn.Finished",
+      "time": "2026-11-13T11:16:27.096912+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:3",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "response:3",
+          "qualifier": "response"
+        }
+      ]
+    },
+    {
+      "id": "event:42",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-13T11:16:27.097026+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:5",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:3",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:43",
+      "type": "Execution.Started",
+      "time": "2026-11-13T11:16:27.097100+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:5",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:5",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:44",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-13T11:16:27.097190+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:sas-fra-cph",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:5",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:45",
+      "type": "Execution.Finished",
+      "time": "2026-11-13T11:16:27.097250+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:5",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:5",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "flight:sas-fra-cph",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:46",
+      "type": "ActionResult.Received",
+      "time": "2026-11-13T11:16:27.097318+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:5",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:5",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:5",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:47",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-13T11:16:27.097399+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:6",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:3",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:48",
+      "type": "Execution.Started",
+      "time": "2026-11-13T11:16:27.097456+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:6",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:6",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:49",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-13T11:16:27.097535+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:sas-fra-cph",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:6",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:50",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-13T11:16:27.097587+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:lh-fra-cph",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:6",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:51",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-13T11:16:27.097639+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "leg:fra-cph",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:6",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:52",
+      "type": "Execution.Finished",
+      "time": "2026-11-13T11:16:27.097711+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:6",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:6",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "flight:sas-fra-cph",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "flight:lh-fra-cph",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "leg:fra-cph",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:53",
+      "type": "ActionResult.Received",
+      "time": "2026-11-13T11:16:27.097780+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:6",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:6",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:6",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:54",
+      "type": "History.Assembled",
+      "time": "2026-11-13T11:16:49.263127+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "history:4",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:4",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:55",
+      "type": "Turn.Started",
+      "time": "2026-11-13T11:16:49.263127+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:4",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:4",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:56",
+      "type": "Prompt.Submitted",
+      "time": "2026-11-13T11:16:49.263127+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "prompt:4",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:4",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:57",
+      "type": "Response.Received",
+      "time": "2026-11-13T11:16:49.263441+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "response:4",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:4",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:58",
+      "type": "Turn.Finished",
+      "time": "2026-11-13T11:16:49.263441+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:4",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "response:4",
+          "qualifier": "response"
+        }
+      ]
+    },
+    {
+      "id": "event:59",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-13T11:16:49.263556+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:7",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:4",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:60",
+      "type": "Execution.Started",
+      "time": "2026-11-13T11:16:49.263624+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:7",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:7",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:61",
+      "type": "ProcessObject.Created",
+      "time": "2026-11-13T11:16:49.263716+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "train:ot1030-sj530",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:7",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:62",
+      "type": "Execution.Finished",
+      "time": "2026-11-13T11:16:49.263786+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:7",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:7",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "train:ot1030-sj530",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "leg:cph-sto",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:63",
+      "type": "ActionResult.Received",
+      "time": "2026-11-13T11:16:49.263857+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:7",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:7",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:7",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:64",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-13T11:16:49.263951+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:8",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:4",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:65",
+      "type": "Execution.Started",
+      "time": "2026-11-13T11:16:49.264012+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:8",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:8",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:66",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-13T11:16:49.264074+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "train:ot1030-sj530",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:8",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:67",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-13T11:16:49.264130+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "leg:cph-sto",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:8",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:68",
+      "type": "Execution.Finished",
+      "time": "2026-11-13T11:16:49.264202+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:8",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:8",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "train:ot1030-sj530",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "leg:cph-sto",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:69",
+      "type": "ActionResult.Received",
+      "time": "2026-11-13T11:16:49.264259+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:8",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:8",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:8",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:70",
+      "type": "History.Assembled",
+      "time": "2026-11-13T11:17:06.520896+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "history:5",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:5",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:71",
+      "type": "Turn.Started",
+      "time": "2026-11-13T11:17:06.520896+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:5",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:5",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:72",
+      "type": "Prompt.Submitted",
+      "time": "2026-11-13T11:17:06.520896+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "prompt:5",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:5",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:73",
+      "type": "Response.Received",
+      "time": "2026-11-13T11:17:06.521209+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "response:5",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:5",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:74",
+      "type": "Turn.Finished",
+      "time": "2026-11-13T11:17:06.521209+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:5",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "response:5",
+          "qualifier": "response"
+        }
+      ]
+    },
+    {
+      "id": "event:75",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-13T11:17:06.521317+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:9",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:5",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:76",
+      "type": "Execution.Started",
+      "time": "2026-11-13T11:17:06.521383+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:9",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:9",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:77",
+      "type": "ProcessObject.Created",
+      "time": "2026-11-13T11:17:06.521471+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "train:sjx2-ice777",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:9",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:78",
+      "type": "Execution.Finished",
+      "time": "2026-11-13T11:17:06.521533+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:9",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:9",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "train:sjx2-ice777",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "leg:sto-fra",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:79",
+      "type": "ActionResult.Received",
+      "time": "2026-11-13T11:17:06.521595+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:9",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:9",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:9",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:80",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-13T11:17:06.521674+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:10",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:5",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:81",
+      "type": "Execution.Started",
+      "time": "2026-11-13T11:17:06.521731+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:10",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:10",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:82",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-13T11:17:06.521790+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "train:sjx2-ice777",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:10",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:83",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-13T11:17:06.521845+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "leg:sto-fra",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:10",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:84",
+      "type": "Execution.Finished",
+      "time": "2026-11-13T11:17:06.521905+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:10",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:10",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "train:sjx2-ice777",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "leg:sto-fra",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:85",
+      "type": "ActionResult.Received",
+      "time": "2026-11-13T11:17:06.521984+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:10",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:10",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:10",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:86",
+      "type": "History.Assembled",
+      "time": "2026-11-13T11:17:27.601560+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "history:6",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:6",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:87",
+      "type": "Turn.Started",
+      "time": "2026-11-13T11:17:27.601560+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:6",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:6",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:88",
+      "type": "Prompt.Submitted",
+      "time": "2026-11-13T11:17:27.601560+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "prompt:6",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:6",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:89",
+      "type": "Response.Received",
+      "time": "2026-11-13T11:17:27.601868+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "response:6",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:6",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:90",
+      "type": "Turn.Finished",
+      "time": "2026-11-13T11:17:27.601868+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:6",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "response:6",
+          "qualifier": "response"
+        }
+      ]
+    },
+    {
+      "id": "event:91",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-13T11:17:27.601986+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:11",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:6",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:92",
+      "type": "Execution.Started",
+      "time": "2026-11-13T11:17:27.602056+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:11",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:11",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:93",
+      "type": "ProcessObject.Created",
+      "time": "2026-11-13T11:17:27.602153+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:sas-arn-fra",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:11",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:94",
+      "type": "ProcessObject.Created",
+      "time": "2026-11-13T11:17:27.602223+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:lh805-arn-fra",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:11",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:95",
+      "type": "Execution.Finished",
+      "time": "2026-11-13T11:17:27.602283+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:11",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:11",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "flight:sas-arn-fra",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "flight:lh805-arn-fra",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "leg:sto-fra",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:96",
+      "type": "ActionResult.Received",
+      "time": "2026-11-13T11:17:27.602353+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:11",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:11",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:11",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:97",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-13T11:17:27.602439+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:12",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:6",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:98",
+      "type": "Execution.Started",
+      "time": "2026-11-13T11:17:27.602503+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:12",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:12",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:99",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-13T11:17:27.602566+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:sas-arn-fra",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:12",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:100",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-13T11:17:27.602640+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "flight:lh805-arn-fra",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:12",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:101",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-13T11:17:27.602689+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "leg:sto-fra",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:12",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:102",
+      "type": "Execution.Finished",
+      "time": "2026-11-13T11:17:27.602738+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:12",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:12",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "flight:sas-arn-fra",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "flight:lh805-arn-fra",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "leg:sto-fra",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:103",
+      "type": "ActionResult.Received",
+      "time": "2026-11-13T11:17:27.602796+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:12",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:12",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:12",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:104",
+      "type": "History.Assembled",
+      "time": "2026-11-13T11:17:53.523364+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "history:7",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:7",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:105",
+      "type": "Turn.Started",
+      "time": "2026-11-13T11:17:53.523364+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:7",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:7",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:106",
+      "type": "Prompt.Submitted",
+      "time": "2026-11-13T11:17:53.523364+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "prompt:7",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:7",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:107",
+      "type": "Response.Received",
+      "time": "2026-11-13T11:17:53.523686+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "response:7",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:7",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:108",
+      "type": "Turn.Finished",
+      "time": "2026-11-13T11:17:53.523686+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:7",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "response:7",
+          "qualifier": "response"
+        }
+      ]
+    },
+    {
+      "id": "event:109",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-13T11:17:53.523822+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:13",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:7",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:110",
+      "type": "Execution.Started",
+      "time": "2026-11-13T11:17:53.523889+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:13",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:13",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:111",
+      "type": "ProcessObject.Created",
+      "time": "2026-11-13T11:17:53.523960+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:motel-one-cph",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:13",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:112",
+      "type": "ProcessObject.Created",
+      "time": "2026-11-13T11:17:53.524023+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:cabinn-city",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:13",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:113",
+      "type": "ProcessObject.Created",
+      "time": "2026-11-13T11:17:53.524084+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:profil-plaza-cph",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:13",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:114",
+      "type": "Execution.Finished",
+      "time": "2026-11-13T11:17:53.524145+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:13",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:13",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "hotel:motel-one-cph",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "hotel:cabinn-city",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "hotel:profil-plaza-cph",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "trip:fra-cph-sto",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:115",
+      "type": "ActionResult.Received",
+      "time": "2026-11-13T11:17:53.524222+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:13",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:13",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:13",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:116",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-13T11:17:53.524324+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:14",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:7",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:117",
+      "type": "Execution.Started",
+      "time": "2026-11-13T11:17:53.524388+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:14",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:14",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:118",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-13T11:17:53.524451+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:motel-one-cph",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:14",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:119",
+      "type": "Execution.Finished",
+      "time": "2026-11-13T11:17:53.524511+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:14",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:14",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "hotel:motel-one-cph",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:120",
+      "type": "ActionResult.Received",
+      "time": "2026-11-13T11:17:53.524578+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:14",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:14",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:14",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:121",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-13T11:17:53.524655+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:15",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:7",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:122",
+      "type": "Execution.Started",
+      "time": "2026-11-13T11:17:53.524738+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:15",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:15",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:123",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-13T11:17:53.524811+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:cabinn-city",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:15",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:124",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-13T11:17:53.524876+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:profil-plaza-cph",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:15",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:125",
+      "type": "Execution.Finished",
+      "time": "2026-11-13T11:17:53.524941+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:15",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:15",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "hotel:cabinn-city",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "hotel:profil-plaza-cph",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "trip:fra-cph-sto",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:126",
+      "type": "ActionResult.Received",
+      "time": "2026-11-13T11:17:53.525017+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:15",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:15",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:15",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:127",
+      "type": "History.Assembled",
+      "time": "2026-11-13T11:18:25.301139+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "history:8",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:8",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:128",
+      "type": "Turn.Started",
+      "time": "2026-11-13T11:18:25.301139+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:8",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:8",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:129",
+      "type": "Prompt.Submitted",
+      "time": "2026-11-13T11:18:25.301139+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "prompt:8",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:8",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:130",
+      "type": "Response.Received",
+      "time": "2026-11-13T11:18:25.301512+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "response:8",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:8",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:131",
+      "type": "Turn.Finished",
+      "time": "2026-11-13T11:18:25.301512+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:8",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "response:8",
+          "qualifier": "response"
+        }
+      ]
+    },
+    {
+      "id": "event:132",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-13T11:18:25.301620+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:16",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:8",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:133",
+      "type": "Execution.Started",
+      "time": "2026-11-13T11:18:25.301682+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:16",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:16",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:134",
+      "type": "ProcessObject.Created",
+      "time": "2026-11-13T11:18:25.301750+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:rygerfjord-sto",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:16",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:135",
+      "type": "ProcessObject.Created",
+      "time": "2026-11-13T11:18:25.301808+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:scandic-go-upplandsgatan",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:16",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:136",
+      "type": "ProcessObject.Created",
+      "time": "2026-11-13T11:18:25.301861+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:comfort-xpress-sto",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:16",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:137",
+      "type": "Execution.Finished",
+      "time": "2026-11-13T11:18:25.301911+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:16",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:16",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "hotel:rygerfjord-sto",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "hotel:scandic-go-upplandsgatan",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "hotel:comfort-xpress-sto",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "trip:fra-cph-sto",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:138",
+      "type": "ActionResult.Received",
+      "time": "2026-11-13T11:18:25.301996+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:16",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:16",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:16",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:139",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-13T11:18:25.302085+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:17",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:8",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:140",
+      "type": "Execution.Started",
+      "time": "2026-11-13T11:18:25.302143+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:17",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:17",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:141",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-13T11:18:25.302198+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:rygerfjord-sto",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:17",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:142",
+      "type": "Execution.Finished",
+      "time": "2026-11-13T11:18:25.302250+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:17",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:17",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "hotel:rygerfjord-sto",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:143",
+      "type": "ActionResult.Received",
+      "time": "2026-11-13T11:18:25.302306+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:17",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:17",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:17",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:144",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-13T11:18:25.302374+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:18",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:8",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:145",
+      "type": "Execution.Started",
+      "time": "2026-11-13T11:18:25.302431+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:18",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:18",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:146",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-13T11:18:25.302486+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:scandic-go-upplandsgatan",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:18",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:147",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-13T11:18:25.302539+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "hotel:comfort-xpress-sto",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:18",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:148",
+      "type": "Execution.Finished",
+      "time": "2026-11-13T11:18:25.302589+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:18",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:18",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "hotel:scandic-go-upplandsgatan",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "hotel:comfort-xpress-sto",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "trip:fra-cph-sto",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:149",
+      "type": "ActionResult.Received",
+      "time": "2026-11-13T11:18:25.302650+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:18",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:18",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:18",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:150",
+      "type": "History.Assembled",
+      "time": "2026-11-13T11:18:25.351860+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "history:9",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:9",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:151",
+      "type": "Turn.Started",
+      "time": "2026-11-13T11:18:25.351860+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:9",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "prompt:9",
+          "qualifier": "prompt"
+        }
+      ]
+    },
+    {
+      "id": "event:152",
+      "type": "Prompt.Submitted",
+      "time": "2026-11-13T11:18:25.351860+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "prompt:9",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:9",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:153",
+      "type": "Response.Received",
+      "time": "2026-11-13T11:18:25.352279+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "response:9",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:9",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:154",
+      "type": "Turn.Finished",
+      "time": "2026-11-13T11:18:25.352279+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "turn:9",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "response:9",
+          "qualifier": "response"
+        }
+      ]
+    },
+    {
+      "id": "event:155",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-13T11:18:25.352411+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:19",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:9",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:156",
+      "type": "Execution.Started",
+      "time": "2026-11-13T11:18:25.352481+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:19",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:19",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:157",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-13T11:18:25.352558+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "trip:fra-cph-sto",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:19",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:158",
+      "type": "Execution.Finished",
+      "time": "2026-11-13T11:18:25.352619+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:19",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:19",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "trip:fra-cph-sto",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "leg:fra-cph",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "leg:cph-sto",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "leg:sto-fra",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "hotel:cabinn-city",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "hotel:scandic-go-upplandsgatan",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:159",
+      "type": "ActionResult.Received",
+      "time": "2026-11-13T11:18:25.352706+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:19",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:19",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:19",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:160",
+      "type": "ActionRequest.Dispatched",
+      "time": "2026-11-13T11:18:25.352797+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "request:20",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "turn:9",
+          "qualifier": "turn"
+        }
+      ]
+    },
+    {
+      "id": "event:161",
+      "type": "Execution.Started",
+      "time": "2026-11-13T11:18:25.352860+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:20",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:20",
+          "qualifier": "request"
+        }
+      ]
+    },
+    {
+      "id": "event:162",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-13T11:18:25.352927+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "trip:fra-cph-sto",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:20",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:163",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-13T11:18:25.352980+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "leg:fra-cph",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:20",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:164",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-13T11:18:25.353039+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "leg:cph-sto",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:20",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:165",
+      "type": "ProcessObject.StateChanged",
+      "time": "2026-11-13T11:18:25.353092+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "leg:sto-fra",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:20",
+          "qualifier": "execution"
+        }
+      ]
+    },
+    {
+      "id": "event:166",
+      "type": "Execution.Finished",
+      "time": "2026-11-13T11:18:25.353148+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "execution:20",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "request:20",
+          "qualifier": "request"
+        },
+        {
+          "objectId": "trip:fra-cph-sto",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "leg:fra-cph",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "leg:cph-sto",
+          "qualifier": "process_object"
+        },
+        {
+          "objectId": "leg:sto-fra",
+          "qualifier": "process_object"
+        }
+      ]
+    },
+    {
+      "id": "event:167",
+      "type": "ActionResult.Received",
+      "time": "2026-11-13T11:18:25.353221+00:00",
+      "attributes": [],
+      "relationships": [
+        {
+          "objectId": "result:20",
+          "qualifier": "subject"
+        },
+        {
+          "objectId": "execution:20",
+          "qualifier": "execution"
+        },
+        {
+          "objectId": "request:20",
+          "qualifier": "request"
+        }
+      ]
+    }
+  ]
+}

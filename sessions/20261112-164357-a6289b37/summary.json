@@ -1,0 +1,109 @@
+{
+  "total_objects": 57,
+  "total_events": 84,
+  "total_o2o": 121,
+  "total_e2o": 189,
+  "classes": {
+    "Turn": 6,
+    "ProcessObject": 9,
+    "Prompt": 6,
+    "Response": 6,
+    "Instruction": 1,
+    "History": 5,
+    "ActionRequest": 8,
+    "Execution": 8,
+    "ActionResult": 8
+  },
+  "relations": {
+    "hasPrompt": 6,
+    "hasResponse": 6,
+    "hasNextTurn": 5,
+    "hasInstruction": 6,
+    "hasHistory": 5,
+    "hasActionResult": 5,
+    "hasActionRequest": 8,
+    "hasExecution": 8,
+    "targetsObject": 8,
+    "actOn": 23,
+    "producesResult": 8,
+    "resultOf": 8,
+    "describesObject": 0,
+    "hasSourcePrompt": 0,
+    "hasSourceResponse": 15,
+    "hasSourceActionResult": 10
+  },
+  "events": {
+    "ActionRequest.Dispatched": 8,
+    "ActionResult.Received": 8,
+    "Execution.Finished": 8,
+    "Execution.Started": 8,
+    "History.Assembled": 5,
+    "Instruction.Registered": 1,
+    "ProcessObject.Registered": 9,
+    "ProcessObject.StateChanged": 13,
+    "Prompt.Submitted": 6,
+    "Response.Received": 6,
+    "Turn.Finished": 6,
+    "Turn.Started": 6
+  },
+  "baseline_events": {
+    "Turn.Started": 6,
+    "Turn.Finished": 6,
+    "Turn.Failed": 0,
+    "ProcessObject.Created": 0,
+    "ProcessObject.StateChanged": 13,
+    "Prompt.Submitted": 6,
+    "Response.Received": 6,
+    "Instruction.Registered": 1,
+    "History.Assembled": 5,
+    "ActionRequest.Dispatched": 8,
+    "ActionRequest.Rejected": 0,
+    "Execution.Started": 8,
+    "Execution.Finished": 8,
+    "ActionResult.Received": 8
+  },
+  "extension_events": {
+    "ProcessObject.Registered": 9
+  },
+  "e2o_roles": {
+    "execution": 21,
+    "process_object": 23,
+    "prompt": 11,
+    "request": 24,
+    "response": 6,
+    "subject": 84,
+    "turn": 20
+  },
+  "coverage": {
+    "classes_covered": 9,
+    "classes_total": 9,
+    "relations_covered": 14,
+    "relations_total": 16,
+    "baseline_events_covered": 11,
+    "baseline_events_total": 14,
+    "extension_event_types": 1
+  },
+  "capture_completeness": "complete",
+  "partial_prompts": false,
+  "session": {
+    "session_id": "20261112-164357-a6289b37",
+    "task": "Plan FRA-CPH round trip Dec 4-7 2026 under EUR 800 with checked luggage and free-cancellation hotel (plan only, no booking)",
+    "agent": "claude-code",
+    "profile": "travel",
+    "mode": "mcp",
+    "capture_completeness": "complete",
+    "status": "completed",
+    "started_at": "2026-11-12T16:43:57.784430+00:00",
+    "finished_at": "2026-11-12T16:45:26.759126+00:00",
+    "directory": "sessions/20261112-164357-a6289b37",
+    "recorded_via": "mcp-stdio",
+    "validation_passed": true,
+    "provenance": {
+      "recorded_via": "mcp-stdio",
+      "turns": 6,
+      "turn_span_seconds": 68.204,
+      "live": true,
+      "warnings": []
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "schema": {
+    "passed": true,
+    "schema": "ocel20-schema-json.json",
+    "schema_sha256": "0c08b6b23b7cc6219840ce5a2a5288da4d28589649b5a2784997beefccb00a5f",
+    "errors": []
+  },
+  "ontology": {
+    "passed": true,
+    "counts": {
+      "turns": 9,
+      "requests": 20,
+      "executions": 20,
+      "results": 20,
+      "final_objects": 17,
+      "events": 167
+    }
+  }
+}
