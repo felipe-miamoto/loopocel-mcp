@@ -466,7 +466,7 @@ class Scene:
 
         px = 0.72  # one canvas unit is 1/100 inch = 0.72 pt
         with plt.rc_context(
-            {"font.family": "sans-serif", "font.sans-serif": MPL_FONTS, "text.antialiased": True}
+            {"font.family": MPL_FONTS, "text.antialiased": True}
         ):
             fig = plt.figure(figsize=(self.width / 100, self.height / 100), dpi=100)
             ax = fig.add_axes((0, 0, 1, 1))
@@ -889,7 +889,7 @@ def _draw_graph(
     for n in real:
         stroke, fill, pill = node_style[n.key]
         top = n.y - n.h / 2
-        scene.rect(n.x, top, n.w, n.h, fill=fill, stroke=stroke, sw=1.8, r=n.h / 2 if pill else 9)
+        scene.rect(n.x, top, n.w, n.h, fill=fill, stroke=stroke, sw=1.8, r=min(n.h, n.w) / 2 if pill else 9)
         lines = node_lines[n.key]
         total = sum(s * 1.28 for _, s, _, _ in lines)
         cy = n.y - total / 2
