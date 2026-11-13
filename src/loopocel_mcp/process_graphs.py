@@ -23,6 +23,7 @@ import importlib.util
 import json
 import logging
 import math
+import re
 from pathlib import Path
 from typing import Any
 from xml.sax.saxutils import escape
@@ -198,6 +199,7 @@ def _action_steps(log: dict[str, Any]) -> list[dict[str, Any]]:
                 "request_id": rid,
                 "internal": bool(request.get("internal")),
                 "tool": name,
+                "arguments": request.get("arguments") if isinstance(request.get("arguments"), dict) else {},
                 "outcome": outcome,
                 "failed": outcome not in SUCCESS_OUTCOMES,
                 "touched": touched,
@@ -233,12 +235,60 @@ def _object_kind_stats(logs: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
     }
 
 
-def _activity_label(step: dict[str, Any]) -> str:
+SHELL_ARG_KEYS = ("command", "CommandLine", "cmd")
+SHELL_SKIP = {"cd", "export", "set", "source", ".", "true", "sleep", "echo", "printf", "pushd", "popd"}
+SHELL_SUBCOMMAND = {"git", "gh", "uv", "uvx", "npm", "pnpm", "yarn", "docker", "kubectl", "cargo", "go", "claude", "pip"}
+
+
+def _shell_program(command: str) -> str | None:
+    """Program a shell command runs, e.g. 'git commit' or 'python3 -m unittest'."""
+    for segment in re.split(r"&&|\|\||;|\n", command):
+        tokens = segment.split("|")[0].strip().strip("\"'").split()
+        while tokens and re.match(r"^[A-Za-z_][A-Za-z0-9_]*=", tokens[0]):
+            tokens = tokens[1:]
+        if not tokens:
+            continue
+        prog = tokens[0].strip("\"'(").rsplit("/", 1)[-1]
+        if not prog or prog in SHELL_SKIP:
+            continue
+        rest: list[str] = []
+        args = iter(tokens[1:])
+        for t in args:
+            if t in ("-C", "-c", "--git-dir", "--work-tree", "--directory", "--project"):
+                next(args, None)  # option that takes a value
+            elif not t.startswith("-"):
+                rest.append(t)
+        if prog.startswith("python") and "-m" in tokens:
+            idx = tokens.index("-m")
+            if idx + 1 < len(tokens):
+                return f"{prog} -m {tokens[idx + 1]}"
+        if prog in SHELL_SUBCOMMAND and rest:
+            return f"{prog} {rest[0].strip(chr(34) + chr(39))}"
+        return prog
+    return None
+
+
+def _activity_base(step: dict[str, Any], split_by_kinds: set[str]) -> str:
+    tool = step["tool"]
+    for key in SHELL_ARG_KEYS:
+        cmd = step["arguments"].get(key)
+        if isinstance(cmd, str) and cmd.strip():
+            prog = _shell_program(cmd)
+            if prog:
+                return f"{tool} · {prog}"
+    if tool in split_by_kinds and step["changed"]:
+        kinds = ", ".join(sorted(dict.fromkeys(_kind(c) for c in step["changed"])))
+        return f"{tool} → {kinds}"
+    return tool
+
+
+def _activity_label(step: dict[str, Any], split_by_kinds: set[str]) -> str:
+    base = _activity_base(step, split_by_kinds)
     if step["outcome"] == "rejected":
-        return f"{step['tool']} [rejected]"
+        return f"{base} [rejected]"
     if step["failed"]:
-        return f"{step['tool']} [failed]"
-    return step["tool"]
+        return f"{base} [failed]"
+    return base
 
 
 def discover_semantic_process(logs: list[dict[str, Any]]) -> dict[str, Any]:
@@ -248,15 +298,24 @@ def discover_semantic_process(logs: list[dict[str, Any]]) -> dict[str, Any]:
     traces: list[list[str]] = []
     start, end = "Task start", "Task end"
 
-    for log in logs:
-        steps = _action_steps(log)
+    all_steps = [_action_steps(log) for log in logs]
+    # A generic tool (search_web, call_api ...) used on different kinds of business
+    # objects is split into one activity per kind it changes.
+    signatures: dict[str, set[tuple[str, ...]]] = defaultdict(set)
+    for steps in all_steps:
+        for st in steps:
+            if st["changed"]:
+                signatures[st["tool"]].add(tuple(sorted({_kind(c) for c in st["changed"]})))
+    split_by_kinds = {tool for tool, sigs in signatures.items() if len(sigs) > 1}
+
+    for steps in all_steps:
         trace = [start]
         for st in steps:
-            key = _activity_label(st)
+            key = _activity_label(st, split_by_kinds)
             node = nodes.setdefault(
                 key,
                 {
-                    "tool": st["tool"],
+                    "tool": key.split(" [", 1)[0],
                     "count": 0,
                     "failed": st["failed"],
                     "internal": st["internal"],

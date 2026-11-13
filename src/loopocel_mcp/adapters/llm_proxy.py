@@ -7,12 +7,13 @@ import hashlib
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 from pathlib import Path
+import sys
 import threading
 from typing import Any
 from urllib.error import HTTPError
 from urllib.request import ProxyHandler, Request, build_opener
 
-from ..capture import Capture, canonical
+from ..capture import Capture, canonical, write_json
 from ..extractor import ProcessObjectExtractor
 
 
@@ -48,8 +49,13 @@ class LLMRecordingRecorder:
             rid = f"response:{idx}"
 
             is_anthropic = "/v1/messages" in path or "anthropic_version" in request_body or isinstance(request_body.get("system"), (str, list))
-            messages = list(request_body.get("messages") or [])
-            system_content = request_body.get("system")
+            if "messages" not in request_body and "input" in request_body:
+                # OpenAI Responses API: `instructions` + `input` items.
+                messages = self._responses_input_to_messages(request_body.get("input"))
+                system_content = request_body.get("instructions")
+            else:
+                messages = list(request_body.get("messages") or [])
+                system_content = request_body.get("system")
 
             base_msgs: list[dict[str, Any]] = []
             if system_content is not None:
@@ -121,7 +127,7 @@ class LLMRecordingRecorder:
             history_sources = [s for s in self.prior_sources if s not in admitted_results]
             history = {"id": f"history:{idx}", "sources": history_sources} if history_sources else None
             layout = [iid] + ([history["id"]] if history else []) + admitted_results
-            parameters = {k: v for k, v in request_body.items() if k not in ("messages", "system")}
+            parameters = {k: v for k, v in request_body.items() if k not in ("messages", "system", "input", "instructions")}
 
             self.cap.turn_start(
                 tid,
@@ -153,6 +159,22 @@ class LLMRecordingRecorder:
 
             self.previous_turn = tid
             return {"turn_id": tid, "prompt_id": pid, "response_id": rid, "tool_calls": len(tool_calls)}
+
+    @staticmethod
+    def _responses_input_to_messages(items: Any) -> list[dict[str, Any]]:
+        if isinstance(items, str):
+            return [{"role": "user", "content": items}]
+        out: list[dict[str, Any]] = []
+        for item in items or ():
+            if not isinstance(item, dict):
+                continue
+            itype = item.get("type")
+            if itype == "function_call_output":
+                out.append({"role": "tool", "tool_call_id": item.get("call_id"), "content": item.get("output")})
+            elif item.get("role") in ("user", "system", "developer", "assistant"):
+                role = "system" if item["role"] == "developer" else item["role"]
+                out.append({"role": role, "content": item.get("content")})
+        return out
 
     @staticmethod
     def _has_tool_result(message: dict[str, Any]) -> bool:
@@ -196,6 +218,26 @@ class LLMRecordingRecorder:
         is_anthropic: bool,
     ) -> tuple[dict[str, Any], list[tuple[str, str, dict[str, Any]]]]:
         calls: list[tuple[str, str, dict[str, Any]]] = []
+        if isinstance(response_body.get("output"), list):
+            # OpenAI Responses API: `output` holds message and function_call items.
+            texts: list[Any] = []
+            for idx, item in enumerate(response_body["output"], 1):
+                if not isinstance(item, dict):
+                    continue
+                if item.get("type") == "function_call":
+                    raw_args = item.get("arguments", {})
+                    if isinstance(raw_args, str):
+                        try:
+                            raw_args = json.loads(raw_args)
+                        except json.JSONDecodeError:
+                            raw_args = {"raw": raw_args}
+                    cid = item.get("call_id") or item.get("id") or f"call_{idx}"
+                    calls.append((cid, item.get("name", "tool"), raw_args if isinstance(raw_args, dict) else {}))
+                elif item.get("type") == "message":
+                    texts.extend(
+                        c.get("text", "") for c in item.get("content") or () if isinstance(c, dict)
+                    )
+            return {"role": "assistant", "content": "".join(str(t) for t in texts)}, calls
         if is_anthropic or "content" in response_body and "choices" not in response_body:
             content = response_body.get("content", [])
             msg = {"role": response_body.get("role", "assistant"), "content": deepcopy(content)}
@@ -242,6 +284,11 @@ def reassemble_sse_response(raw_sse: str, *, is_anthropic: bool = False) -> dict
 
     if not events:
         return None
+
+    # OpenAI Responses API streams end with the complete response object.
+    for ev in reversed(events):
+        if ev.get("type") == "response.completed" and isinstance(ev.get("response"), dict):
+            return ev["response"]
 
     # Detect Anthropic SSE format
     if is_anthropic or any(e.get("type") in ("message_start", "content_block_start", "content_block_delta") for e in events):
@@ -346,58 +393,66 @@ class LLMProxyServer:
         self.host = host
         self.port = port
         self._httpd: ThreadingHTTPServer | None = None
+        self.exchanges = 0
         self._thread: threading.Thread | None = None
 
     def start(self) -> str:
         parent = self
 
         class Handler(BaseHTTPRequestHandler):
-            def do_POST(self) -> None:  # noqa: N802
+            def _forward(self, method: str) -> None:
                 length = int(self.headers.get("Content-Length", "0"))
-                raw_req = self.rfile.read(length) if length > 0 else b"{}"
+                raw_req = self.rfile.read(length) if length > 0 else b""
                 headers = {
                     k: v
                     for k, v in self.headers.items()
-                    if k.lower() not in ("host", "content-length", "accept-encoding")
+                    if k.lower() not in ("host", "content-length", "accept-encoding", "connection")
                 }
                 headers["Accept-Encoding"] = "identity"
                 upstream_url = parent.upstream_base_url + self.path
-                req = Request(upstream_url, data=raw_req, headers=headers, method="POST")
+                req = Request(upstream_url, data=raw_req if method == "POST" else None, headers=headers, method=method)
                 try:
-                    with build_opener(ProxyHandler({})).open(req, timeout=120) as resp:
-                        status = resp.status
-                        resp_headers = list(resp.headers.items())
-                        raw_resp = resp.read()
+                    resp = build_opener(ProxyHandler({})).open(req, timeout=600)
+                    status = resp.status
                 except HTTPError as exc:
+                    resp = exc
                     status = exc.code
-                    resp_headers = list(exc.headers.items()) if exc.headers else []
-                    raw_resp = exc.read()
-
-                try:
-                    req_json = json.loads(raw_req.decode("utf-8"))
-                    if isinstance(req_json, dict) and status == 200:
-                        text_resp = raw_resp.decode("utf-8", errors="replace")
-                        content_type = dict((k.lower(), v) for k, v in resp_headers).get("content-type", "")
-                        resp_json: dict[str, Any] | None = None
-                        if "text/event-stream" in content_type.lower() or text_resp.lstrip().startswith(("event:", "data:")):
-                            is_anth = "/v1/messages" in self.path or "anthropic_version" in req_json
-                            resp_json = reassemble_sse_response(text_resp, is_anthropic=is_anth)
-                        else:
-                            parsed = json.loads(text_resp)
-                            if isinstance(parsed, dict):
-                                resp_json = parsed
-                        if isinstance(resp_json, dict):
-                            parent.recorder.record_exchange(self.path, req_json, resp_json)
-                except Exception:
-                    pass
+                resp_headers = list(resp.headers.items()) if resp.headers else []
+                content_type = dict((k.lower(), v) for k, v in resp_headers).get("content-type", "")
+                streaming = "text/event-stream" in content_type.lower()
 
                 self.send_response(status)
                 for hk, hv in resp_headers:
-                    if hk.lower() not in ("transfer-encoding", "content-encoding", "content-length"):
+                    if hk.lower() not in ("transfer-encoding", "content-encoding", "content-length", "connection"):
                         self.send_header(hk, hv)
-                self.send_header("Content-Length", str(len(raw_resp)))
-                self.end_headers()
-                self.wfile.write(raw_resp)
+                if streaming:
+                    # Pass events through as they arrive; the body ends when the connection closes.
+                    self.send_header("Connection", "close")
+                    self.end_headers()
+                    chunks: list[bytes] = []
+                    while True:
+                        chunk = resp.read1(65536) if hasattr(resp, "read1") else resp.read(65536)
+                        if not chunk:
+                            break
+                        chunks.append(chunk)
+                        self.wfile.write(chunk)
+                        self.wfile.flush()
+                    raw_resp = b"".join(chunks)
+                    self.close_connection = True
+                else:
+                    raw_resp = resp.read()
+                    self.send_header("Content-Length", str(len(raw_resp)))
+                    self.end_headers()
+                    self.wfile.write(raw_resp)
+
+                if method == "POST" and status == 200:
+                    parent.record(self.path, raw_req, raw_resp, streaming)
+
+            def do_POST(self) -> None:  # noqa: N802
+                self._forward("POST")
+
+            def do_GET(self) -> None:  # noqa: N802
+                self._forward("GET")
 
             def log_message(self, format: str, *args: Any) -> None:  # noqa: A002
                 return
@@ -408,9 +463,60 @@ class LLMProxyServer:
         self._thread.start()
         return f"http://{self.host}:{self.port}"
 
+    def record(self, path: str, raw_req: bytes, raw_resp: bytes, streaming: bool) -> None:
+        try:
+            req_json = json.loads(raw_req.decode("utf-8"))
+            if not isinstance(req_json, dict):
+                return
+            text_resp = raw_resp.decode("utf-8", errors="replace")
+            if streaming or text_resp.lstrip().startswith(("event:", "data:")):
+                is_anth = "/v1/messages" in path or "anthropic_version" in req_json
+                resp_json = reassemble_sse_response(text_resp, is_anthropic=is_anth)
+            else:
+                resp_json = json.loads(text_resp)
+            if isinstance(resp_json, dict):
+                self.recorder.record_exchange(path, req_json, resp_json)
+                self.exchanges += 1
+        except Exception as exc:  # recording must never break the agent's call
+            print(f"loopocel proxy: could not record {path}: {type(exc).__name__}: {exc}", file=sys.stderr)
+
     def stop(self) -> None:
         if self._httpd is not None:
             self._httpd.shutdown()
             self._httpd.server_close()
             self._httpd = None
+
+    def finalize(self) -> dict[str, Any] | None:
+        """Convert, validate and render the recorded session (if any exchange was recorded)."""
+        if not self.exchanges:
+            return None
+        from ..convert import convert
+        from ..figure import render_session_figure
+        from ..process_graphs import render_session_process_graphs
+        from ..validate import validate_log
+
+        sdir = self.recorder.session_dir
+        meta_path = sdir / "session.json"
+        if not meta_path.is_file():
+            write_json(
+                meta_path,
+                {
+                    "session_id": sdir.name,
+                    "task": self.recorder.task_id,
+                    "agent": "llm-api",
+                    "mode": "llm-proxy",
+                    "recorded_via": "llm-proxy",
+                    "capture_completeness": "complete",
+                    "status": "completed",
+                },
+            )
+        log = convert(sdir)
+        validation = validate_log(log, ocel_path=sdir / "loopocel.json")
+        write_json(sdir / "validation.json", validation)
+        return {
+            "exchanges": self.exchanges,
+            "validation_passed": validation["passed"],
+            "figure": render_session_figure(sdir)["outputs"],
+            "process_graphs": render_session_process_graphs(sdir)["outputs"],
+        }
 

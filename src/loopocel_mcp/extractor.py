@@ -16,6 +16,20 @@ from urllib.parse import quote
 
 RESOURCE_PATH_KEYS = ("file_path", "path", "notebook_path", "TargetFile", "Path")
 RESOURCE_URI_KEYS = ("url", "uri")
+# Tools whose successful call writes the file named in their arguments. Used when the
+# file cannot be probed before and after the call (e.g. transcripts ingested later).
+FILE_WRITE_TOOLS = {
+    "Write",
+    "Edit",
+    "MultiEdit",
+    "NotebookEdit",
+    "write_file",
+    "edit_file",
+    "write_to_file",
+    "replace_file_content",
+    "multi_replace_file_content",
+    "str_replace_editor",
+}
 
 
 @dataclass
@@ -64,6 +78,12 @@ def extract_structured_entities(
                 state = {k: v for k, v in node.items() if k != "id"}
                 found[oid] = (oid, node["kind"], state)
 
+            single_ids = [
+                k
+                for k, v in node.items()
+                if isinstance(v, str) and not k.endswith("_ids") and _kind_from_field(k, custom_fields)
+            ]
+            sole_id_keys = set(single_ids) if len(single_ids) == 1 else set()
             for key, child in node.items():
                 if key in RESOURCE_PATH_KEYS and isinstance(child, str) and child.strip():
                     p_str = child.strip()
@@ -82,10 +102,22 @@ def extract_structured_entities(
                             if isinstance(item, str) and item.strip():
                                 raw = item.strip()
                                 oid = format_object_id(kind, raw)
-                                found.setdefault(
-                                    oid,
-                                    (oid, kind, {"kind": kind, "business_id": raw}),
-                                )
+                                state = {"kind": kind, "business_id": raw}
+                                if key in sole_id_keys:
+                                    # A record with exactly one *_id field describes that object;
+                                    # its other scalar fields are the object's state.
+                                    state.update(
+                                        {
+                                            k: v
+                                            for k, v in node.items()
+                                            if k != key
+                                            and isinstance(v, (str, int, float, bool))
+                                            and _kind_from_field(k, custom_fields) is None
+                                        }
+                                    )
+                                prior = found.get(oid)
+                                if prior is None or len(state) > len(prior[2]):
+                                    found[oid] = (oid, kind, state)
                 visit(child)
         elif isinstance(node, list):
             for item in node:
@@ -117,6 +149,7 @@ class ProcessObjectExtractor:
     def __init__(self, custom_fields: dict[str, str] | None = None) -> None:
         self.custom_fields = custom_fields or {}
         self.states: dict[str, dict[str, Any]] = {}
+        self.write_counts: dict[str, int] = {}
 
     def register_initial(self, objects: dict[str, dict[str, Any]]) -> dict[str, dict[str, Any]]:
         added: dict[str, dict[str, Any]] = {}
@@ -161,9 +194,11 @@ class ProcessObjectExtractor:
         explicit_changes: list[dict[str, Any]] | dict[str, Any] | None = None,
     ) -> ObjectObservation:
         obs = ObjectObservation()
+        writes_file = tool_name in FILE_WRITE_TOOLS and outcome == "success"
 
         for oid, _, state in extract_structured_entities(arguments, self.custom_fields):
             prior = self.states.get(oid)
+            changed_before = len(obs.changes)
             if prior is None:
                 if state.get("kind") == "File" and state.get("exists"):
                     self.states[oid] = state
@@ -178,6 +213,12 @@ class ProcessObjectExtractor:
                         created = not prior.get("exists", False)
                         self.states[oid] = fresh
                         obs.changes.append({"id": oid, "state": fresh, "created": created})
+            if writes_file and state.get("kind") == "File" and len(obs.changes) == changed_before:
+                count = self.write_counts.get(oid, 0) + 1
+                self.write_counts[oid] = count
+                written = {**self.states.get(oid, state), "written_by": tool_name, "writes": count}
+                self.states[oid] = written
+                obs.changes.append({"id": oid, "state": written, "created": False})
             if oid not in obs.acted_on:
                 obs.acted_on.append(oid)
             if outcome == "success" and state.get("kind") in ("File", "URI") and oid not in obs.describes:

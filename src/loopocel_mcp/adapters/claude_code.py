@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import hashlib
 import json
 from pathlib import Path
+import re
 import sys
 from typing import Any
 
@@ -31,9 +32,56 @@ def _instruction_id(content: Any) -> str:
     return f"instruction:{digest}"
 
 
+def hook_session_dir(root: Path | str, payload: dict[str, Any]) -> Path:
+    """Folder for one agent session: <root>/<session_id> when the hook payload names one."""
+    root = Path(root)
+    sid = payload.get("session_id")
+    if isinstance(sid, str) and sid.strip():
+        return root / re.sub(r"[^A-Za-z0-9._-]+", "-", sid.strip())
+    return root
+
+
+def finalize_hook_session(session_dir: Path, transcript_path: Path, *, render: bool) -> dict[str, Any]:
+    """Ingest the transcript with the recorded hooks, convert and validate; optionally render."""
+    from ..convert import convert
+    from ..validate import validate_log
+
+    meta_path = session_dir / "session.json"
+    if not meta_path.is_file():
+        write_json(
+            meta_path,
+            {
+                "session_id": session_dir.name,
+                "task": session_dir.name,
+                "agent": "claude-code",
+                "mode": "claude-code-hooks",
+                "recorded_via": "claude-code-hooks",
+                "capture_completeness": "partial",
+                "status": "recording",
+            },
+        )
+    stats = ingest_transcript(session_dir, transcript_path)
+    log = convert(session_dir)
+    validation = validate_log(log, ocel_path=session_dir / "loopocel.json")
+    write_json(session_dir / "validation.json", validation)
+    result = {**stats, "validation_passed": validation["passed"]}
+    if render:
+        from ..figure import render_session_figure
+        from ..process_graphs import render_session_process_graphs
+
+        result["figure"] = render_session_figure(session_dir)["outputs"]
+        result["process_graphs"] = render_session_process_graphs(session_dir)["outputs"]
+    return result
+
+
 def record_hook_event(session_dir: Path | str, payload: dict[str, Any]) -> dict[str, Any]:
-    """Append a raw hook event from Claude Code or another hook-capable agent."""
-    session_dir = Path(session_dir)
+    """Append a raw hook event from Claude Code or another hook-capable agent.
+
+    `session_dir` is a root: each agent session (hook `session_id`) gets its own folder.
+    `Stop` re-ingests the transcript and validates it; `SessionEnd` also renders the
+    coverage figure and both process graphs.
+    """
+    session_dir = hook_session_dir(session_dir, payload)
     session_dir.mkdir(parents=True, exist_ok=True)
     hooks_file = session_dir / "hooks.jsonl"
     stamp = now()
@@ -43,9 +91,12 @@ def record_hook_event(session_dir: Path | str, payload: dict[str, Any]) -> dict[
 
     event_name = payload.get("hook_event_name") or payload.get("event") or ""
     transcript_path = payload.get("transcript_path")
-    if event_name == "Stop" and isinstance(transcript_path, str) and Path(transcript_path).is_file():
-        ingest_transcript(session_dir, Path(transcript_path))
-    return {"recorded": True, "hook_event_name": event_name, "time": stamp}
+    if event_name in ("Stop", "SessionEnd") and isinstance(transcript_path, str) and Path(transcript_path).is_file():
+        try:
+            finalize_hook_session(session_dir, Path(transcript_path), render=event_name == "SessionEnd")
+        except Exception as exc:  # a hook must never break the agent
+            print(f"loopocel hook: could not process {session_dir}: {exc}", file=sys.stderr)
+    return {"recorded": True, "hook_event_name": event_name, "time": stamp, "session_dir": str(session_dir)}
 
 
 def _load_hooks(session_dir: Path) -> list[dict[str, Any]]:
@@ -141,6 +192,7 @@ def _normalize_claude_code_jsonl(
 
     pending_user_messages: list[tuple[str, list[dict[str, Any]]]] = []
     pending_tool_results: dict[str, dict[str, Any]] = {}
+    seen_tool_use_ids: set[Any] = set()
     compacted_flag = False
     turns: list[dict[str, Any]] = []
 
@@ -179,6 +231,9 @@ def _normalize_claude_code_jsonl(
             if isinstance(content, list):
                 for block in content:
                     if isinstance(block, dict) and block.get("type") == "tool_use":
+                        if block.get("id") in seen_tool_use_ids:
+                            continue
+                        seen_tool_use_ids.add(block.get("id"))
                         tool_uses.append(
                             {
                                 "id": block.get("id") or f"call_{len(tool_uses) + 1}",
@@ -203,9 +258,28 @@ def _normalize_claude_code_jsonl(
                         }
                     )
 
+            # Claude Code writes one row per content block; rows sharing a message id
+            # belong to the same model response and form one turn.
+            message_id = msg.get("id")
+            if (
+                message_id
+                and turns
+                and turns[-1].get("message_id") == message_id
+                and not pending_user_messages
+            ):
+                last = turns[-1]
+                last_content = last["message"]["content"]
+                merged = (last_content if isinstance(last_content, list) else [last_content]) + (
+                    content if isinstance(content, list) else [content]
+                )
+                last["message"]["content"] = [b for b in merged if b not in (None, "")]
+                last["tool_uses"].extend(tool_uses)
+                continue
+
             turns.append(
                 {
                     "time": stamp,
+                    "message_id": message_id,
                     "user_instructions": list(pending_user_messages),
                     "compacted": compacted_flag or bool(compaction_times),
                     "model": msg.get("model", "assistant"),
@@ -242,9 +316,22 @@ def _normalize_antigravity_jsonl(lines: list[dict[str, Any]]) -> list[dict[str, 
     pending_user: list[tuple[str, list[dict[str, Any]]]] = []
     turns: list[dict[str, Any]] = []
 
+    awaiting_output: list[dict[str, Any]] = []
     for row in lines:
         stype = row.get("type")
         stamp = _ensure_iso_tz(row.get("created_at"))
+        if stype != "PLANNER_RESPONSE" and stype != "USER_INPUT" and awaiting_output:
+            # Antigravity logs each tool's output as the next non-planner row.
+            tu = awaiting_output.pop(0)
+            out = row.get("content", "")
+            exit_code = re.search(r"exited with code (-?\d+)", out) if isinstance(out, str) else None
+            tu["result"] = {
+                "time": stamp,
+                "content": out,
+                "is_error": row.get("status") == "ERROR" or bool(exit_code and exit_code.group(1) != "0"),
+                "raw": out,
+            }
+            continue
         if stype == "USER_INPUT":
             text = row.get("content", "")
             pending_user.append((stamp, [{"role": "user", "content": text}]))
@@ -261,6 +348,9 @@ def _normalize_antigravity_jsonl(lines: list[dict[str, Any]]) -> list[dict[str, 
                         targs = json.loads(targs)
                     except json.JSONDecodeError:
                         targs = {"raw": targs}
+                if isinstance(targs, dict):
+                    # Antigravity stores argument values as JSON-encoded strings ('"ls -la"').
+                    targs = {k: _decode_json_value(v) for k, v in targs.items()}
                 tid = tc.get("id") or f"step_{row.get('step_index', 0)}_call_{idx}"
                 tresult = tc.get("result") or tc.get("output")
                 tu: dict[str, Any] = {
@@ -276,6 +366,8 @@ def _normalize_antigravity_jsonl(lines: list[dict[str, Any]]) -> list[dict[str, 
                         "raw": tresult,
                     }
                 tool_uses.append(tu)
+                if "result" not in tu:
+                    awaiting_output.append(tu)
 
             turns.append(
                 {
@@ -357,6 +449,18 @@ def _normalize_chat_messages(messages: list[dict[str, Any]]) -> list[dict[str, A
     return turns
 
 
+def _decode_json_value(val: Any) -> Any:
+    """Decode a JSON-encoded scalar or container; leave other values unchanged."""
+    if isinstance(val, str):
+        text = val.strip()
+        if text[:1] in ('"', "{", "[") or text in ("true", "false", "null") or text.lstrip("-").isdigit():
+            try:
+                return json.loads(text)
+            except json.JSONDecodeError:
+                return val
+    return val
+
+
 def _decode_possible_json(val: Any) -> Any:
     if isinstance(val, (dict, list)):
         return val
@@ -386,6 +490,17 @@ def _ingest_normalized_turns(
     cap = Capture(session_dir)
     extractor = ProcessObjectExtractor(custom_fields=id_fields)
 
+    # Transcripts often stamp several records with the same (second-resolution) time.
+    # Payload versions of one object must be strictly ordered, so keep time monotonic.
+    last_time: list[datetime] = []
+
+    def mono(ts: str) -> str:
+        t = datetime.fromisoformat(_ensure_iso_tz(ts))
+        if last_time and t <= last_time[0]:
+            t = last_time[0] + timedelta(microseconds=1)
+        last_time[:] = [t]
+        return t.isoformat()
+
     active_instructions: list[str] = []
     prior_sources: list[str] = []
     latest_turn_results: list[str] = []
@@ -393,7 +508,6 @@ def _ingest_normalized_turns(
     req_counter = 0
 
     for t_idx, turn in enumerate(turns, 1):
-        stamp = turn["time"]
         tid = f"turn:{t_idx}"
         pid = f"prompt:{t_idx}"
         rid = f"response:{t_idx}"
@@ -401,9 +515,10 @@ def _ingest_normalized_turns(
         for inst_time, inst_msgs in turn["user_instructions"]:
             iid = _instruction_id(inst_msgs)
             if iid not in active_instructions:
-                cap.instruction(iid, inst_msgs, timestamp=inst_time)
+                cap.instruction(iid, inst_msgs, timestamp=mono(inst_time))
                 active_instructions.append(iid)
 
+        stamp = mono(turn["time"])
         if not active_instructions:
             default_iid = "instruction:base"
             cap.instruction(
@@ -482,7 +597,7 @@ def _ingest_normalized_turns(
             if is_rejected:
                 continue
 
-            pre_time = (
+            pre_time = mono(
                 turn["pre_hooks"][tuid]["time"]
                 if tuid in turn.get("pre_hooks", {})
                 else stamp
@@ -490,9 +605,24 @@ def _ingest_normalized_turns(
             cap.execution_start(eid, aid, tid, timestamp=pre_time)
 
             res_info = tu.get("result")
-            res_time = _ensure_iso_tz(res_info["time"]) if res_info else pre_time
+            res_time = mono(res_info["time"] if res_info else pre_time)
             res_data = _decode_possible_json(res_info["content"]) if res_info else {"ok": True}
-            outcome = "rejected" if (res_info and res_info.get("is_error")) else "success"
+            if res_info and res_info.get("is_error"):
+                text = str(res_info.get("content", "")).lower()
+                denied = any(
+                    marker in text
+                    for marker in (
+                        "doesn't want to proceed",
+                        "permission for this command was denied",
+                        "has been denied",
+                        "was denied by",
+                        "user rejected",
+                        "user denied",
+                    )
+                )
+                outcome = "rejected" if denied else "failure"
+            else:
+                outcome = "success"
 
             exec_obs = extractor.observe_execution_and_result(
                 tname,
@@ -551,6 +681,7 @@ def claude_code_settings_snippet(session_dir: Path | str, command: str = "loopoc
             "PermissionRequest": hook_entry,
             "PreCompact": plain_entry,
             "Stop": plain_entry,
+            "SessionEnd": plain_entry,
         }
     }
 

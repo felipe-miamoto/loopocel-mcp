@@ -9,11 +9,12 @@ import sys
 import threading
 from typing import Any, Callable, TextIO
 
-from ..capture import Capture, canonical
+from ..capture import Capture, canonical, write_json
 from ..convert import convert
 from ..extractor import ProcessObjectExtractor
 from ..figure import render_session_figure
 from ..process_graphs import render_session_process_graphs
+from ..validate import validate_log
 
 
 class ToolCallProxy:
@@ -255,12 +256,12 @@ class MCPStdioWrapper:
             return
         tname, targs = pending
         if "error" in msg:
-            outcome = "rejected"
+            outcome = "rejected"  # the server refused the call (JSON-RPC error)
             result_payload: Any = {"ok": False, "error": msg["error"]}
         else:
             res = msg.get("result") or {}
             is_err = bool(isinstance(res, dict) and res.get("isError"))
-            outcome = "rejected" if is_err else "success"
+            outcome = "failure" if is_err else "success"  # the tool ran and reported an error
             result_payload = self._extract_mcp_result_payload(res)
         with self._lock:
             self.proxy.record_call_result(tname, targs, result_payload, outcome=outcome)
@@ -286,7 +287,23 @@ class MCPStdioWrapper:
         """Convert captured JSONL into `loopocel.json` and render coverage figures if any calls were recorded."""
         if self.proxy.sequence == 0:
             return None
+        meta_path = self.session_dir / "session.json"
+        if not meta_path.is_file():
+            write_json(
+                meta_path,
+                {
+                    "session_id": self.session_dir.name,
+                    "task": self.proxy.task_id,
+                    "agent": "mcp-client",
+                    "mode": "mcp-wrap",
+                    "recorded_via": "mcp-wrap",
+                    "capture_completeness": "partial",
+                    "status": "completed",
+                },
+            )
         log = convert(self.session_dir)
+        validation = validate_log(log, ocel_path=self.session_dir / "loopocel.json")
+        write_json(self.session_dir / "validation.json", validation)
         fig = render_session_figure(self.session_dir)
         graphs = render_session_process_graphs(self.session_dir)
         return {
@@ -335,8 +352,8 @@ class MCPStdioWrapper:
             if self.auto_finalize:
                 try:
                     self.finalize()
-                except Exception:
-                    pass
+                except Exception as exc:
+                    print(f"loopocel wrap: could not finalize {self.session_dir}: {exc}", file=sys.stderr)
         return int(proc.returncode or 0)
 
 

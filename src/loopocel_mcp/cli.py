@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 import time
 
@@ -15,6 +16,31 @@ from .figure import render_session_figure
 from .process_graphs import render_session_process_graphs
 from .server import LoopOCELServer, handle_jsonrpc, run_http, run_stdio
 from .validate import validate_log
+
+
+def fresh_session_dir(session_dir: Path | None, sessions_root: Path | str | None, label: str) -> Path:
+    """Folder for one recording run; never appends to a capture from an earlier run.
+
+    Wrappers and proxies are started once per agent session from a fixed config, so a
+    given folder that already holds a capture gets a new timestamped sibling instead.
+    """
+    from datetime import datetime
+    import re as _re
+
+    stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    if session_dir is None:
+        slug = _re.sub(r"[^A-Za-z0-9]+", "-", label).strip("-").lower()[:40] or "run"
+        return Path(sessions_root or "sessions") / f"{stamp}-{slug}"
+    session_dir = Path(session_dir)
+    if (session_dir / "capture.jsonl").is_file():
+        candidate = session_dir.parent / f"{session_dir.name}-{stamp}"
+        n = 2
+        while candidate.exists():
+            candidate = session_dir.parent / f"{session_dir.name}-{stamp}-{n}"
+            n += 1
+        print(f"loopocel: {session_dir} already holds a recording; writing to {candidate}", file=sys.stderr)
+        return candidate
+    return session_dir
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -63,14 +89,20 @@ def main(argv: list[str] | None = None) -> int:
     ing_p.add_argument("--task", default=None)
 
     proxy_p = sub.add_parser("proxy", help="Run local LLM recording proxy")
-    proxy_p.add_argument("--session-dir", type=Path, required=True)
+    proxy_p.add_argument(
+        "--session-dir", type=Path, default=None,
+        help="Session folder (default: a new timestamped folder under --sessions-root)",
+    )
     proxy_p.add_argument("--upstream", required=True, help="Upstream API base URL (e.g. https://api.anthropic.com)")
     proxy_p.add_argument("--host", default="127.0.0.1")
     proxy_p.add_argument("--port", type=int, default=18080)
     proxy_p.add_argument("--task", default="proxy-task")
 
     wrap_p = sub.add_parser("wrap", help="Wrap a downstream stdio MCP server and record all tools/call interactions")
-    wrap_p.add_argument("--session-dir", type=Path, required=True, help="Directory to store LoopOCEL session artifacts")
+    wrap_p.add_argument(
+        "--session-dir", type=Path, default=None,
+        help="Session folder (default: a new timestamped folder under --sessions-root)",
+    )
     wrap_p.add_argument("--task", default="mcp-wrapped-task", help="Task identifier")
     wrap_p.add_argument("command", nargs=argparse.REMAINDER, help="Downstream MCP server command (prefix with --)")
 
@@ -127,6 +159,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.subcommand == "proxy":
+        args.session_dir = fresh_session_dir(args.session_dir, args.sessions_root, args.task or "proxy")
         proxy = LLMProxyServer(
             args.session_dir,
             args.upstream,
@@ -141,13 +174,15 @@ def main(argv: list[str] | None = None) -> int:
                 time.sleep(1.0)
         except KeyboardInterrupt:
             proxy.stop()
+            print(json.dumps({"finalized": proxy.finalize()}, indent=2), flush=True)
         return 0
 
     if args.subcommand == "wrap":
         cmd = list(args.command)
         if cmd and cmd[0] == "--":
             cmd = cmd[1:]
-        wrapper = MCPStdioWrapper(args.session_dir, cmd, task_id=args.task)
+        session_dir = fresh_session_dir(args.session_dir, args.sessions_root, args.task or "wrap")
+        wrapper = MCPStdioWrapper(session_dir, cmd, task_id=args.task)
         return wrapper.run()
 
     if args.subcommand == "call":

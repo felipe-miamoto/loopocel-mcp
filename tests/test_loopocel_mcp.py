@@ -481,3 +481,66 @@ if __name__ == "__main__":
     unittest.main()
 
 
+
+
+class CaptureAdapterAdjustmentTests(unittest.TestCase):
+    def test_claude_code_rows_of_one_message_form_one_turn(self) -> None:
+        rows = [
+            {"type": "user", "timestamp": "2026-01-01T10:00:00Z", "message": {"role": "user", "content": "go"}},
+            {"type": "assistant", "timestamp": "2026-01-01T10:00:01Z", "message": {"id": "m1", "role": "assistant", "content": [{"type": "text", "text": "plan"}]}},
+            {"type": "assistant", "timestamp": "2026-01-01T10:00:01Z", "message": {"id": "m1", "role": "assistant", "content": [{"type": "tool_use", "id": "t1", "name": "Bash", "input": {"command": "git status"}}]}},
+            {"type": "assistant", "timestamp": "2026-01-01T10:00:01Z", "message": {"id": "m1", "role": "assistant", "content": [{"type": "tool_use", "id": "t2", "name": "Write", "input": {"file_path": "/nonexistent/a.txt", "content": "x"}}]}},
+            {"type": "user", "timestamp": "2026-01-01T10:00:02Z", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "t1", "content": "clean"}, {"type": "tool_result", "tool_use_id": "t2", "content": "ok"}]}},
+            {"type": "assistant", "timestamp": "2026-01-01T10:00:03Z", "message": {"id": "m2", "role": "assistant", "content": [{"type": "text", "text": "done"}]}},
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "t.jsonl"
+            path.write_text("\n".join(json.dumps(r) for r in rows), encoding="utf-8")
+            stats = ingest_transcript(Path(tmp) / "s", path)
+            self.assertEqual((stats["turns_ingested"], stats["requests_ingested"]), (2, 2))
+            log = convert(Path(tmp) / "s")
+            self.assertTrue(validate_log(log)["passed"])
+            sem = discover_semantic_process([log])
+            self.assertEqual(sem["variants"], {"Bash · git status -> Write": 1})
+            self.assertEqual(sem["activities"]["Write"]["kind"], "mutating")
+
+    def test_antigravity_tool_output_rows_attach_to_calls(self) -> None:
+        rows = [
+            {"step_index": 0, "type": "USER_INPUT", "created_at": "2026-01-01T10:00:00Z", "content": "go"},
+            {"step_index": 1, "type": "PLANNER_RESPONSE", "created_at": "2026-01-01T10:00:01Z", "tool_calls": [{"name": "run_command", "args": {"CommandLine": json.dumps("grep -n x f")}}]},
+            {"step_index": 2, "type": "GENERIC", "created_at": "2026-01-01T10:00:01Z", "content": "Command exited with code 1."},
+            {"step_index": 3, "type": "PLANNER_RESPONSE", "created_at": "2026-01-01T10:00:02Z", "content": "done"},
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "transcript.jsonl"
+            path.write_text("\n".join(json.dumps(r) for r in rows), encoding="utf-8")
+            ingest_transcript(Path(tmp) / "s", path)
+            log = convert(Path(tmp) / "s")
+            self.assertTrue(validate_log(log)["passed"])
+            self.assertEqual(list(discover_semantic_process([log])["variants"]), ["run_command · grep [failed]"])
+
+    def test_proxy_records_openai_responses_api(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            rec = LLMRecordingRecorder(Path(tmp))
+            args = {"trip_id": "T1"}
+            rec.record_exchange("/v1/responses", {"model": "m", "instructions": "plan", "input": "go"},
+                                {"output": [{"type": "function_call", "call_id": "c1", "name": "search_flights", "arguments": json.dumps(args)}]})
+            rec.record_exchange("/v1/responses", {"model": "m", "instructions": "plan", "input": [
+                {"role": "user", "content": "go"},
+                {"type": "function_call_output", "call_id": "c1", "output": json.dumps({"flight_id": "F1", "price": 90})}]},
+                                {"output": [{"type": "message", "content": [{"type": "output_text", "text": "done"}]}]})
+            log = convert(Path(tmp))
+            self.assertTrue(validate_log(log)["passed"])
+            ids = {o["id"] for o in log["objects"] if o["type"] == "ProcessObject"}
+            self.assertEqual(ids, {"trip:T1", "flight:F1"})
+
+    def test_wrap_never_appends_to_an_earlier_recording(self) -> None:
+        from loopocel_mcp.cli import fresh_session_dir
+
+        with tempfile.TemporaryDirectory() as tmp:
+            fixed = Path(tmp) / "run"
+            self.assertEqual(fresh_session_dir(fixed, None, "x"), fixed)
+            fixed.mkdir()
+            (fixed / "capture.jsonl").write_text("{}\n", encoding="utf-8")
+            self.assertNotEqual(fresh_session_dir(fixed, None, "x"), fixed)
+            self.assertEqual(fresh_session_dir(None, tmp, "Hotel booking").parent, Path(tmp))
